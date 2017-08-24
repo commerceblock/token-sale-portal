@@ -13,46 +13,26 @@ export function saveCode(payload) {
       const inviteCode = new InviteCode(payload);
       inviteCode.save((error) => {
         if (error) {
-          log.error({
-            error,
-            payload,
-          }, 'failed to save invite code');
-          reject({
-            error,
-            payload,
-          });
+          log.error({ error, payload }, 'failed to save invite code');
+          reject({ error, payload });
         } else {
           log.info(`invite code saved, id: ${payload.invite_code} -> ${payload.user_id}`);
           resolve(payload);
         }
       });
     } catch (error) {
-      log.error({
-        error,
-        payload,
-      }, 'an error occurred while saving invite code');
-      reject({
-        error,
-        payload,
-      });
+      log.error({ error, payload }, 'an error occurred while saving invite code');
+      reject({ error, payload });
     }
   });
 }
 
 export function loadCode(invite_code) {
   return new Promise((resolve, reject) => {
-    InviteCode.get({
-      invite_code,
-    }, (error, item) => {
+    InviteCode.get({ invite_code }, (error, item) => {
       if (error) {
-        log.error({
-          invite_code,
-          error,
-        }, 'failed to load invite code');
-        reject({
-          invite_code,
-          error,
-        });
+        log.error({ invite_code, error }, 'failed to load invite code');
+        reject({ invite_code, error });
       } else {
         resolve(item);
       }

@@ -7,8 +7,8 @@ import dynamoose from '../lib/dynamoose'
 import { columns } from './consts'
 
 // schema defintion
-const InviteCodeSchema = new Schema({
-  [columns.invite_code]: {
+const AccessTokenSchema = new Schema({
+  [columns.access_token_id]: {
     type: String,
     hashKey: true,
   },
@@ -18,10 +18,7 @@ const InviteCodeSchema = new Schema({
   [columns.timestamp]: {
     type: String,
   },
-  [columns.created_by]: {
-    type: String,
-  },
 });
 
-const InviteCode = dynamoose.model('invite-codes', InviteCodeSchema);
-export default InviteCode;
+const AccessToken = dynamoose.model('access-tokens', AccessTokenSchema);
+export default AccessToken;

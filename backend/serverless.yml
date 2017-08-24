@@ -1,10 +1,11 @@
-service: cb-invoices
+service: cb-token-sale
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
 plugins:
   - serverless-dynamodb-local
   - serverless-offline
+  - serverless-sqs-local
 
 provider:
   name: aws
@@ -36,6 +37,9 @@ custom:
     events:
       read: 50
       write: 5
+    accessTokens:
+      read: 50
+      write: 10
     inviteCodes:
       read: 50
       write: 1
@@ -50,6 +54,8 @@ custom:
         sources:
           - table: ${self:provider.environment.CB_ENV_NAME}-events
             sources: [./data/events.json]
+          - table: ${self:provider.environment.CB_ENV_NAME}-invite-codes
+            sources: [./data/invite-codes.json]
   serverless-offline:
     port: 9000
 
@@ -60,7 +66,7 @@ functions:
     handler: lambda/login-api.post
     events:
       - http:
-          path: /v0.1/login
+          path: /v1.0/login
           method: post
           cors: true
 
@@ -68,9 +74,25 @@ functions:
     handler: lambda/graphql-api.post
     events:
     - http:
-        path: /v0.1/graphql
+        path: /v1.0/graphql
         method: post
         cors: true
+
+  ### Backoffice functions
+  orders-backoffice-stream-processor:
+    handler: lambda/orders-backoffice-stream-processor.process
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - EventsDynamoDbTable
+              - StreamArn
+
+  orders-backoffice-worker:
+    handler: lambda/orders-backoffice-worker.process
+    events:
+      - schedule: rate(1 minute)
 
 
 resources:
@@ -101,6 +123,23 @@ resources:
                 - - 'arn:aws:s3:::'
                   - Ref: WebsiteS3Bucket
                   - "/*"
+    OrdersQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:provider.environment.CB_ENV_NAME}-orders
+        MessageRetentionPeriod: 1209600
+        VisibilityTimeout: 60
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt:
+            - OrdersDeadLetterQueue
+            - Arn
+          maxReceiveCount: 10
+    OrdersDeadLetterQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:provider.environment.CB_ENV_NAME}-orders-dlq
+        MessageRetentionPeriod: 1209600
     InviteCodesDynamoDbTable:
       Type: "AWS::DynamoDB::Table"
       DeletionPolicy: Retain
@@ -117,6 +156,22 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: ${self:custom.dynamodbThroughput.inviteCodes.read}
           WriteCapacityUnits: ${self:custom.dynamodbThroughput.inviteCodes.write}
+    AccessTokensDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.CB_ENV_NAME}-access-tokens
+        AttributeDefinitions:
+          -
+            AttributeName: access_token_id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: access_token_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: ${self:custom.dynamodbThroughput.accessTokens.read}
+          WriteCapacityUnits: ${self:custom.dynamodbThroughput.accessTokens.write}
     EventsDynamoDbTable:
       Type: "AWS::DynamoDB::Table"
       DeletionPolicy: Retain

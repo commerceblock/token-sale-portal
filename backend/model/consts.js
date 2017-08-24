@@ -21,6 +21,7 @@ export const columns = {
   user_id: 'user_id',
   invite_code: 'invite_code',
   access_token_id: 'access_token_id',
+  created_by: 'created_by'
 };
 
 // event types

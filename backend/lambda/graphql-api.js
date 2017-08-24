@@ -13,27 +13,17 @@ const log = createLogger({ name: 'graphql-api' });
 
 export function post (event, context, callback) {
   const request_id = createOrderedId();
-  log.info({
-    request_id,
-    event,
-  }, 'start');
+  log.info({ request_id, event }, 'start');
   const body = JSON.parse(event.body);
   graphQLHandler(body.query, body.variables)
     .then(result => {
       const response = toResponse(httpStatus.OK, result);
-      log.info({
-        request_id,
-        http_response: response,
-      }, 'success - end');
+      log.info({ request_id, http_response: response }, 'success - end');
       return callback(null, response);
     })
     .catch(error => {
       const response = toResponse(httpStatus.INTERNAL_SERVER_ERROR);
-      log.error({
-        request_id,
-        error,
-        http_response: response,
-      }, 'Failed to process request - end');
+      log.error({ request_id, error, http_response: response }, 'Failed to process request - end');
       return callback(null, response);
     });
 };
