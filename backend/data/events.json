@@ -1,0 +1,9 @@
+[
+  {
+    "user_id": "2zb9rcjX8jpJzivU7mbzNE",
+    "event_id": "2jxLouhf4GBYe3g6oUbad6",
+    "type": "account_created",
+    "timestamp": "2017-08-22T19:06:51.576Z",
+    "data": "{\"created_by\":\"foo\"}"
+  }
+]

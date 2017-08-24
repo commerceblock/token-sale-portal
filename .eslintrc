@@ -1,0 +1,29 @@
+{
+  "parser": "babel-eslint",
+  "extends": "airbnb",
+  "env": {
+    "browser": true,
+    "node": true,
+    "jest": true,
+    "es6": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "import",
+    "html"
+  ],
+  "rules": {
+    "max-len": 0,
+    "no-console": 0,
+    "arrow-parens": 0,
+    "class-methods-use-this": 0,
+    "lines-around-directive": 0,
+    "no-unused-vars": [2, { "argsIgnorePattern": "^_" }],
+    "import/no-extraneous-dependencies": [2, {
+      "devDependencies": ["**/frontend/**/*.js", "**/backend/**/*.js", "**/deployment/**/*.js"]
+    }]
+  }
+}

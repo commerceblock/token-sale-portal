@@ -1,0 +1,14 @@
+{
+  "name": "invoicing-platform",
+  "version": "0.1.0",
+  "dependencies": {
+    "bs58": "^4.0.1",
+    "bunyan": "^1.8.10",
+    "dynamoose": "^0.8.3",
+    "http-status-codes": "^1.2.0",
+    "lodash": "^4.17.4",
+    "uuid": "^2.0.3",
+    "graphql": "^0.9.1",
+    "babel-polyfill": "^6.16.0"
+  }
+}

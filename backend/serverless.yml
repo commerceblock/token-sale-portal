@@ -1,0 +1,143 @@
+service: cb-invoices
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+
+provider:
+  name: aws
+  stage: prod001
+  region: eu-west-2
+  runtime: nodejs6.10
+  memorySize: 256
+  timeout: 5
+  versionFunctions: true
+  environment:
+    CB_ENV_NAME: ${self:service}-${self:custom.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}-${self:custom.stage}-*"
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  cors:
+    allowOrigin: "*"
+    allowHeaders: ["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key"]
+  dynamodbThroughput:
+    events:
+      read: 50
+      write: 5
+    inviteCodes:
+      read: 50
+      write: 1
+  dynamodb:
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+      seed: true
+    seed:
+      domain:
+        sources:
+          - table: ${self:provider.environment.CB_ENV_NAME}-events
+            sources: [./data/events.json]
+  serverless-offline:
+    port: 9000
+
+functions:
+
+  ### API functions
+  login-api:
+    handler: lambda/login-api.post
+    events:
+      - http:
+          path: /v0.1/login
+          method: post
+          cors: true
+
+  graphql-api:
+    handler: lambda/graphql-api.post
+    events:
+    - http:
+        path: /v0.1/graphql
+        method: post
+        cors: true
+
+
+resources:
+  Resources:
+    WebsiteS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.CB_ENV_NAME}-website
+        AccessControl: PublicRead
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: index.html
+    WebsiteS3BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: WebsiteS3Bucket
+        PolicyDocument:
+          Statement:
+            - Sid: PublicReadGetObject
+              Effect: Allow
+              Principal: "*"
+              Action:
+              - s3:GetObject
+              Resource:
+              - Fn::Join:
+                - ''
+                - - 'arn:aws:s3:::'
+                  - Ref: WebsiteS3Bucket
+                  - "/*"
+    InviteCodesDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.CB_ENV_NAME}-invite-codes
+        AttributeDefinitions:
+          -
+            AttributeName: invite_code
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: invite_code
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: ${self:custom.dynamodbThroughput.inviteCodes.read}
+          WriteCapacityUnits: ${self:custom.dynamodbThroughput.inviteCodes.write}
+    EventsDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.CB_ENV_NAME}-events
+        AttributeDefinitions:
+          -
+            AttributeName: user_id
+            AttributeType: S
+          -
+            AttributeName: event_id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: user_id
+            KeyType: HASH
+          -
+            AttributeName: event_id
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: ${self:custom.dynamodbThroughput.events.read}
+          WriteCapacityUnits: ${self:custom.dynamodbThroughput.events.write}
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
