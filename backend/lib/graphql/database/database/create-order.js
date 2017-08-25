@@ -5,12 +5,12 @@ import { createOrderedId } from '../../../../lib/uuid';
 import { event_type } from '../../../../model/consts';
 import { generatePaymentAddress } from '../../../../lib/wallet';
 
-export default async (user_id, orderInput) => {
-  const event_id = createOrderedId();
+export default async (userId, orderInput) => {
+  const eventId = createOrderedId();
   const paymentAddress = generatePaymentAddress(orderInput.coin)
   const payload = {
-    user_id,
-    event_id,
+    user_id: userId,
+    event_id: eventId,
     type: event_type.order_created,
     timestamp: new Date().toISOString(),
     data: {

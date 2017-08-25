@@ -27,9 +27,9 @@ export function saveToken(payload) {
   });
 }
 
-export function loadCode(access_token_id) {
+export function loadToken(access_token_id) {
   return new Promise((resolve, reject) => {
-    InviteCode.get({ access_token_id }, (error, item) => {
+    AccessToken.get({ access_token_id }, (error, item) => {
       if (error) {
         log.error({ access_token_id, error }, 'failed to load access token');
         reject({ access_token_id, error });

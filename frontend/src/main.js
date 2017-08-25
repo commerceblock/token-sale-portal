@@ -6,15 +6,31 @@ import {
 } from 'apollo-client';
 import App from './App.vue';
 import router from './router';
+import { getAccessToken } from './lib/vault';
 
 // Create the apollo client
 if (!process.env.GRAPHQL_ENDPOINT) {
   throw new Error('GRAPHQL_ENDPOINT is not defined');
 }
+
+const networkInterface = createNetworkInterface({
+  uri: process.env.GRAPHQL_ENDPOINT,
+});
+
+networkInterface.use([{
+  applyMiddleware(req, next) {
+    if (!req.options.headers) {
+      req.options.headers = {};  // Create the header object if needed.
+    }
+    // get the authentication token from store if it exists
+    const accessToken = getAccessToken();
+    req.options.headers.authorization = token ? `Bearer ${accessToken}` : null;
+    next();
+  }
+}]);
+
 const apolloClient = new ApolloClient({
-  networkInterface: createNetworkInterface({
-    uri: process.env.GRAPHQL_ENDPOINT,
-  }),
+  networkInterface,
 });
 
 Vue.use(VueApollo);

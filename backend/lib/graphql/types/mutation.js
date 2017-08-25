@@ -18,7 +18,7 @@ const MutationType = new GraphQLObjectType({
       args: {
         order: { type: OrderInputType },
       },
-      resolve: (value, { order }) => db.createOrder(null, order), // TODO inject user_id from access_token_id
+      resolve: (value, { order }, context) => db.createOrder(context.userId, order),
     },
   }),
 });

@@ -13,9 +13,7 @@ const QueryType = new GraphQLObjectType({
   fields: () => ({
     order: {
       type: OrderType,
-      resolve(parent, {}) {
-        return db.getOrder(userId); // TODO inject user_id from access_token_id
-      },
+      resolve: (parent, {}, context) => db.getOrder(context.userId),
     },
   }),
 });

@@ -20,7 +20,9 @@
     "test:watch": "NODE_ENV=test jest --watch",
     "test:coverage": "npm test -- --coverage --collectCoverageFrom 'frontend/**/*.js' --collectCoverageFrom 'backend/**/*.js' --collectCoverageFrom 'deployment/**/*.js'",
     "dev:frontend": "NODE_ENV=development env-cmd deployment/environment/security.env.local babel-watch deployment/dev-server/server.js",
-    "dev:backend": "NODE_ENV=development npm run build:backend && npm run build:backend:node_modules && cd build && mkdir -p backend-dev && cp -R backend/* backend-dev && cd backend-dev && cp ../../package.json ./ && cp -R ../../backend/data ./ && yarn && serverless dynamodb install && serverless offline start --migrate true"
+    "dev:backend": "NODE_ENV=development npm run dev:build:backend && npm run dev:build:backend:node_modules && cd build/backend-dev && serverless dynamodb install && serverless offline start --migrate true",
+    "dev:build:backend": "NODE_ENV=development babel --out-dir='build/backend-dev' --ignore='__tests__/*' ./backend && cp -R ./backend/data ./backend/package.json ./backend/yarn.lock ./backend/serverless.yml ./build/backend-dev",
+    "dev:build:backend:node_modules": "cd build/backend-dev && yarn && cd ../../"
   },
   "lint-staged": {
     "lint:eslint": "*.js",
