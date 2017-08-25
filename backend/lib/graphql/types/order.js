@@ -32,6 +32,10 @@ const OrderType = new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLString),
       description: 'order coin (btc or eth)',
     },
+    paymentAddress: {
+      type: new GraphQLNonNull(GraphQLString),
+      description: 'order payment address',
+    },
     status: {
       type: new GraphQLNonNull(GraphQLString),
       description: 'order status (initial, unconfirmed, confirmed, fulfilled)',

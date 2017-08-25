@@ -21,7 +21,13 @@ export const columns = {
   user_id: 'user_id',
   invite_code: 'invite_code',
   access_token_id: 'access_token_id',
-  created_by: 'created_by'
+  order_id: 'order_id',
+  created_by: 'created_by',
+  ethereum_return_address: 'ethereum_return_address',
+  ethereum_wallet_name: 'ethereum_wallet_name',
+  amount: 'amount',
+  coin: 'coin',
+  payment_address: 'payment_address',
 };
 
 // event types
@@ -32,4 +38,12 @@ export const event_type = {
   order_payment_broadcasted: 'order_payment_broadcasted',
   order_payment_confirmed: 'order_payment_confirmed',
   order_confirmed: 'order_confirmed',
+};
+
+// order status
+export const order_status = {
+  initial: 'initial',
+  unconfirmed: 'unconfirmed',
+  confirmed: 'confirmed',
+  fulfilled: 'fulfilled'
 };
