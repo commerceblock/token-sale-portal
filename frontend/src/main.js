@@ -1,44 +1,46 @@
+
+// imports
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import {
   ApolloClient,
   createNetworkInterface,
 } from 'apollo-client';
+
+// local imports
 import App from './App.vue';
 import router from './router';
+import endpoints from './lib/endpoints'
 import { getAccessToken } from './lib/vault';
+import { middleware } from './router/auth'
 
-// Create the apollo client
-if (!process.env.GRAPHQL_ENDPOINT) {
-  throw new Error('GRAPHQL_ENDPOINT is not defined');
+// check env
+if (!process.env.BASE_URL) {
+  throw new Error('BASE_URL is not defined');
 }
 
-const networkInterface = createNetworkInterface({
-  uri: process.env.GRAPHQL_ENDPOINT,
-});
-
-networkInterface.use([{
-  applyMiddleware(req, next) {
-    if (!req.options.headers) {
-      req.options.headers = {};  // Create the header object if needed.
-    }
-    // get the authentication token from store if it exists
-    const accessToken = getAccessToken();
-    req.options.headers.authorization = token ? `Bearer ${accessToken}` : null;
-    next();
-  }
-}]);
-
-const apolloClient = new ApolloClient({
-  networkInterface,
-});
+// init endpoints
+endpoints.initBaseUrl(process.env.BASE_URL);
+Vue.config.productionTip = false;
 
 Vue.use(VueApollo);
 
-Vue.config.productionTip = false;
-
 const apolloProvider = new VueApollo({
-  defaultClient: apolloClient,
+  defaultClient: new ApolloClient({
+    networkInterface: createNetworkInterface({
+      uri: endpoints.gql(),
+    }).use([{
+      applyMiddleware(req, next) {
+        if (!req.options.headers) {
+          req.options.headers = {};  // Create the header object if needed.
+        }
+        // get the authentication token from store if it exists
+        const accessToken = getAccessToken();
+        req.options.headers.authorization = accessToken ? `Bearer ${accessToken}` : null;
+        next();
+      }
+    }]),
+  }),
 });
 
 /* eslint-disable no-new */
