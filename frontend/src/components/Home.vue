@@ -15,7 +15,7 @@
       </tab-content>
       <tab-content title="Invoice Summary" icon="fa fa-qrcode">
         <div class="invoice-box">
-          <invoice-header :title="'Invoice Summary'" />
+          <invoice-summary-header />
           <invoice-summary />
         </div>
       </tab-content>
@@ -35,6 +35,7 @@ import InvoiceHeader from './InvoiceHeader.vue'
 import DistributionDetails from './steps/DistributionDetails.vue'
 import PaymentDetails from './steps/PaymentDetails.vue'
 import InvoiceSummary from './steps/InvoiceSummary.vue'
+import InvoiceSummaryHeader from './home/InvoiceSummaryHeader.vue'
 import {
   FormWizard,
   TabContent
@@ -47,6 +48,7 @@ export default {
     DistributionDetails,
     PaymentDetails,
     InvoiceSummary,
+    InvoiceSummaryHeader,
     FormWizard,
     TabContent
   },
