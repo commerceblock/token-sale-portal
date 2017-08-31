@@ -27,9 +27,6 @@
     <div class="row">
       <div class="input-group form-group">
         <label class="pull-left title-usd-amount">How you would like to pay?</label>
-        <div class="col-xs-12">
-          <input class="form-control input-usd-amount" type="text" v-model="usdAmount" placeholder="Amount">
-        </div>
       </div>
     </div>
     <div class="row">

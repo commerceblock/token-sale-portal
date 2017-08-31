@@ -4,8 +4,8 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 // local imports
-import Home from '../components/Home.vue';
-import Login from '../components/Login.vue';
+import Home from '../components/home/Home.vue';
+import Login from '../components/login/Login.vue';
 import { requireAuth } from './auth';
 
 Vue.use(Router);

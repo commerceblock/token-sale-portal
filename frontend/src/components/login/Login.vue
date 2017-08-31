@@ -51,8 +51,8 @@ import 'whatwg-fetch';
 import httpStatus from 'http-status-codes';
 import { isEmpty } from 'lodash';
 import Modal from './TermsConfirmationModal.vue'
-import  endpoints from '../lib/endpoints'
-import { setAccessToken } from '../lib/vault'
+import  endpoints from '../../lib/endpoints'
+import { setAccessToken } from '../../lib/vault'
 
 const access_token_ttl = 30 * 60 * 1000;
 

@@ -2,6 +2,7 @@
 // imports
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import VueClipboard from 'vue-clipboard2';
 import {
   ApolloClient,
   createNetworkInterface,
@@ -23,6 +24,7 @@ if (!process.env.BASE_URL) {
 endpoints.initBaseUrl(process.env.BASE_URL);
 Vue.config.productionTip = false;
 
+Vue.use(VueClipboard);
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({

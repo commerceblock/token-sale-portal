@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper">
-    <form-wizard title="" subtitle="" class="invoice" color="#538C46">
+    <next-steps-modal v-if="showNextSteps" @close="showNextSteps = false" />
+    <form-wizard title="" subtitle="" class="invoice" color="#538C46" @on-complete="onComplete">
       <tab-content title="Distribution Details" icon="fa fa-cloud-download">
         <div class="invoice-box">
           <invoice-header :title="'Distribution Details'" />
@@ -32,10 +33,11 @@
 <script>
 import gql from 'graphql-tag'
 import InvoiceHeader from './InvoiceHeader.vue'
-import DistributionDetails from './steps/DistributionDetails.vue'
-import PaymentDetails from './steps/PaymentDetails.vue'
-import InvoiceSummary from './steps/InvoiceSummary.vue'
-import InvoiceSummaryHeader from './home/InvoiceSummaryHeader.vue'
+import DistributionDetails from './DistributionDetails.vue'
+import PaymentDetails from './PaymentDetails.vue'
+import InvoiceSummary from './InvoiceSummary.vue'
+import InvoiceSummaryHeader from './InvoiceSummaryHeader.vue'
+import NextStepsModal from './NextStepsModal.vue'
 import {
   FormWizard,
   TabContent
@@ -49,16 +51,21 @@ export default {
     PaymentDetails,
     InvoiceSummary,
     InvoiceSummaryHeader,
+    NextStepsModal,
     FormWizard,
     TabContent
   },
   data() {
     return {
+      showNextSteps: false
     }
   },
   computed: {
   },
   methods: {
+    onComplete () {
+      this.showNextSteps = true;
+    }
   }
 }
 </script>
