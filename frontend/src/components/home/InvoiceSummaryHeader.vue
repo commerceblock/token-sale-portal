@@ -29,7 +29,7 @@
 export default {
   name: 'InvoiceSummaryHeader',
   props: [],
-  data () {
+  data() {
     return {
       cbtAmount: null,
       numberOfConfirmations: null
@@ -46,16 +46,15 @@ export default {
   background-color: #258C42;
   color: #ffffff;
   padding: 5px;
+}
 
-  .top {
-    display: flex;
-    justify-content: space-between;
-  }
+.top {
+  display: flex;
+  justify-content: space-between;
+}
 
-  .commerce-block-green {
-    margin-top: -5px;
-  }
-
+.commerce-block-green {
+  margin-top: -5px;
 }
 
 a:link {

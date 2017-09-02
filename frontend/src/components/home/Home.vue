@@ -63,7 +63,7 @@ export default {
   computed: {
   },
   methods: {
-    onComplete () {
+    onComplete() {
       this.showNextSteps = true;
     }
   }
@@ -102,12 +102,12 @@ export default {
   font-size: 14px;
   line-height: 19px;
   text-align: center;
+}
 
-  a:link,
-  a:visited,
-  a:hover,
-  a:active {
-    color: rgba(20, 20, 20, 0.5);
-  }
+a:link,
+a:visited,
+a:hover,
+a:active {
+  color: rgba(20, 20, 20, 0.5);
 }
 </style>

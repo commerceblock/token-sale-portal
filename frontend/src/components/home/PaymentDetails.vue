@@ -68,25 +68,25 @@ export default {
   line-height: 22px;
   text-align: center;
   padding: 20px 10px;
+}
 
-  .cbt-title {
-    color: #258C42;
-  }
+.cbt-title {
+  color: #258C42;
+}
 
-  .title-usd-amount {
-    margin-top: 25px;
-    padding-left: 20px;
-    margin-left: 30px;
-  }
+.title-usd-amount {
+  margin-top: 25px;
+  padding-left: 20px;
+  margin-left: 30px;
+}
 
-  .title-usd-input {
-    padding-left: 20px;
-    margin-left: 30px;
-  }
+.title-usd-input {
+  padding-left: 20px;
+  margin-left: 30px;
+}
 
-  .input-usd-amount {
-    padding-left: 20px;
-    margin-left: 35px;
-  }
+.input-usd-amount {
+  padding-left: 20px;
+  margin-left: 35px;
 }
 </style>

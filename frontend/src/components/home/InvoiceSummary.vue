@@ -59,7 +59,6 @@ export default {
 }
 
 .timer {
-  // margin-top: 5px;
   margin-bottom: 10px;
 }
 

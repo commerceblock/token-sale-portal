@@ -27,7 +27,7 @@
 export default {
   name: 'DistributionDetails',
   props: [],
-  data () {
+  data() {
     return {
       etherumAddress: null,
     }
@@ -49,9 +49,9 @@ export default {
   line-height: 22px;
   text-align: center;
   padding: 50px;
+}
 
-  .title {
-    padding-left: 20px;
-  }
+.title {
+  padding-left: 20px;
 }
 </style>
