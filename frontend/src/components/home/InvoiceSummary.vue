@@ -48,7 +48,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .content {
   color: #141414;
   font-family: "Open Sans";

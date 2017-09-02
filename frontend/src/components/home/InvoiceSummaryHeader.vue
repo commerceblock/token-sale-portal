@@ -40,7 +40,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .header {
   border-radius: 3px 3px 0 0;
   background-color: #258C42;

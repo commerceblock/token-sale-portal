@@ -70,7 +70,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .wrapper {
   display: flex;
   flex-direction: column;
