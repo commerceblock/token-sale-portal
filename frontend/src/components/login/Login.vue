@@ -85,10 +85,16 @@ export default {
           .then(response => that.parseResult(response))
           .catch(error => that.handleError(error))
           .then(data => {
-            const accessToken = data && data.access_token_id;
-            if (accessToken) {
+            if (data && data.access_token_id) {
+              const accessToken = data && data.access_token_id;
               setAccessToken(accessToken, access_token_ttl);
-              this.showModal = true;
+              if (data.acknowledged) {
+                that.$router.push('/');
+              } else {
+                that.showModal = true;
+              }
+            } else {
+              that.errorResponse = "Unexpected error occured, please try again.";
             }
           });
       }

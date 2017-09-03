@@ -14,30 +14,30 @@
             <slot name="body">
               <div class="row">
                 <div class="checkbox pull-left">
-                  <label><input type="checkbox"  v-model="checked1">Click here to confirm that you are neither a United States citizen nor resident, and don't have primary residence or domicile in the United States, including Puerto Rico, the U.S. Virgin Islands and any other possessions of the United States.</label>
+                  <label><input type="checkbox" v-model="checked1">Click here to confirm that you are neither a United States citizen nor resident, and don't have primary residence or domicile in the United States, including Puerto Rico, the U.S. Virgin Islands and any other possessions of the United States.</label>
                 </div>
               </div>
               <div class="row">
                 <div class="checkbox pull-left">
-                  <label><input type="checkbox"  v-model="checked2">Click here to confirm that you have read and understood the Token Sale Policy and expressly accept all terms, conditions, obligations, affirmations, representations and warrenties described in these Terms and agree to be bound by them.</label>
+                  <label><input type="checkbox" v-model="checked2">Click here to confirm that you have read and understood the Token Sale Policy and expressly accept all terms, conditions, obligations, affirmations, representations and warrenties described in these Terms and agree to be bound by them.</label>
                 </div>
               </div>
               <div class="row">
                 <div class="checkbox pull-left">
-                  <label><input type="checkbox"  v-model="checked3">Click here to confirm that you have read and understood the Gereral Terms and Conditions and Privacy Policy and expressly accept all terms, conditions, obligations, affirmations, representations and warrenties described in these Terms and agree to be bound by them.</label>
+                  <label><input type="checkbox" v-model="checked3">Click here to confirm that you have read and understood the Gereral Terms and Conditions and Privacy Policy and expressly accept all terms, conditions, obligations, affirmations, representations and warrenties described in these Terms and agree to be bound by them.</label>
                 </div>
               </div>
               <div class="row">
                 <div class="checkbox pull-left">
-                  <label><input type="checkbox"  v-model="checked4">Click here to confirm that you have read the CommerceBlock White Paper.</label>
+                  <label><input type="checkbox" v-model="checked4">Click here to confirm that you have read the CommerceBlock White Paper.</label>
                 </div>
               </div>
             </slot>
           </div>
 
-           <div class="modal-footer">
+          <div class="modal-footer">
             <slot name="footer">
-              <button class="btn btn-success btn-lg btn-block " @click="redirectToHome" :disabled="isFormNotValid">Continue to Token Sale</button>
+              <button class="btn btn-success btn-lg btn-block " @click="confirm" :disabled="isFormNotValid">Continue to Token Sale</button>
             </slot>
           </div>
         </div>
@@ -47,9 +47,11 @@
 </template>
 
 <script>
+import gql from 'graphql-tag';
+
 export default {
   name: 'TermsConfirmationModal',
-  data () {
+  data() {
     return {
       checked1: null,
       checked2: null,
@@ -58,13 +60,30 @@ export default {
     }
   },
   methods: {
-    redirectToHome () {
-      this.$router.push('/');
+    confirm() {
+      const that = this;
+      this.apolloClient
+        .mutate({
+          mutation: gql`mutation {
+                  acknowledgeTerms {
+                    acknowledged
+                  }
+                }`})
+        .then(result => {
+          that.$router.push('/');
+        }).catch(err => {
+          //TODO
+          console.log(err);
+        });
+
     }
   },
   computed: {
-    isFormNotValid () {
+    isFormNotValid() {
       return !this.checked1 || !this.checked2 || !this.checked3 || !this.checked4
+    },
+    apolloClient: function() {
+      return this.$apollo.provider.defaultClient;
     }
   },
 }
@@ -129,6 +148,8 @@ export default {
 }
 
 
+
+
 /*
  * The following styles are auto-applied to elements with
  * transition="modal" when their visibility is toggled
@@ -161,7 +182,11 @@ export default {
   text-align: center;
 }
 
-a, a:link, a:visited, a:hover, a:active {
+a,
+a:link,
+a:visited,
+a:hover,
+a:active {
   padding-top: 5px;
   color: #258C42;
 }

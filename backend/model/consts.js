@@ -38,6 +38,8 @@ export const event_type = {
   order_payment_broadcasted: 'order_payment_broadcasted',
   order_payment_confirmed: 'order_payment_confirmed',
   order_confirmed: 'order_confirmed',
+  terms_acknowledged: 'terms_acknowledged',
+  return_address_created: 'return_address_created'
 };
 
 // order status

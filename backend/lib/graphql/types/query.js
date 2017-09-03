@@ -2,6 +2,7 @@ import {
   GraphQLObjectType,
 } from 'graphql';
 import OrderType from '../types/order';
+import ReturnAddressType from '../types/return-address'
 import db from '../database';
 
 /**
@@ -15,6 +16,10 @@ const QueryType = new GraphQLObjectType({
       type: OrderType,
       resolve: (parent, {}, context) => db.getOrder(context.userId),
     },
+    returnAddress: {
+      type: ReturnAddressType,
+      resolve: (parent, {}, context) => db.getReturnAddress(context.userId),
+    }
   }),
 });
 

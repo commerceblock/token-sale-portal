@@ -7,7 +7,7 @@ import {
 } from 'graphql';
 
 const OrderInputType = new GraphQLInputObjectType({
-  name: 'ProfileInput',
+  name: 'OrderInput',
   description: 'A profile input object',
   fields: () => ({
     ethereumReturnAddress: {
