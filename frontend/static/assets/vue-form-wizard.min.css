@@ -262,11 +262,20 @@ fieldset[disabled] .vue-form-wizard .wizard-btn {
     display: table
 }
 .vue-form-wizard .wizard-card-footer {
-    padding: 0 20px
+    position: relative;
+    top: -61px;
+    padding: 0 50px
 }
 .vue-form-wizard .wizard-card-footer .wizard-footer-left {
     float: left
 }
+.wizard-footer-left > span > button {
+  background: none !important;
+  color: #757575 !important;
+  border: none !important;
+  text-align: left !important;
+}
+
 .vue-form-wizard .wizard-card-footer .wizard-footer-right {
     float: right
 }

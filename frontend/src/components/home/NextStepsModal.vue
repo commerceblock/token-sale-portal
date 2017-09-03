@@ -76,6 +76,7 @@ export default {
 
 .modal-body {
   margin: 20px 0;
+  text-align: justify !important;
 }
 
 .modal-default-button {

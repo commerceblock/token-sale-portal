@@ -108,6 +108,11 @@ export default {
 
 .modal-body {
   margin: 20px 0;
+  text-align: justify;
+}
+
+.modal-footer {
+  /*padding: 15px 0;*/
 }
 
 .modal-default-button {

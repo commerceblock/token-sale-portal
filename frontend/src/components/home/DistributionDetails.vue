@@ -1,21 +1,22 @@
 <template>
   <div class="content">
     <div class="row">
-      <div class="input-group form-group">
+      <div class="form-group">
         <label class="pull-left title">Enter Ethereum return address</label>
+        <input class="form-control" type="text" v-model="etherumAddress" placeholder="Etherum address" />
         <div class="col-xs-12">
-          <input class="form-control" type="text" v-model="etherumAddress" placeholder="Etherum address" />
         </div>
       </div>
     </div>
     <div class="row">
-      <div class="input-group form-group">
+      <div class="form-group">
         <label class="pull-left title">Which wallet are you using?</label>
+        <select class="form-control">
+          <option value="" selected disabled>Please select wallet provider</option>
+          <option value="my_ether_wallet">My Ether Wallet</option>
+        </select>
         <div class="col-xs-12">
-          <select class="form-control">
-            <option value="" selected disabled>Please select wallet provider</option>
-            <option value="my_ether_wallet">My Ether Wallet</option>
-          </select>
+
         </div>
       </div>
     </div>
@@ -49,9 +50,10 @@ export default {
   line-height: 22px;
   text-align: center;
   padding: 50px;
+  padding-bottom: 100px;
 }
 
-.title {
+/*.title {
   padding-left: 20px;
-}
+}*/
 </style>

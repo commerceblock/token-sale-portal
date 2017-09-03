@@ -175,6 +175,11 @@ export default {
   text-align: center;
 }
 
+.modal-footer {
+  padding: 0 !important;
+  padding-top: 10px;
+  border: none;
+}
 /*
  * The following styles are auto-applied to elements with
  * transition="modal" when their visibility is toggled
@@ -201,6 +206,7 @@ export default {
 .loginForm .input-group {
   padding-bottom: 1em;
   height: 4em;
+  display: block !important;
 }
 
 .input-group input {

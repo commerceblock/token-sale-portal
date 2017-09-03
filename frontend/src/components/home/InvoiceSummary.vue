@@ -56,6 +56,7 @@ export default {
   line-height: 22px;
   text-align: center;
   padding: 20px 10px;
+  padding-bottom: 60px;
 }
 
 .timer {

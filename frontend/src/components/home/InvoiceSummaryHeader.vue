@@ -9,6 +9,7 @@
         <img class="icon-lock-green" src="/static/assets/icon-lock-green.svg" />
       </div>
     </div>
+
     <div class="row">
       <div class="col-xs-6 text-center">
         <div class="row">{{ cbtAmount }} CBT</div>
@@ -41,16 +42,25 @@ export default {
 </script>
 
 <style scoped>
+/*.header {
+  border-radius: 3px 3px 0 0;
+  background-color: #258C42;
+  color: #ffffff;
+  padding: 5px;
+}*/
 .header {
   border-radius: 3px 3px 0 0;
   background-color: #258C42;
   color: #ffffff;
   padding: 5px;
+  padding-bottom: 25px;
 }
 
 .top {
   display: flex;
   justify-content: space-between;
+  padding-left: 15px;
+  margin-bottom: 25px;
 }
 
 .commerce-block-green {
@@ -68,5 +78,10 @@ a:visited {
 .external-link {
   font-size: 12px;
   text-decoration: underline;
+}
+.commerce-block-white-bg {
+   height: 24px;
+  /* width: 32px; */
+  /* opacity: 0.25; */
 }
 </style>
