@@ -14,7 +14,7 @@ const ReturnAddress = new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLString),
       description: 'The ethereum return address, this address will be used to receive CBT tokens',
     },
-    ethereumWalletName: {
+    ethereumWalletProvider: {
       type: new GraphQLNonNull(GraphQLString),
       description: 'The ethereum wallet provider that is being used by user',
     }

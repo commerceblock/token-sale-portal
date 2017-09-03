@@ -1,4 +1,4 @@
 
-export function generatePaymentAddress(coin) {
+export function generatePaymentAddress(userId, coin) {
   // TODO
 }

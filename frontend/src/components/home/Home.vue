@@ -2,16 +2,16 @@
   <div class="wrapper">
     <next-steps-modal v-if="showNextSteps" @close="showNextSteps = false" />
     <form-wizard title="" subtitle="" class="invoice" color="#538C46" @on-complete="onComplete">
-      <tab-content title="Distribution Details" icon="fa fa-cloud-download">
+      <tab-content title="Distribution Details" icon="fa fa-cloud-download" :before-change="submitReturnAddress">
         <div class="invoice-box">
           <invoice-header :title="'Distribution Details'" />
-          <distribution-details />
+          <distribution-details ref="distributionDetails" />
         </div>
       </tab-content>
-      <tab-content title="Payment Details" icon="fa fa-file-text-o">
+      <tab-content title="Payment Details" icon="fa fa-file-text-o" :before-change="submitOrder">
         <div class="invoice-box">
           <invoice-header :title="'Payment Details'" />
-          <payment-details />
+          <payment-details ref="paymentDetails" />
         </div>
       </tab-content>
       <tab-content title="Invoice Summary" icon="fa fa-qrcode">
@@ -61,10 +61,58 @@ export default {
     }
   },
   computed: {
+    apolloClient: function() {
+      return this.$apollo.provider.defaultClient;
+    }
   },
   methods: {
     onComplete() {
       this.showNextSteps = true;
+    },
+    submitReturnAddress() {
+      const distributionDetails = this.$refs.distributionDetails;
+      return this.apolloClient
+        .mutate({
+          mutation: gql`mutation {
+                  createReturnAddress(returnAddress: {
+                    ethereumReturnAddress: "${distributionDetails.ethereumReturnAddress}"
+                    ethereumWalletProvider: "${distributionDetails.ethereumWalletProvider}"
+                  }) {
+                    ethereumReturnAddress
+                    ethereumWalletProvider
+                  }
+                }`})
+        .then(result => {
+          return Promise.resolve(true);
+        }).catch(err => {
+          // TODO: show error
+          console.log(err)
+          return Promise.reject(err);
+        });
+    },
+    submitOrder() {
+      const paymentDetails = this.$refs.paymentDetails;
+      return this.apolloClient
+        .mutate({
+          mutation: gql`mutation {
+                  createOrder(order: {
+                    usdAmount: "${paymentDetails.usdAmount}"
+                    coin: "${paymentDetails.coin}"
+                  }) {
+                    usdAmount
+                    coin
+                    paymentAddress
+                    status
+                    numnberOfConfirmations
+                  }
+                }`})
+        .then(result => {
+          return Promise.resolve(true);
+        }).catch(err => {
+          // TODO: show error
+          console.log(err)
+          return Promise.reject(err);
+        });
     }
   }
 }

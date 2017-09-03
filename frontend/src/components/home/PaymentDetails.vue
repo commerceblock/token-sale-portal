@@ -27,10 +27,16 @@
   </div>
   <div class="row">
     <div class="col-xs-6">
-      <label class="radio-inline radio-center"><input type="radio" name="currencyType"><img height="40" src="http://www.canbike.org/public/images/030114/Bitcoin_Logo_Horizontal_Dark-4800px.png" /></label>
+      <label class="radio-inline radio-center">
+        <input type="radio" name="currencyType" value="btc" v-model="coin">
+        <img height="40" src="http://www.canbike.org/public/images/030114/Bitcoin_Logo_Horizontal_Dark-4800px.png" />
+      </label>
     </div>
     <div class="col-xs-6">
-      <label class="radio-inline radio-center"><input type="radio" name="currencyType"><img height="40" src="http://bitcoinist.com/wp-content/uploads/2017/02/5-3.png" /></label>
+      <label class="radio-inline radio-center">
+        <input type="radio" name="currencyType" value="eth" v-model="coin">
+        <img height="40" src="http://bitcoinist.com/wp-content/uploads/2017/02/5-3.png" />
+      </label>
     </div>
   </div>
 </div>
@@ -44,7 +50,8 @@ export default {
   data() {
     return {
       cbtAmount: null,
-      usdAmount: null
+      usdAmount: null,
+      coin: null
     }
   },
   components: {},

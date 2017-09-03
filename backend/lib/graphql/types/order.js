@@ -12,9 +12,9 @@ const OrderType = new GraphQLObjectType({
   name: 'Order',
   description: 'An order object',
   fields: () => ({
-    amount: {
+    usdAmount: {
       type: new GraphQLNonNull(GraphQLString),
-      description: 'order amount',
+      description: 'order amount in USD',
     },
     coin: {
       type: new GraphQLNonNull(GraphQLString),
