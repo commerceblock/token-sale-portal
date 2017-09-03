@@ -1,43 +1,43 @@
 <template>
-  <div class="content">
-    <div class="row">
-      <div class="text-center cbt-title">
-        <h2 v-if="cbtAmount">{{ cbtAmount }} CBT</h2>
-        <h2 v-else>0.0 CBT</h2>
-      </div>
+<div class="content">
+  <div class="row">
+    <div class="text-center cbt-title">
+      <h2 v-if="cbtAmount">{{ cbtAmount }} CBT</h2>
+      <h2 v-else>0.0 CBT</h2>
     </div>
-    <div class="row">
-      <div class="text-center">
-        <strong>1 CommerceBlock Token = 10 USD</strong>
-      </div>
+  </div>
+  <div class="row">
+    <div class="text-center">
+      <strong>1 CommerceBlock Token = 10 USD</strong>
     </div>
-    <div class="row">
-      <div class="text-center">
-        <small>25% Preorder Bouns</small>
-      </div>
+  </div>
+  <div class="row">
+    <div class="text-center">
+      <small>25% Preorder Bouns</small>
     </div>
-    <div class="row">
-      <div class="input-group form-group">
-        <label class="pull-left title-usd-amount">Enter amount in USD</label>
-        <div class="col-xs-12">
-          <input class="form-control input-usd-amount" type="text" v-model="usdAmount" placeholder="Amount">
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="input-group form-group">
-        <label class="pull-left title-usd-amount">How you would like to pay?</label>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-3">
-        <label class="radio-inline"><input type="radio" name="currencyType">BTC</label>
-      </div>
-      <div class="col-xs-3">
-        <label class="radio-inline"><input type="radio" name="currencyType">ETH</label>
+  </div>
+  <div class="row">
+    <div class="input-group form-group">
+      <label class="pull-left title-usd-amount">Enter amount in USD</label>
+      <div class="col-xs-12">
+        <input class="form-control input-usd-amount" type="text" v-model="usdAmount" placeholder="Amount">
       </div>
     </div>
   </div>
+  <div class="row">
+    <div class="input-group form-group">
+      <label class="pull-left title-usd-amount">How you would like to pay?</label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-6">
+      <label class="radio-inline radio-center"><input type="radio" name="currencyType"><img height="40" src="http://www.canbike.org/public/images/030114/Bitcoin_Logo_Horizontal_Dark-4800px.png" /></label>
+    </div>
+    <div class="col-xs-6">
+      <label class="radio-inline radio-center"><input type="radio" name="currencyType"><img height="40" src="http://bitcoinist.com/wp-content/uploads/2017/02/5-3.png" /></label>
+    </div>
+  </div>
+</div>
 </template>
 
 
@@ -51,12 +51,9 @@ export default {
       usdAmount: null
     }
   },
-  components: {
-  },
-  computed: {
-  },
-  methods: {
-  }
+  components: {},
+  computed: {},
+  methods: {}
 }
 </script>
 
@@ -67,7 +64,7 @@ export default {
   font-size: 16px;
   line-height: 22px;
   text-align: center;
-  padding: 20px 10px;
+  padding: 20px 10px 75px 10px;
 }
 
 .cbt-title {
@@ -88,5 +85,11 @@ export default {
 .input-usd-amount {
   padding-left: 20px;
   margin-left: 35px;
+}
+
+.radio-center {
+  display: flex;
+  align-items: center;
+  padding-left: 55px;
 }
 </style>

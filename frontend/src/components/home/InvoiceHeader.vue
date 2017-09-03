@@ -28,6 +28,7 @@ export default {
   background-color: #258C42;
   color: #ffffff;
   padding: 5px;
+  padding-bottom: 25px;
 }
 
 .top {
@@ -55,7 +56,7 @@ export default {
 }
 
 .commerce-block-white-bg {
-  /* height: 24px; */
+   height: 24px;
   /* width: 32px; */
   /* opacity: 0.25; */
 }
