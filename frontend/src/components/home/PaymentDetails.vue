@@ -17,12 +17,8 @@
     </div>
   </div>
   <div class="row">
-    <div class="input-group form-group">
-      <label class="pull-left title-usd-amount">Enter amount in USD</label>
-      <div class="col-xs-12">
-        <input class="form-control input-usd-amount" type="text" v-model="usdAmount" placeholder="Amount">
-      </div>
-    </div>
+    <label class="pull-left title-usd-amount">Enter amount in USD</label>
+    <input class="form-control input-usd-amount" type="text" v-model="usdAmount" placeholder="Amount">
   </div>
   <div class="row">
     <div class="input-group form-group">
@@ -64,7 +60,8 @@ export default {
   font-size: 16px;
   line-height: 22px;
   text-align: center;
-  padding: 20px 10px 75px 10px;
+  padding: 50px;
+  padding-bottom: 100px;
 }
 
 .cbt-title {
@@ -73,18 +70,14 @@ export default {
 
 .title-usd-amount {
   margin-top: 25px;
-  padding-left: 20px;
-  margin-left: 30px;
 }
 
 .title-usd-input {
   padding-left: 20px;
-  margin-left: 30px;
 }
 
 .input-usd-amount {
   padding-left: 20px;
-  margin-left: 35px;
 }
 
 .radio-center {

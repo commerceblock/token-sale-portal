@@ -111,6 +111,10 @@ export default {
   text-align: justify;
 }
 
+.modal-footer {
+  /*padding: 15px 0;*/
+}
+
 .modal-default-button {
   float: right;
 }
