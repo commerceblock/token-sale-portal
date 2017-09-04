@@ -7,6 +7,7 @@ import { loadEvents, saveEvent } from '../../../../lib/events-store';
 import { createOrderedId } from '../../../../lib/uuid';
 import { event_type, order_status } from '../../../../model/consts';
 import { generatePaymentAddress } from '../../../../lib/wallet';
+import getTickers from './get-tickers'
 
 export default async (userId, orderInput) => {
   return loadEvents(userId)
@@ -18,7 +19,15 @@ export default async (userId, orderInput) => {
       }
     })
     .then(paymentAddress => {
-      if (paymentAddress) {
+      return getTickers(userId)
+        .then(tickers => ({
+          paymentAddress,
+          tickers
+        }));
+    })
+    .then(pair => {
+      if (pair.paymentAddress) {
+        const spotPrice = pair.tickers[orderInput.coin];
         const payload = {
           user_id: userId,
           event_id: createOrderedId(),
@@ -27,7 +36,8 @@ export default async (userId, orderInput) => {
           data: {
             usd_amount: orderInput.usdAmount,
             coin: orderInput.coin,
-            payment_address: paymentAddress,
+            payment_address: pair.paymentAddress,
+            spot_price: spotPrice,
           },
         };
         return saveEvent(payload);

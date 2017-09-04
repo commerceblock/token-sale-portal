@@ -3,17 +3,17 @@
     <div class="row">
       <div class="text-center cbt-title">
         <h2 v-if="cbtAmount">{{ cbtAmount }} CBT</h2>
-        <h2 v-else>0.0 CBT</h2>
+        <h2 v-else>0 CBT</h2>
       </div>
     </div>
     <div class="row">
       <div class="text-center">
-        <strong>1 CommerceBlock Token = 10 USD</strong>
+        <strong>1 CommerceBlock Token = {{ tokenUnitPriceInUSD }} USD</strong>
       </div>
     </div>
     <div class="row">
       <div class="text-center">
-        <small>25% Preorder Bouns</small>
+        <small>{{ bounsPrecentage }}% Preorder Bouns</small>
       </div>
     </div>
     <div class="row">
@@ -45,13 +45,13 @@
 
 <script>
 import { isEmpty } from 'lodash'
+import { computeTokenAmount } from '../../lib/util'
 
 export default {
   name: 'PaymentDetails',
-  props: ['usdAmount', 'coin'],
+  props: ['usdAmount', 'coin', 'tokenUnitPrice', 'bounsPrecentage'],
   data() {
     return {
-      cbtAmount: null,
       usdAmountInput: null,
       coinInput: null,
     };
@@ -63,6 +63,12 @@ export default {
     isCoinNotEmpty() {
       return !isEmpty(this.coin)
     },
+    cbtAmount () {
+      return this.usdAmountInput && this.tokenUnitPrice && computeTokenAmount(this.usdAmountInput, this.tokenUnitPrice);
+    },
+    tokenUnitPriceInUSD () {
+      return this.tokenUnitPrice && (this.tokenUnitPrice / 100).toFixed(3).replace(/\.?0*$/,'');
+    }
   },
   updated () {
     if (this.usdAmount) {

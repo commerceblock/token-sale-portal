@@ -5,25 +5,19 @@
       <tab-content title="Distribution Details" icon="fa fa-cloud-download" :before-change="submitReturnAddress">
         <div class="invoice-box">
           <invoice-header :title="'Distribution Details'" />
-          <distribution-details
-            :ethereumReturnAddress="ethereumReturnAddress"
-            :ethereumWalletProvider="ethereumWalletProvider"
-            ref="distributionDetails" />
+          <distribution-details :ethereumReturnAddress="ethereumReturnAddress" :ethereumWalletProvider="ethereumWalletProvider" ref="distributionDetails" />
         </div>
       </tab-content>
       <tab-content title="Payment Details" icon="fa fa-file-text-o" :before-change="submitOrder">
         <div class="invoice-box">
           <invoice-header :title="'Payment Details'" />
-          <payment-details
-            :usdAmount="usdAmount"
-            :coin="coin"
-            ref="paymentDetails" />
+          <payment-details :usdAmount="usdAmount" :coin="coin" :tokenUnitPrice="tokenUnitPrice" :bounsPrecentage="bounsPrecentage" ref="paymentDetails" />
         </div>
       </tab-content>
       <tab-content title="Invoice Summary" icon="fa fa-qrcode">
         <div class="invoice-box">
-          <invoice-summary-header />
-          <invoice-summary />
+          <invoice-summary-header :cbtTokenAmount="cbtTokenAmount" :numberOfConfirmations="numberOfConfirmations" :transactionLink="transactionLink" />
+          <invoice-summary :cryptoAmount="cryptoAmount" :coinSymbol="coinSymbol" :cryptoAddress="cryptoAddress" :usdAmount="usdAmount" />
         </div>
       </tab-content>
     </form-wizard>
@@ -48,6 +42,7 @@ import {
   FormWizard,
   TabContent
 } from 'vue-form-wizard'
+import { computeTokenAmount } from '../../lib/util'
 
 export default {
   name: 'Home',
@@ -61,26 +56,73 @@ export default {
     FormWizard,
     TabContent
   },
-  data () {
+  data() {
     return {
       showNextSteps: false
     }
   },
   computed: {
-    apolloClient () {
+    apolloClient() {
       return this.$apollo.provider.defaultClient;
     },
-    ethereumReturnAddress () {
+    ethereumReturnAddress() {
       return this.returnAddress && this.returnAddress.ethereumReturnAddress;
     },
-    ethereumWalletProvider () {
+    ethereumWalletProvider() {
       return this.returnAddress && this.returnAddress.ethereumWalletProvider;
     },
-    usdAmount () {
+    usdAmount() {
       return this.order && this.order.usdAmount;
     },
-    coin () {
+    coin() {
       return this.order && this.order.coin;
+    },
+    tokenUnitPrice() {
+      return this.tokenInformation && this.tokenInformation.unitPrice;
+    },
+    bounsPrecentage() {
+      return this.tokenInformation
+        && this.tokenInformation.bounsPrecentage
+        && this.tokenInformation.bounsPrecentage.toFixed(2).replace(/\.?0*$/, '');
+    },
+    cbtTokenAmount() {
+      if (this.order
+        && this.order.usdAmount
+        && this.tokenInformation
+        && this.tokenInformation.unitPrice) {
+        return computeTokenAmount(this.order.usdAmount, this.tokenInformation.unitPrice);
+      }
+    },
+    numberOfConfirmations() {
+      return (this.order && this.order.numnberOfConfirmations) || 0;
+    },
+    transactionLink() {
+      return this.order && this.order.transactionLink;
+    },
+    cryptoAmount() {
+      if (this.order
+        && this.order.usdAmount
+        && this.order.spotPrice) {
+        return computeTokenAmount(this.order.usdAmount, this.order.spotPrice);
+      }
+    },
+    coinSymbol() {
+      if (this.order
+        && this.order.coin) {
+        return this.order.coin.toUpperCase();
+      }
+    },
+    cryptoAddress() {
+      if (this.order
+        && this.order.paymentAddress) {
+        return this.order.paymentAddress;
+      }
+    },
+    usdAmount() {
+      if (this.order
+        && this.order.usdAmount) {
+        return this.order.usdAmount;
+      }
     }
   },
   methods: {
@@ -143,7 +185,7 @@ export default {
   },
   apollo: {
     returnAddress: {
-      query: function () {
+      query: function() {
         return gql`query {
             returnAddress {
               ethereumReturnAddress
@@ -156,14 +198,30 @@ export default {
       },
     },
     order: {
-      query: function () {
+      query: function() {
         return gql`query {
             order {
               usdAmount
               coin
+              spotPrice
               paymentAddress
               status
               numnberOfConfirmations
+              transactionLink
+            }
+          }`;
+      },
+      skip() {
+        return false;
+      },
+      pollInterval: 5000,
+    },
+    tokenInformation: {
+      query: function() {
+        return gql`query {
+            tokenInformation {
+              unitPrice
+              bounsPrecentage
             }
           }`;
       },
@@ -171,6 +229,19 @@ export default {
         return false;
       },
     },
+    tickers: {
+      query: function() {
+        return gql`query {
+            tickers {
+              btc
+              eth
+            }
+          }`;
+      },
+      skip() {
+        return false;
+      },
+    }
   },
 }
 </script>

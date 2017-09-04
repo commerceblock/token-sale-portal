@@ -5,7 +5,6 @@ import {
   GraphQLString,
   GraphQLInt,
   GraphQLNonNull,
-  GraphQLID,
 } from 'graphql';
 
 const OrderType = new GraphQLObjectType({
@@ -20,6 +19,10 @@ const OrderType = new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLString),
       description: 'order coin (btc or eth)',
     },
+    spotPrice: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: 'order coin (btc or eth) spot price',
+    },
     paymentAddress: {
       type: new GraphQLNonNull(GraphQLString),
       description: 'order payment address',
@@ -32,6 +35,10 @@ const OrderType = new GraphQLObjectType({
       type: GraphQLInt,
       description: 'number of confirmations',
     },
+    transactionLink: {
+      type: GraphQLString,
+      description: 'transaction reference link on public blockchain',
+    }
   }),
 });
 
