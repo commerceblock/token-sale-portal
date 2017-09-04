@@ -48,6 +48,7 @@
 
 <script>
 import 'whatwg-fetch';
+import gql from 'graphql-tag';
 import httpStatus from 'http-status-codes';
 import { isEmpty } from 'lodash';
 import Modal from './TermsConfirmationModal.vue'
@@ -82,18 +83,59 @@ export default {
         this.errorResponse = null;
         const that = this;
         this.doLogin()
-          .then(response => that.parseResult(response))
-          .catch(error => that.handleError(error))
-          .then(data => {
-            const accessToken = data && data.access_token_id;
-            if (accessToken) {
-              setAccessToken(accessToken, access_token_ttl);
-              this.showModal = true;
-            }
-          });
+          .then(this.parseResult)
+          .catch(this.handleServerError)
+          .then(this.handleLoginResult)
+          .then(this.fetchLastStage)
+          .then(this.redirectToLastStage)
+          .catch(this.handleGenericError)
       }
     },
-    handleError (error) {
+    redirectToLastStage (result) {
+      if (result && result.data && result.data.lastStage) {
+        const name = result.data.lastStage.name;
+        if (name === 'initial') {
+          this.showModal = true;
+        } else if (name === 'terms_acknowledged') {
+          this.$router.push('/');
+        } else if (name === 'return_address_created') {
+          // TODO: update path
+          this.$router.push('/');
+        } else if (name === 'order_created') {
+          // TODO: update path
+          this.$router.push('/');
+        } else {
+          // not suppose to happen.
+          this.showModal = true;
+        }
+      } else {
+        this.errorResponse = "Unexpected error occured, please try again.";
+      }
+    },
+    fetchLastStage (data) {
+      if (data) {
+        return this.apolloClient.query({
+          query: gql`query {
+            lastStage {
+              name
+            }
+          }`});
+      }
+    },
+    handleLoginResult (data) {
+      if (data && data.access_token_id) {
+        const accessToken = data && data.access_token_id;
+        setAccessToken(accessToken, access_token_ttl);
+        return data;
+      } else {
+        this.errorResponse = "Unexpected error occured, please try again.";
+      }
+    },
+    handleGenericError (error) {
+      console.log(error);
+      this.errorResponse = "Unexpected error occured, please try again.";
+    },
+    handleServerError (error) {
       console.log(error);
       this.errorResponse = "Failed to connect to server, please try again.";
     },
@@ -127,6 +169,9 @@ export default {
     },
     isFormNotValid () {
       return !this.isValid || !this.checked
+    },
+    apolloClient: function() {
+      return this.$apollo.provider.defaultClient;
     }
   },
 }

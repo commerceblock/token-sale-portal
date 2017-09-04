@@ -21,7 +21,7 @@ export function post (event, context, callback) {
   log.info({ request_id, event }, 'start');
   // authz token
   const headers = event.headers || {};
-  const authorizationToken = headers.Authorization || '';
+  const authorizationToken = headers.Authorization || headers.authorization || '';
   const token = authorizationToken.split(' ');
   if (token.length !== 2 ||
       token[0] !== 'Bearer' ||

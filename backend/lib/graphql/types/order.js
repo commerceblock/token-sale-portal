@@ -5,32 +5,23 @@ import {
   GraphQLString,
   GraphQLInt,
   GraphQLNonNull,
-  GraphQLID,
 } from 'graphql';
 
 const OrderType = new GraphQLObjectType({
   name: 'Order',
   description: 'An order object',
   fields: () => ({
-    orderId: {
-      type: new GraphQLNonNull(GraphQLID),
-      description: 'The unique identifier of the trader',
-    },
-    ethereumReturnAddress: {
+    usdAmount: {
       type: new GraphQLNonNull(GraphQLString),
-      description: 'The ethereum return address, this address will be used to receive CBT tokens',
-    },
-    ethereumWalletName: {
-      type: new GraphQLNonNull(GraphQLString),
-      description: 'The ethereum wallet being used by user',
-    },
-    amount: {
-      type: new GraphQLNonNull(GraphQLString),
-      description: 'order amount',
+      description: 'order amount in USD',
     },
     coin: {
       type: new GraphQLNonNull(GraphQLString),
       description: 'order coin (btc or eth)',
+    },
+    spotPrice: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: 'order coin (btc or eth) spot price',
     },
     paymentAddress: {
       type: new GraphQLNonNull(GraphQLString),
@@ -42,8 +33,12 @@ const OrderType = new GraphQLObjectType({
     },
     numnberOfConfirmations: {
       type: GraphQLInt,
-      description: 'order coin (btc or eth)',
+      description: 'number of confirmations',
     },
+    transactionLink: {
+      type: GraphQLString,
+      description: 'transaction reference link on public blockchain',
+    }
   }),
 });
 

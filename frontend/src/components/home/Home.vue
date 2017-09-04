@@ -2,22 +2,22 @@
   <div class="wrapper">
     <next-steps-modal v-if="showNextSteps" @close="showNextSteps = false" />
     <form-wizard title="" subtitle="" class="invoice" color="#538C46" @on-complete="onComplete">
-      <tab-content title="Distribution Details" icon="fa fa-cloud-download">
+      <tab-content title="Distribution Details" icon="fa fa-cloud-download" :before-change="submitReturnAddress">
         <div class="invoice-box">
           <invoice-header :title="'Distribution Details'" />
-          <distribution-details />
+          <distribution-details :ethereumReturnAddress="ethereumReturnAddress" :ethereumWalletProvider="ethereumWalletProvider" ref="distributionDetails" />
         </div>
       </tab-content>
-      <tab-content title="Payment Details" icon="fa fa-file-text-o">
+      <tab-content title="Payment Details" icon="fa fa-file-text-o" :before-change="submitOrder">
         <div class="invoice-box">
           <invoice-header :title="'Payment Details'" />
-          <payment-details />
+          <payment-details :usdAmount="usdAmount" :coin="coin" :tokenUnitPrice="tokenUnitPrice" :bounsPrecentage="bounsPrecentage" ref="paymentDetails" />
         </div>
       </tab-content>
       <tab-content title="Invoice Summary" icon="fa fa-qrcode">
         <div class="invoice-box">
-          <invoice-summary-header />
-          <invoice-summary />
+          <invoice-summary-header :cbtTokenAmount="cbtTokenAmount" :numberOfConfirmations="numberOfConfirmations" :transactionLink="transactionLink" />
+          <invoice-summary :cryptoAmount="cryptoAmount" :coinSymbol="coinSymbol" :cryptoAddress="cryptoAddress" :usdAmount="usdAmount" />
         </div>
       </tab-content>
     </form-wizard>
@@ -42,6 +42,7 @@ import {
   FormWizard,
   TabContent
 } from 'vue-form-wizard'
+import { computeTokenAmount } from '../../lib/util'
 
 export default {
   name: 'Home',
@@ -61,12 +62,187 @@ export default {
     }
   },
   computed: {
+    apolloClient() {
+      return this.$apollo.provider.defaultClient;
+    },
+    ethereumReturnAddress() {
+      return this.returnAddress && this.returnAddress.ethereumReturnAddress;
+    },
+    ethereumWalletProvider() {
+      return this.returnAddress && this.returnAddress.ethereumWalletProvider;
+    },
+    usdAmount() {
+      return this.order && this.order.usdAmount;
+    },
+    coin() {
+      return this.order && this.order.coin;
+    },
+    tokenUnitPrice() {
+      return this.tokenInformation && this.tokenInformation.unitPrice;
+    },
+    bounsPrecentage() {
+      return this.tokenInformation
+        && this.tokenInformation.bounsPrecentage
+        && this.tokenInformation.bounsPrecentage.toFixed(2).replace(/\.?0*$/, '');
+    },
+    cbtTokenAmount() {
+      if (this.order
+        && this.order.usdAmount
+        && this.tokenInformation
+        && this.tokenInformation.unitPrice) {
+        return computeTokenAmount(this.order.usdAmount, this.tokenInformation.unitPrice);
+      }
+    },
+    numberOfConfirmations() {
+      return (this.order && this.order.numnberOfConfirmations) || 0;
+    },
+    transactionLink() {
+      return this.order && this.order.transactionLink;
+    },
+    cryptoAmount() {
+      if (this.order
+        && this.order.usdAmount
+        && this.order.spotPrice) {
+        return computeTokenAmount(this.order.usdAmount, this.order.spotPrice);
+      }
+    },
+    coinSymbol() {
+      if (this.order
+        && this.order.coin) {
+        return this.order.coin.toUpperCase();
+      }
+    },
+    cryptoAddress() {
+      if (this.order
+        && this.order.paymentAddress) {
+        return this.order.paymentAddress;
+      }
+    },
+    usdAmount() {
+      if (this.order
+        && this.order.usdAmount) {
+        return this.order.usdAmount;
+      }
+    }
   },
   methods: {
     onComplete() {
       this.showNextSteps = true;
+    },
+    submitReturnAddress() {
+      if (this.ethereumReturnAddress) {
+        // already submitted
+        return true;
+      }
+      const distributionDetails = this.$refs.distributionDetails;
+      return this.apolloClient
+        .mutate({
+          mutation: gql`mutation {
+                  createReturnAddress(returnAddress: {
+                    ethereumReturnAddress: "${distributionDetails.ethereumReturnAddressInput}"
+                    ethereumWalletProvider: "${distributionDetails.ethereumWalletProviderInput}"
+                  }) {
+                    ethereumReturnAddress
+                    ethereumWalletProvider
+                  }
+                }`})
+        .then(result => {
+          return Promise.resolve(true);
+        }).catch(err => {
+          // TODO: show error
+          console.log(err)
+          return Promise.reject(err);
+        });
+    },
+    submitOrder() {
+      if (this.usdAmount) {
+        // already submitted
+        return true;
+      }
+      const paymentDetails = this.$refs.paymentDetails;
+      return this.apolloClient
+        .mutate({
+          mutation: gql`mutation {
+                  createOrder(order: {
+                    usdAmount: "${paymentDetails.usdAmountInput}"
+                    coin: "${paymentDetails.coinInput}"
+                  }) {
+                    usdAmount
+                    coin
+                    paymentAddress
+                    status
+                    numnberOfConfirmations
+                  }
+                }`})
+        .then(result => {
+          return Promise.resolve(true);
+        }).catch(err => {
+          // TODO: show error
+          console.log(err)
+          return Promise.reject(err);
+        });
     }
-  }
+  },
+  apollo: {
+    returnAddress: {
+      query: function() {
+        return gql`query {
+            returnAddress {
+              ethereumReturnAddress
+              ethereumWalletProvider
+            }
+          }`;
+      },
+      skip() {
+        return false;
+      },
+    },
+    order: {
+      query: function() {
+        return gql`query {
+            order {
+              usdAmount
+              coin
+              spotPrice
+              paymentAddress
+              status
+              numnberOfConfirmations
+              transactionLink
+            }
+          }`;
+      },
+      skip() {
+        return false;
+      },
+      pollInterval: 5000,
+    },
+    tokenInformation: {
+      query: function() {
+        return gql`query {
+            tokenInformation {
+              unitPrice
+              bounsPrecentage
+            }
+          }`;
+      },
+      skip() {
+        return false;
+      },
+    },
+    tickers: {
+      query: function() {
+        return gql`query {
+            tickers {
+              btc
+              eth
+            }
+          }`;
+      },
+      skip() {
+        return false;
+      },
+    }
+  },
 }
 </script>
 

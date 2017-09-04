@@ -22,16 +22,15 @@ export default async (userId) => {
         const order_confirmed = find(events, { type: event_type.order_confirmed });
         const number_of_confirmations = size(filter(events, { type: event_type.order_payment_confirmed }));
         const status = resolveStatus(order_payment_broadcasted, order_confirmed, number_of_confirmations);
+        // TODO: add transactionLink
         return {
-          orderId: order_created.data.order_id,
-          ethereumReturnAddress: order_created.data.ethereum_return_address,
-          ethereumWalletName: order_created.data.ethereum_wallet_name,
-          amount: order_created.data.amount,
+          usdAmount: order_created.data.usd_amount,
           coin: order_created.data.coin,
+          spotPrice: order_created.data.spot_price,
           paymentAddress: order_created.data.payment_address,
           status,
           numnberOfConfirmations: number_of_confirmations
-        }
+        };
       }
       return null;
     });

@@ -12,15 +12,15 @@
 
     <div class="row">
       <div class="col-xs-6 text-center">
-        <div class="row">{{ cbtAmount }} CBT</div>
+        <div class="row">{{ cbtTokenAmount }} CBT</div>
         <div class="row">Tokens Purchased</div>
       </div>
       <div class="col-xs-6 text-center">
         <div class="row">{{ numberOfConfirmations }} of 3</div>
         <div class="row">No. of Confirmations</div>
       </div>
-      <div class="col-xs-6 col-xs-offset-6 text-center external-link">
-        <a href="#">View on Blockchain</a>
+      <div class="col-xs-6 col-xs-offset-6 text-center external-link" v-if="transactionLink">
+        <a :href="transactionLink">View on Blockchain</a>
       </div>
     </div>
   </div>
@@ -29,25 +29,15 @@
 <script>
 export default {
   name: 'InvoiceSummaryHeader',
-  props: [],
-  data() {
-    return {
-      cbtAmount: null,
-      numberOfConfirmations: null
-    }
-  },
-  computed: {
-  },
+  props: [
+    'cbtTokenAmount',
+    'numberOfConfirmations',
+    'transactionLink'
+  ],
 }
 </script>
 
 <style scoped>
-/*.header {
-  border-radius: 3px 3px 0 0;
-  background-color: #258C42;
-  color: #ffffff;
-  padding: 5px;
-}*/
 .header {
   border-radius: 3px 3px 0 0;
   background-color: #258C42;
@@ -81,7 +71,5 @@ a:visited {
 }
 .commerce-block-white-bg {
    height: 24px;
-  /* width: 32px; */
-  /* opacity: 0.25; */
 }
 </style>

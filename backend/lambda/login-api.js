@@ -1,9 +1,11 @@
 // imports
 import httpStatus from 'http-status-codes';
+import { find } from 'lodash';
 
 // local imports
 import {
-  columns
+  columns,
+  event_type
 } from '../model/consts'
 import { toResponse } from '../lib/http-util';
 import { createOrderedId, createId } from '../lib/uuid';
@@ -16,7 +18,7 @@ import { createLogger } from 'bunyan';
 
 const log = createLogger({ name: 'login-api' });
 
-export function post (event, context, callback) {
+export function post(event, context, callback) {
   const request_id = createOrderedId();
   log.info({ request_id, event }, 'start');
   const request = JSON.parse(event.body) || {},
@@ -43,7 +45,6 @@ export function post (event, context, callback) {
     })
     .then(accessToken => {
       if (accessToken) {
-        // TODO:: complete
         const body = { access_token_id: accessToken.access_token_id };
         const response = toResponse(httpStatus.CREATED, body);
         log.info({ request_id, http_response: response }, 'success - end');
