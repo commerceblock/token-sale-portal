@@ -88,13 +88,17 @@ export default {
       this.showNextSteps = true;
     },
     submitReturnAddress() {
+      if (this.ethereumReturnAddress) {
+        // already submitted
+        return true;
+      }
       const distributionDetails = this.$refs.distributionDetails;
       return this.apolloClient
         .mutate({
           mutation: gql`mutation {
                   createReturnAddress(returnAddress: {
-                    ethereumReturnAddress: "${distributionDetails.ethereumReturnAddress}"
-                    ethereumWalletProvider: "${distributionDetails.ethereumWalletProvider}"
+                    ethereumReturnAddress: "${distributionDetails.ethereumReturnAddressInput}"
+                    ethereumWalletProvider: "${distributionDetails.ethereumWalletProviderInput}"
                   }) {
                     ethereumReturnAddress
                     ethereumWalletProvider
@@ -109,13 +113,17 @@ export default {
         });
     },
     submitOrder() {
+      if (this.usdAmount) {
+        // already submitted
+        return true;
+      }
       const paymentDetails = this.$refs.paymentDetails;
       return this.apolloClient
         .mutate({
           mutation: gql`mutation {
                   createOrder(order: {
-                    usdAmount: "${paymentDetails.usdAmount}"
-                    coin: "${paymentDetails.coin}"
+                    usdAmount: "${paymentDetails.usdAmountInput}"
+                    coin: "${paymentDetails.coinInput}"
                   }) {
                     usdAmount
                     coin
