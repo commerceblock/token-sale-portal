@@ -91,9 +91,9 @@ export default {
           .catch(this.handleGenericError)
       }
     },
-    redirectToLastStage (data) {
-      if (data.lastStage) {
-        const name = data.lastStage.name;
+    redirectToLastStage (result) {
+      if (result && result.data && result.data.lastStage) {
+        const name = result.data.lastStage.name;
         if (name === 'initial') {
           this.showModal = true;
         } else if (name === 'terms_acknowledged') {
