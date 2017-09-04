@@ -65,8 +65,12 @@ export default {
     },
   },
   updated () {
-    this.usdAmountInput = this.usdAmount;
-    this.coinInput = this.coin;
+    if (this.usdAmount) {
+      this.usdAmountInput = this.usdAmount;
+    }
+    if (this.coin) {
+      this.coinInput = this.coin;
+    }
   },
 }
 </script>

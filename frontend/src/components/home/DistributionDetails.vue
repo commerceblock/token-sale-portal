@@ -45,8 +45,12 @@ export default {
     },
   },
   updated () {
-    this.ethereumReturnAddressInput = this.ethereumReturnAddress;
-    this.ethereumWalletProviderInput = this.ethereumWalletProvider;
+    if (this.ethereumReturnAddress) {
+      this.ethereumReturnAddressInput = this.ethereumReturnAddress;
+    }
+    if (this.ethereumWalletProvider) {
+      this.ethereumWalletProviderInput = this.ethereumWalletProvider;
+    }
   },
 }
 </script>
