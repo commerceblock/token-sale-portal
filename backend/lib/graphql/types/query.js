@@ -3,6 +3,7 @@ import {
 } from 'graphql';
 import OrderType from '../types/order';
 import ReturnAddressType from '../types/return-address'
+import StageType from '../types/stage'
 import db from '../database';
 
 /**
@@ -19,6 +20,10 @@ const QueryType = new GraphQLObjectType({
     returnAddress: {
       type: ReturnAddressType,
       resolve: (parent, {}, context) => db.getReturnAddress(context.userId),
+    },
+    lastStage: {
+      type: StageType,
+      resolve: (parent, {}, context) => db.getLastStage(context.userId),
     }
   }),
 });

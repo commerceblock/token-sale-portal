@@ -12,7 +12,6 @@ import { createOrderedId, createId } from '../lib/uuid';
 import { isNotValid } from '../lib/item-util';
 import { loadCode } from '../lib/invite-codes-store';
 import { saveToken } from '../lib/access-tokens-store';
-import { loadEvents } from '../lib/events-store';
 
 // logging
 import { createLogger } from 'bunyan';
@@ -45,25 +44,8 @@ export function post(event, context, callback) {
       }
     })
     .then(accessToken => {
-      return loadEvents(accessToken.user_id)
-        .then(events => {
-          const terms_acknowledged = find(events, { type: event_type.terms_acknowledged });
-          return {
-            accessToken,
-            acknowledged: !!terms_acknowledged
-          }
-        })
-        .catch(err => {
-          log.error({ request_id, err }, 'Failed to load user');
-          return {
-            accessToken,
-            acknowledged: false
-          }
-        })
-    })
-    .then(item => {
-      if (item.accessToken) {
-        const body = { access_token_id: item.accessToken.access_token_id, acknowledged: item.acknowledged };
+      if (accessToken) {
+        const body = { access_token_id: accessToken.access_token_id };
         const response = toResponse(httpStatus.CREATED, body);
         log.info({ request_id, http_response: response }, 'success - end');
         return callback(null, response);

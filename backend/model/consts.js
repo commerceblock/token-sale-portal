@@ -49,3 +49,10 @@ export const order_status = {
   confirmed: 'confirmed',
   fulfilled: 'fulfilled'
 };
+
+export const stage_type = {
+  initial: 'initial',
+  terms_acknowledged: 'terms_acknowledged',
+  return_address_created: 'return_address_created',
+  order_created: 'order_created'
+}
