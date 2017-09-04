@@ -27,13 +27,7 @@
 <script>
 export default {
   name: 'DistributionDetails',
-  props: [],
-  data() {
-    return {
-      ethereumReturnAddress: null,
-      ethereumWalletProvider: null
-    }
-  },
+  props: ['ethereumReturnAddress', 'ethereumWalletProvider'],
 }
 </script>
 

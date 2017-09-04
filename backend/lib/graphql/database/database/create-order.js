@@ -1,31 +1,49 @@
 
+// imports
+import { find } from 'lodash'
+
 // local imports
-import { saveEvent } from '../../../../lib/events-store';
+import { loadEvents, saveEvent } from '../../../../lib/events-store';
 import { createOrderedId } from '../../../../lib/uuid';
 import { event_type, order_status } from '../../../../model/consts';
 import { generatePaymentAddress } from '../../../../lib/wallet';
 
 export default async (userId, orderInput) => {
-  return generatePaymentAddress(userId, orderInput.coin)
-    .then(paymentAddress => {
-      const payload = {
-        user_id: userId,
-        event_id: createOrderedId(),
-        type: event_type.order_created,
-        timestamp: new Date().toISOString(),
-        data: {
-          usd_amount: orderInput.usdAmount,
-          coin: orderInput.coin,
-          payment_address: paymentAddress,
-        },
-      };
-      return saveEvent(payload);
+  return loadEvents(userId)
+    .then(events => {
+      const account_created = find(events, { type: event_type.account_created });
+      if (account_created) {
+        const accountIndex = account_created.data.account_index;
+        return generatePaymentAddress(orderInput.coin, accountIndex)
+      }
     })
-    .then(payload => ({
-      usdAmount: payload.data.usd_amount,
-      coin: payload.data.coin,
-      paymentAddress: payload.data.payment_address,
-      status: order_status.initial,
-      numnberOfConfirmations: 0
-    }));
+    .then(paymentAddress => {
+      if (paymentAddress) {
+        const payload = {
+          user_id: userId,
+          event_id: createOrderedId(),
+          type: event_type.order_created,
+          timestamp: new Date().toISOString(),
+          data: {
+            usd_amount: orderInput.usdAmount,
+            coin: orderInput.coin,
+            payment_address: paymentAddress,
+          },
+        };
+        return saveEvent(payload);
+      }
+    })
+    .then(payload => {
+      if (payload) {
+        return {
+          usdAmount: payload.data.usd_amount,
+          coin: payload.data.coin,
+          paymentAddress: payload.data.payment_address,
+          status: order_status.initial,
+          numnberOfConfirmations: 0
+        }
+      } else {
+        return null;
+      }
+    });
 };

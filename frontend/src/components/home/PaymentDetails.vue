@@ -46,12 +46,10 @@
 <script>
 export default {
   name: 'PaymentDetails',
-  props: [],
+  props: ['usdAmount', 'coin'],
   data() {
     return {
       cbtAmount: null,
-      usdAmount: null,
-      coin: null
     }
   },
   components: {},

@@ -5,13 +5,19 @@
       <tab-content title="Distribution Details" icon="fa fa-cloud-download" :before-change="submitReturnAddress">
         <div class="invoice-box">
           <invoice-header :title="'Distribution Details'" />
-          <distribution-details ref="distributionDetails" />
+          <distribution-details
+            :ethereumReturnAddress="ethereumReturnAddress"
+            :ethereumWalletProvider="ethereumWalletProvider"
+            ref="distributionDetails" />
         </div>
       </tab-content>
       <tab-content title="Payment Details" icon="fa fa-file-text-o" :before-change="submitOrder">
         <div class="invoice-box">
           <invoice-header :title="'Payment Details'" />
-          <payment-details ref="paymentDetails" />
+          <payment-details
+            :usdAmount="usdAmount"
+            :coin="coin"
+            ref="paymentDetails" />
         </div>
       </tab-content>
       <tab-content title="Invoice Summary" icon="fa fa-qrcode">
@@ -55,14 +61,26 @@ export default {
     FormWizard,
     TabContent
   },
-  data() {
+  data () {
     return {
       showNextSteps: false
     }
   },
   computed: {
-    apolloClient: function() {
+    apolloClient () {
       return this.$apollo.provider.defaultClient;
+    },
+    ethereumReturnAddress () {
+      return this.returnAddress && this.returnAddress.ethereumReturnAddress;
+    },
+    ethereumWalletProvider () {
+      return this.returnAddress && this.returnAddress.ethereumWalletProvider;
+    },
+    usdAmount () {
+      return this.order && this.order.usdAmount;
+    },
+    coin () {
+      return this.order && this.order.coin;
     }
   },
   methods: {
@@ -114,7 +132,38 @@ export default {
           return Promise.reject(err);
         });
     }
-  }
+  },
+  apollo: {
+    returnAddress: {
+      query: function () {
+        return gql`query {
+            returnAddress {
+              ethereumReturnAddress
+              ethereumWalletProvider
+            }
+          }`;
+      },
+      skip() {
+        return false;
+      },
+    },
+    order: {
+      query: function () {
+        return gql`query {
+            order {
+              usdAmount
+              coin
+              paymentAddress
+              status
+              numnberOfConfirmations
+            }
+          }`;
+      },
+      skip() {
+        return false;
+      },
+    },
+  },
 }
 </script>
 
