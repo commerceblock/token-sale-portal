@@ -91,6 +91,7 @@ functions:
 
   orders-backoffice-worker:
     handler: lambda/orders-backoffice-worker.process
+    timeout: 30
     events:
       - schedule: rate(1 minute)
 

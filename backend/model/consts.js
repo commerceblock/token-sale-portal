@@ -1,5 +1,7 @@
 // env variables
 export const env_name = process.env.CB_ENV_NAME;
+export const account_number = '12345'
+export const account_region = 'eu-west-2'
 
 // generic consts
 export const utf_8_encoding = 'utf-8';
@@ -35,8 +37,8 @@ export const event_type = {
   account_created: 'account_created',
   invite_code_generated: 'invite_code_generated',
   order_created: 'order_created',
-  order_payment_broadcasted: 'order_payment_broadcasted',
-  order_payment_confirmed: 'order_payment_confirmed',
+  order_transaction_broadcasted: 'order_transaction_broadcasted',
+  order_transaction_confirmed: 'order_transaction_confirmed',
   order_confirmed: 'order_confirmed',
   terms_acknowledged: 'terms_acknowledged',
   return_address_created: 'return_address_created'

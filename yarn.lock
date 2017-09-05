@@ -294,7 +294,7 @@ async@^1.4.0:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/async/-/async-1.5.2.tgz#ec6a61ae56480c0c3cb241c95618e20892f9672a"
 
-async@^2.1.2, async@^2.1.4, async@^2.1.5, async@^2.4.1:
+async@^2.0.1, async@^2.1.2, async@^2.1.4, async@^2.1.5, async@^2.4.1:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/async/-/async-2.5.0.tgz#843190fd6b7357a0b9e1c956edddd5ec8462b54d"
   dependencies:
@@ -325,6 +325,21 @@ autoprefixer@^7.1.2:
     num2fraction "^1.2.2"
     postcss "^6.0.6"
     postcss-value-parser "^3.2.3"
+
+aws-sdk@^2.100.0:
+  version "2.108.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.108.0.tgz#8b6f6ed8692bfc6cac1782d0424f9867d1baa5bd"
+  dependencies:
+    buffer "4.9.1"
+    crypto-browserify "1.0.9"
+    events "^1.1.1"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.0.1"
+    xml2js "0.4.17"
+    xmlbuilder "4.2.1"
 
 aws-sdk@^2.7.0, aws-sdk@^2.72.0, aws-sdk@^2.80.0, aws-sdk@^2.85.0, aws-sdk@^2.98.0:
   version "2.102.0"
@@ -1891,10 +1906,6 @@ crypto@^0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/crypto/-/crypto-0.0.3.tgz#470a81b86be4c5ee17acc8207a1f5315ae20dbb0"
 
-crypto@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/crypto/-/crypto-1.0.1.tgz#2af1b7cad8175d24c8a1b0778255794a21803037"
-
 css-color-names@0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/css-color-names/-/css-color-names-0.0.4.tgz#808adc2e79cf84738069b646cb20ec27beb629e0"
@@ -2067,7 +2078,7 @@ debug@2.6.7:
   dependencies:
     ms "2.0.0"
 
-debug@2.6.8, debug@^2.2.0, debug@^2.6.3, debug@^2.6.8:
+debug@2.6.8, debug@^2.1.0, debug@^2.2.0, debug@^2.6.3, debug@^2.6.8:
   version "2.6.8"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
   dependencies:
@@ -6606,6 +6617,14 @@ split@0.3:
 sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
+
+sqs-consumer@^3.7.0:
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/sqs-consumer/-/sqs-consumer-3.7.0.tgz#7e57c2e230df8f3b2982b0406c2c5b6062dd6581"
+  dependencies:
+    async "^2.0.1"
+    aws-sdk "^2.100.0"
+    debug "^2.1.0"
 
 sshpk@^1.7.0:
   version "1.13.1"
