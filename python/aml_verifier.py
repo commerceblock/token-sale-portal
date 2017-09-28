@@ -45,7 +45,7 @@ def verify_address(address):
         event_type = "rejected"
     # data = "test"
     # event_type = "rejected"
-    # aml_table = Aml()
+    aml_table = Aml()
     aml_table.insert_to_aml(address,event_type,data)
     print "done verifieng address : ",address
 
