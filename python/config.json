@@ -1,0 +1,19 @@
+{
+  "mysql":{
+    "host":"mydb.c3oafxous4yw.us-east-2.rds.amazonaws.com",
+    "user":"mohamads",
+    "passwd":"mohamads",
+    "db":"db",
+    "port":"3306",
+    "connection_timeout":30
+  },
+  "verify":{
+    "host":"private-anon-e6cf95b312-aml.apiary-mock.com",
+    "path":"/v2/reports/aml/basic/"
+  },
+  "dynamodb":{
+    "host" : "localhost",
+    "port" : 8000,
+    "table_name" : "cb-token-sale-prod001-events"
+  }
+}
