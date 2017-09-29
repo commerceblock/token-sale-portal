@@ -1,8 +1,10 @@
-from aml_table import Aml
+import concurrent.futures
+from concurrent.futures import ThreadPoolExecutor
+
 import aml_syncer
 import aml_verifier
-from concurrent.futures import ThreadPoolExecutor
-import concurrent.futures
+from python.db.aml_table import Aml
+
 
 class address_class(object):
     address = None
@@ -73,12 +75,12 @@ def proccess_result(sync_tasks,verify_tasks):
 
 def sync_address(address_obj):
   print "syncing address : " , str(address_obj.address)
-  future  = executor.submit(aml_syncer.sync_address,address_obj)
+  future  = executor.submit(aml_syncer.sync_address, address_obj)
   return future
 
 def verify_address(address):
   print "verifiying address : ", str(address)
-  future = executor.submit(aml_verifier.verify_address,address)
+  future = executor.submit(aml_verifier.verify_address, address)
   return future
 
 if __name__ == '__main__':

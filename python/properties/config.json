@@ -1,0 +1,24 @@
+{
+  "mysql":{
+    "host":"mydb.c3oafxous4yw.us-east-2.rds.amazonaws.com",
+    "user":"mohamads",
+    "passwd":"mohamads",
+    "db":"db",
+    "port":"3306",
+    "connection_timeout":30
+  },
+  "verify":{
+    "test_host":"private-anon-e6cf95b312-aml.apiary-mock.com",
+    "prod_host":"api.coinfirm.io",
+    "verify_path":"/v2/reports/aml/basic/",
+    "token" : "R1vEpE2SUP6hoSemzk8WJCTVihj3U5ESeoNMIxViREem8afzvTBBUWxD3QsPEYkb",
+    "login_path" : "/v2/auth/login",
+    "email" : "mohamad.shaib.cb@gmail.com",
+    "password" : "iasr99"
+  },
+  "dynamodb":{
+    "host" : "localhost",
+    "port" : 8000,
+    "table_name" : "cb-token-sale-prod001-events"
+  }
+}

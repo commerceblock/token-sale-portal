@@ -1,9 +1,9 @@
-import aml_scanner
-import time_uuid
-from aml_table import Aml
-import time
-from concurrent.futures import ThreadPoolExecutor
 import concurrent.futures
+import time_uuid
+from concurrent.futures import ThreadPoolExecutor
+
+from python.db.aml_table import Aml
+from python.scripts import aml_scanner
 
 executor = ThreadPoolExecutor(max_workers=20)
 
@@ -25,7 +25,7 @@ def main():
 def create_adresses():
   aml = Aml()
   results = []
-  for x in range(0, 100):
+  for x in range(0, 10):
     results.append(executor.submit(generate_address))
   for future in concurrent.futures.as_completed(results):
     result = future.result()

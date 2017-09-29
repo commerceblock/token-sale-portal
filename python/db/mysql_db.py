@@ -3,7 +3,7 @@ import mysql.connector
 from mysql.connector.cursor import MySQLCursorPrepared
 import json
 
-with open('config.json') as json_data_file:
+with open('./properties/config.json') as json_data_file:
     config = json.load(json_data_file)
 
 class MySqlDB(object):

@@ -1,12 +1,14 @@
 import boto3
 import json
 import time_uuid
-from aml_table import Aml
+
+from python.db.aml_table import Aml
+
 
 def sync_address(address_obj):
   try:
     aml = Aml()
-    with open('config.json') as json_data_file:
+    with open('./properties/config.json') as json_data_file:
       config = json.load(json_data_file)['dynamodb']
 
     url = "http://" + config['host'] + ":" + str(config['port'])
