@@ -9,8 +9,8 @@ plugins:
 
 provider:
   name: aws
-  stage: prod001
-  region: eu-west-2
+  stage: prod002
+  region: us-east-1
   runtime: nodejs6.10
   memorySize: 256
   timeout: 5
