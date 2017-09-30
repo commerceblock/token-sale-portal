@@ -10,19 +10,20 @@ class address_class(object):
     address = None
     operation = "verify"
     event_type = None
+    event_id = None
     event_data = None
 
     def __init__(self,_address):
       self.address = _address
 
-    def check_event(self,event_type,event_data):
+    def check_event(self,event_type,event_data,event_id):
       if(event_type == "verified" or event_type == "rejected"):
         if(self.operation == "verify"):
           self.operation = "sync"
           self.event_type = event_type
           self.event_data  = event_data
-      elif (event_type == "synced"):
-        self.operation = "none"
+          self.event_id = event_id
+
 
 executor = ThreadPoolExecutor(max_workers=10)
 
@@ -38,10 +39,11 @@ def main():
       address = row[0]
       event_type = row[1]
       event_data = row[2]
+      event_id = row[3]
       address_obj = procced_result.get(address)
       if(address_obj is None):
         address_obj = address_class(address)
-      address_obj.check_event(event_type,event_data)
+      address_obj.check_event(event_type,event_data,event_id)
       procced_result[address] = address_obj
     for address_obj in procced_result.values():
       if(address_obj.operation == "sync"):

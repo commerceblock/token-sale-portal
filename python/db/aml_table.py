@@ -26,11 +26,11 @@ class Aml(object):
       self.insert_to_aml(address,"created",None)
 
     def get_relevant_events(self):
-      stmt="select address , event_type , data from aml where address not in(select address from aml where event_type = 'synced')"
+      stmt="select address , event_type , data,event_id from aml where address not in(select address from aml where event_type = 'synced')"
       cursor = self.db.get_cursor(stmt)
       return cursor.fetchall()
 
     def get_events(self,event_type):
-      stmt="select address , event_type , data from aml where address not in(select address from aml where event_type = " + event_type + ")"
+      stmt="select address , event_type , data,event_id from aml where address not in(select address from aml where event_type = " + event_type + ")"
       cursor = self.db.get_cursor(stmt)
       return cursor.fetchall()

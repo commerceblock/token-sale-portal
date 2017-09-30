@@ -11,7 +11,7 @@
     "test_host":"private-anon-e6cf95b312-aml.apiary-mock.com",
     "prod_host":"api.coinfirm.io",
     "verify_path":"/v2/reports/aml/basic/",
-    "token" : "R1vEpE2SUP6hoSemzk8WJCTVihj3U5ESeoNMIxViREem8afzvTBBUWxD3QsPEYkb",
+    "token" : "Bearer R1vEpE2SUP6hoSemzk8WJCTVihj3U5ESeoNMIxViREem8afzvTBBUWxD3QsPEYkb",
     "login_path" : "/v2/auth/login",
     "email" : "mohamad.shaib.cb@gmail.com",
     "password" : "iasr99"

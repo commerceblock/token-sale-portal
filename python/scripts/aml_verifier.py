@@ -21,9 +21,10 @@ class aml_api_handler(object):
 
 
   def verify(self,address):
-    params = urllib.urlencode({'address': address})
+    # params = urllib.urlencode({'address': address})
+    url = self.verify_path + address
     headers = {"Content-type": "application/json", "Authorization" : str(self.token)}
-    self.conn.request("GET",self.verify_path, params,headers)
+    self.conn.request("GET",url,None,headers)
     response = self.conn.getresponse()
     print "aadress : " , address, response.status, response.reason
     return response
@@ -55,18 +56,18 @@ def verify_address(address):
   try:
     print "verifiying address : ", str(address)
     aml_api = aml_api_handler()
-    # response =   aml_api.verify(address)
-    # data = str(response.read())
-    # data_json = json.loads(data)
-    # event_type = 'failed_verification'
-    # if response.status == 200:
-    #   recommenation = data_json['recommendation']
-    #   if recommenation <=1:
-    #     event_type = "verified"
-    #   else:
-    #     event_type = "rejected"
-    data = "test"
-    event_type = "rejected"
+    response =   aml_api.verify(address)
+    data = str(response.read())
+    data_json = json.loads(data)
+    event_type = 'failed_verification'
+    if response.status == 200:
+      recommenation = data_json['recommendation']
+      if recommenation <=1:
+        event_type = "verified"
+      else:
+        event_type = "rejected"
+    # data = "test"
+    # event_type = "rejected"
     aml_table = Aml()
     aml_table.insert_to_aml(address,event_type,data)
     print "done verifieng address : ",address
