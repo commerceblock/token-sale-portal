@@ -40,7 +40,7 @@ custom:
     accessTokens:
       read: 50
       write: 10
-    inviteCodes:
+    addresses:
       read: 50
       write: 1
   dynamodb:
@@ -54,8 +54,8 @@ custom:
         sources:
           - table: ${self:provider.environment.CB_ENV_NAME}-events
             sources: [./data/events.json]
-          - table: ${self:provider.environment.CB_ENV_NAME}-invite-codes
-            sources: [./data/invite-codes.json]
+          - table: ${self:provider.environment.CB_ENV_NAME}-addresses
+            sources: [./data/addresses.json]
   serverless-offline:
     port: 9000
 
@@ -145,18 +145,18 @@ resources:
       Type: "AWS::DynamoDB::Table"
       DeletionPolicy: Retain
       Properties:
-        TableName: ${self:provider.environment.CB_ENV_NAME}-invite-codes
+        TableName: ${self:provider.environment.CB_ENV_NAME}-addresses
         AttributeDefinitions:
           -
-            AttributeName: invite_code
+            AttributeName: address
             AttributeType: S
         KeySchema:
           -
-            AttributeName: invite_code
+            AttributeName: address
             KeyType: HASH
         ProvisionedThroughput:
-          ReadCapacityUnits: ${self:custom.dynamodbThroughput.inviteCodes.read}
-          WriteCapacityUnits: ${self:custom.dynamodbThroughput.inviteCodes.write}
+          ReadCapacityUnits: ${self:custom.dynamodbThroughput.addresses.read}
+          WriteCapacityUnits: ${self:custom.dynamodbThroughput.addresses.write}
     AccessTokensDynamoDbTable:
       Type: "AWS::DynamoDB::Table"
       DeletionPolicy: Retain

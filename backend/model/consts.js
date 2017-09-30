@@ -21,7 +21,7 @@ export const columns = {
 
   // token sale platfrom
   user_id: 'user_id',
-  invite_code: 'invite_code',
+  address: 'address',
   access_token_id: 'access_token_id',
   order_id: 'order_id',
   created_by: 'created_by',
@@ -30,12 +30,12 @@ export const columns = {
   amount: 'amount',
   coin: 'coin',
   payment_address: 'payment_address',
+  status: 'status',
 };
 
 // event types
 export const event_type = {
   account_created: 'account_created',
-  invite_code_generated: 'invite_code_generated',
   order_created: 'order_created',
   order_transaction_broadcasted: 'order_transaction_broadcasted',
   order_transaction_confirmed: 'order_transaction_confirmed',

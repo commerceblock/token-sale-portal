@@ -3,7 +3,6 @@
     <div class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container">
-          <modal v-if="showModal" />
           <div class="modal-header">
             <slot name="header">
               <span class="tab-title">Welcome to CommerceBlock Token Portal</span>
@@ -16,24 +15,19 @@
               </div>
               <div class="row">
                 <div class="login-description text-center">
-                  Please enter in your invite code
+                  Please enter in your source address
                 </div>
               </div>
               <div class="row">
                 <div v-bind:class="{ 'invite-code-input-red': !isValid, 'invite-code-input-green': isValid }">
-                  <input class="form-control span6" placeholder="Enter your invitation code." v-model="inviteCode" />
-                </div>
-              </div>
-              <div class="row">
-                <div class="checkbox">
-                  <label><input type="checkbox"  v-model="checked">I certify that I am not a citizen of resident of the United States of America or The Republic of Singapore</label>
+                  <input class="form-control span6" placeholder="Enter your address (btc or eth)" v-model="address" />
                 </div>
               </div>
             </slot>
           </div>
           <div class="modal-footer">
             <slot name="footer">
-              <button class="btn btn-success btn-lg btn-block" @click="login" :disabled="isFormNotValid">Submit Invite Code</button>
+              <button class="btn btn-success btn-lg btn-block" @click="login" :disabled="isFormNotValid">Submit Address</button>
             </slot>
           </div>
 
@@ -51,7 +45,6 @@ import 'whatwg-fetch';
 import gql from 'graphql-tag';
 import httpStatus from 'http-status-codes';
 import { isEmpty } from 'lodash';
-import Modal from './TermsConfirmationModal.vue'
 import  endpoints from '../../lib/endpoints'
 import { setAccessToken } from '../../lib/vault'
 
@@ -59,26 +52,21 @@ const access_token_ttl = 30 * 60 * 1000;
 
 export default {
   name: 'Login',
-  components: {
-    Modal
-  },
   data: function() {
     return {
-      inviteCode: null,
-      checked: null,
+      address: null,
       errorResponse: null,
-      showModal: null
     }
   },
   methods: {
     login () {
       // TODO:: toggle progress bar
-      if (isEmpty(this.inviteCode)) {
+      if (isEmpty(this.address)) {
         // empty phrase
-        this.errorResponse = 'code is empty.';
+        this.errorResponse = 'Address is empty.';
       } else if (!this.isValid) {
         // check phrase
-        this.errorResponse = 'code is not valid, must be at least 10 chars.';
+        this.errorResponse = 'Address is not valid, must be at least 10 chars.';
       } else {
         this.errorResponse = null;
         const that = this;
@@ -86,41 +74,12 @@ export default {
           .then(this.parseResult)
           .catch(this.handleServerError)
           .then(this.handleLoginResult)
-          .then(this.fetchLastStage)
-          .then(this.redirectToLastStage)
+          .then(this.redirectToHome)
           .catch(this.handleGenericError)
       }
     },
-    redirectToLastStage (result) {
-      if (result && result.data && result.data.lastStage) {
-        const name = result.data.lastStage.name;
-        if (name === 'initial') {
-          this.showModal = true;
-        } else if (name === 'terms_acknowledged') {
-          this.$router.push('/');
-        } else if (name === 'return_address_created') {
-          // TODO: update path
-          this.$router.push('/');
-        } else if (name === 'order_created') {
-          // TODO: update path
-          this.$router.push('/');
-        } else {
-          // not suppose to happen.
-          this.showModal = true;
-        }
-      } else {
-        this.errorResponse = "Unexpected error occured, please try again.";
-      }
-    },
-    fetchLastStage (data) {
-      if (data) {
-        return this.apolloClient.query({
-          query: gql`query {
-            lastStage {
-              name
-            }
-          }`});
-      }
+    redirectToHome (result) {
+      this.$router.push('/');
     },
     handleLoginResult (data) {
       if (data && data.access_token_id) {
@@ -143,16 +102,16 @@ export default {
       if (response.status === httpStatus.CREATED) {
         return response.json();
       } else if (response.status == httpStatus.NOT_FOUND) {
-        this.errorResponse = "Unknown code, please check your input.";
+        this.errorResponse = "Unknown address.";
         return null;
       } else {
         this.errorResponse = "Unexpected error occured, please try again.";
         return null;
       }
     },
-    doLogin (hdPrvKey) {
+    doLogin () {
       const data = {
-        invite_code: this.inviteCode
+        address: this.address
       };
       return fetch(endpoints.login(), {
         method: "POST",
@@ -165,10 +124,10 @@ export default {
   },
   computed: {
     isValid () {
-      return !isEmpty(this.inviteCode) && this.inviteCode.length >= 10;
+      return !isEmpty(this.address) && this.address.length >= 10;
     },
     isFormNotValid () {
-      return !this.isValid || !this.checked
+      return !this.isValid
     },
     apolloClient: function() {
       return this.$apollo.provider.defaultClient;

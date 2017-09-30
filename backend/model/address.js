@@ -7,21 +7,18 @@ import dynamoose from '../lib/dynamoose'
 import { columns } from './consts'
 
 // schema defintion
-const InviteCodeSchema = new Schema({
-  [columns.invite_code]: {
+const AddressSchema = new Schema({
+  [columns.address]: {
     type: String,
     hashKey: true,
   },
   [columns.user_id]: {
     type: String,
   },
-  [columns.timestamp]: {
-    type: String,
-  },
-  [columns.created_by]: {
+  [columns.status]: {
     type: String,
   },
 });
 
-const InviteCode = dynamoose.model('invite-codes', InviteCodeSchema);
-export default InviteCode;
+const Address = dynamoose.model('addresses', AddressSchema);
+export default Address;
