@@ -2,7 +2,7 @@
   <div class="content">
     <div class="row">
       <div class="form-group">
-        <label class="pull-left title">Enter Ethereum return address</label>
+        <label class="pull-left title">Enter Ethereum CBT token receiving address</label>
         <input class="form-control" type="text" v-model="ethereumReturnAddressInput" placeholder="Etherum address"  :disabled="isEthereumReturnAddressNotEmpty"/>
         <div class="col-xs-12">
         </div>
