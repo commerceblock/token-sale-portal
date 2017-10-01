@@ -15,16 +15,6 @@ import db from '../database';
 const MutationType = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
-    acknowledgeTerms: {
-      type: new GraphQLObjectType({
-        name: 'AcknowledgeTermsResult',
-        fields: () => ({
-          acknowledged: { type: new GraphQLNonNull(GraphQLBoolean) },
-        })
-      }),
-      description: 'Acknowledge terms',
-      resolve: (value, args, context) => db.acknowledgeTerms(context.userId),
-    },
     createReturnAddress: {
       type: ReturnAddressType,
       description: 'Create a new return address',
