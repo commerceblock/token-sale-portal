@@ -9,7 +9,7 @@ plugins:
 
 provider:
   name: aws
-  stage: prod003
+  stage: prod005
   region: us-east-1
   runtime: nodejs6.10
   memorySize: 256
