@@ -11,7 +11,7 @@ import graphQLHandler from '../../backend/lib/graphql';
 
 
 // default port where dev server listens for incoming traffic
-const DEFAULT_APP_PORT = 3000;
+const DEFAULT_APP_PORT = 3001;
 const port = process.env.PORT || DEFAULT_APP_PORT;
 
 var app = express()

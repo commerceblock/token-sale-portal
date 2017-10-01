@@ -124,24 +124,8 @@ resources:
                 - - 'arn:aws:s3:::'
                   - Ref: WebsiteS3Bucket
                   - "/*"
-    OrdersQueue:
-      Type: AWS::SQS::Queue
-      Properties:
-        QueueName: ${self:provider.environment.CB_ENV_NAME}-orders
-        MessageRetentionPeriod: 1209600
-        VisibilityTimeout: 60
-        RedrivePolicy:
-          deadLetterTargetArn:
-            Fn::GetAtt:
-            - OrdersDeadLetterQueue
-            - Arn
-          maxReceiveCount: 10
-    OrdersDeadLetterQueue:
-      Type: AWS::SQS::Queue
-      Properties:
-        QueueName: ${self:provider.environment.CB_ENV_NAME}-orders-dlq
-        MessageRetentionPeriod: 1209600
-    InviteCodesDynamoDbTable:
+
+    AddressesDynamoDbTable:
       Type: "AWS::DynamoDB::Table"
       DeletionPolicy: Retain
       Properties:
