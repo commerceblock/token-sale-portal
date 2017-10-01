@@ -29,7 +29,7 @@ export function saveAddress(payload) {
 
 export function loadAddress(address) {
   return new Promise((resolve, reject) => {
-    InviteCode.get({ address }, (error, item) => {
+    Address.get({ address }, (error, item) => {
       if (error) {
         log.error({ address, error }, 'failed to load address');
         reject({ address, error });
