@@ -15,8 +15,8 @@ import { saveToken } from '../lib/access-tokens-store';
 
 // logging
 import { createLogger } from 'bunyan';
-
 const log = createLogger({ name: 'login-api' });
+
 
 export function post(event, context, callback) {
   const request_id = createOrderedId();
