@@ -37,17 +37,8 @@ export function post(event, context, callback) {
           timestamp: new Date().toISOString(),
         }
         return saveToken(accessToken);
-      } else if (item) {
-        // rejected address
-        const body = { status: item.status };
-        const response = toResponse(httpStatus.OK, body);
-        log.info({ request_id, http_response: response }, 'success - end');
-        return callback(null, response);
-      } else {
-        const response = toResponse(httpStatus.NOT_FOUND);
-        log.warn({ request_id, response }, 'Failed to locate address - end');
-        return callback(null, response);
       }
+      return null;
     })
     .then(accessToken => {
       if (accessToken) {
@@ -56,8 +47,8 @@ export function post(event, context, callback) {
         log.info({ request_id, http_response: response }, 'success - end');
         return callback(null, response);
       } else {
-        const response = toResponse(httpStatus.INTERNAL_SERVER_ERROR);
-        log.error({ request_id, result, http_response: response }, 'Failed to process request - end');
+        const response = toResponse(httpStatus.NOT_FOUND);
+        log.warn({ request_id, response }, 'Failed to locate address - end');
         return callback(null, response);
       }
     })

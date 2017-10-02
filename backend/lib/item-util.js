@@ -1,7 +1,6 @@
 
 
 // imports
-import bs58 from 'bs58';
 import { isEmpty, conforms, isString } from 'lodash';
 import { createHmac } from 'crypto';
 
@@ -9,6 +8,7 @@ import { createHmac } from 'crypto';
 import {
   hex_encoding,
   sha256_hash,
+  base64_encoding,
 } from '../model/consts';
 
 
@@ -29,10 +29,9 @@ export function formatEventFQN(event) {
   return `${event.user_id}/${event.type}/${event.event_id}`;
 }
 
-export function uuidToBase58(uuidStr) {
+export function uuidToBase64(uuidStr) {
   const stripped = uuidStr.replace(/-/g, '');
-  const buffer = new Buffer(stripped, hex_encoding);
-  return bs58.encode(buffer);
+  return new Buffer(stripped).toString(base64_encoding);
 }
 
 export function computeSignature(user_id, message) {

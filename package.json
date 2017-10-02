@@ -33,8 +33,6 @@
     "apollo-client": "^1.9.1",
     "babel-polyfill": "^6.23.0",
     "bitcore-lib": "^0.14.0",
-    "bitcore-mnemonic": "^1.2.5",
-    "bs58": "^4.0.1",
     "bunyan": "^1.8.12",
     "classnames": "2.2.5",
     "dynamoose": "^0.8.3",

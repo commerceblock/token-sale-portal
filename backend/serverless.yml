@@ -5,7 +5,6 @@ frameworkVersion: ">=1.1.0 <2.0.0"
 plugins:
   - serverless-dynamodb-local
   - serverless-offline
-  - serverless-sqs-local
 
 provider:
   name: aws
@@ -80,7 +79,7 @@ functions:
 
   ### Backoffice functions
   orders-backoffice-stream-processor:
-    handler: lambda/orders-backoffice-stream-processor.process
+    handler: lambda/backoffice-stream-processor.process
     events:
       - stream:
           type: dynamodb
@@ -88,13 +87,6 @@ functions:
             Fn::GetAtt:
               - EventsDynamoDbTable
               - StreamArn
-
-  orders-backoffice-worker:
-    handler: lambda/orders-backoffice-worker.process
-    timeout: 30
-    events:
-      - schedule: rate(1 minute)
-
 
 resources:
   Resources:
