@@ -19,7 +19,7 @@ export default async (userId, orderInput) => {
       }
     })
     .then(paymentAddress => {
-      return getTickers(userId)
+      return getTickers()
         .then(tickers => ({
           paymentAddress,
           tickers

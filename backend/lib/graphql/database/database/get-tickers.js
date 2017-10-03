@@ -1,5 +1,5 @@
 
-export default async (userId) => {
+export default async () => {
   // TODO complete
   return {
     btc: 410840,
