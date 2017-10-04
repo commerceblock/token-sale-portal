@@ -9,6 +9,8 @@
     "uuid": "^2.0.3",
     "graphql": "^0.9.1",
     "babel-polyfill": "^6.16.0",
-    "bitcore-lib": "^0.14.0"
+    "bitcore-lib": "^0.14.0",
+    "mysql2": "^1.4.2",
+    "sequelize": "^4.13.5"
   }
 }
