@@ -6,7 +6,7 @@
     "start:remote": "MOCKED_DATABASE=false env-cmd deployment/environment/security.env.local nodemon ./deployment/devServer --ignore frontend --exec babel-node",
     "update-schema": "babel-node deployment/graphql/updateSchema.js",
     "build:frontend": "env-cmd deployment/environment/security.env.prod node deployment/website/build.js",
-    "build:backend": "NODE_ENV=production babel --out-dir='build/backend' --ignore='__tests__/*' ./backend && cp ./backend/package.json ./backend/yarn.lock ./backend/serverless.yml ./build/backend",
+    "build:backend": "NODE_ENV=production babel --out-dir='build/backend' --ignore='__tests__/*' ./backend && cp ./backend/package.json ./backend/yarn.lock ./backend/env*.yml ./backend/serverless.yml ./build/backend",
     "build:backend:node_modules": "cd build/backend && yarn && cd ../../",
     "deploy": "npm run deploy:backend && npm run deploy:frontend",
     "deploy:frontend": "npm run build:frontend && aws s3 sync build/frontend/ s3://cb-token-sale-prod005-website/",

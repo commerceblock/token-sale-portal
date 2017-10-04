@@ -14,34 +14,28 @@ provider:
   memorySize: 256
   timeout: 5
   versionFunctions: true
-  environment:
-    CB_ENV_NAME: ${self:service}-${self:custom.stage}
+  environment:  ${self:custom.externalEnv.environment}
   iamRoleStatements:
     - Effect: Allow
       Action:
+        - ec2:CreateNetworkInterface
+        - ec2:DescribeNetworkInterfaces
+        - ec2:DetachNetworkInterface
+        - ec2:DeleteNetworkInterface
+      Resource: "*"
+    - Effect: Allow
+      Action:
         - dynamodb:Query
-        - dynamodb:Scan
         - dynamodb:GetItem
         - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}-${self:custom.stage}-*"
 
 custom:
   stage: ${opt:stage, self:provider.stage}
-  cors:
-    allowOrigin: "*"
-    allowHeaders: ["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key"]
-  dynamodbThroughput:
-    events:
-      read: 50
-      write: 5
-    accessTokens:
-      read: 50
-      write: 10
-    addresses:
-      read: 50
-      write: 1
+  externalEnv: ${file(env.${opt:stage, self:provider.stage}.${opt:region, self:provider.region}.yml)}
+  cors: ${self:custom.externalEnv.cors}
+  dynamodbThroughput: ${self:custom.externalEnv.dynamodbThroughput}
+  vpc: ${self:custom.externalEnv.vpc}
   dynamodb:
     start:
       port: 8000
@@ -80,6 +74,7 @@ functions:
   ### Backoffice functions
   orders-backoffice-stream-processor:
     handler: lambda/backoffice-stream-processor.process
+    timeout: 30
     events:
       - stream:
           type: dynamodb
@@ -87,6 +82,7 @@ functions:
             Fn::GetAtt:
               - EventsDynamoDbTable
               - StreamArn
+    vpc: ${self:custom.vpc}
 
 resources:
   Resources:

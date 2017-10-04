@@ -1,9 +1,9 @@
 
 // imports
 import { Schema } from 'dynamoose'
-import dynamoose from '../lib/dynamoose'
 
 // local imports
+import dynamoose from '../lib/dynamoose'
 import { columns } from './consts'
 
 // schema defintion
