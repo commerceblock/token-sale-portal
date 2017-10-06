@@ -10,13 +10,13 @@ import { generatePaymentAddress } from '../../../../lib/wallet';
 import getTickers from './get-tickers'
 
 export default async (userId, orderInput) => {
+  const addressIndex = Math.floor(Math.random() * 1000000);
   return loadEvents(userId)
     .then(events => {
-      const account_created = find(events, { type: event_type.account_created });
-      if (account_created) {
-        const accountIndex = account_created.data.account_index;
-        return generatePaymentAddress(orderInput.coin, accountIndex)
-      }
+      // workaround
+      // const account_created = find(events, { type: event_type.account_created });
+      // const addrIndex = account_created.data.account_index;
+      return generatePaymentAddress(orderInput.coin, addressIndex)
     })
     .then(paymentAddress => {
       return getTickers()
@@ -38,6 +38,7 @@ export default async (userId, orderInput) => {
             coin: orderInput.coin,
             payment_address: pair.paymentAddress,
             spot_price: spotPrice,
+            address_index: addressIndex
           },
         };
         return saveEvent(payload);

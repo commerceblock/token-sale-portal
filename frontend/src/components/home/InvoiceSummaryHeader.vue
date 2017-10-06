@@ -16,12 +16,13 @@
         <div class="row">Tokens Purchased</div>
       </div>
       <div class="col-xs-6 text-center">
-        <div class="row">{{ numberOfConfirmations }} of 3</div>
-        <div class="row">No. of Confirmations</div>
+        <div class="row">{{ numberOfConfirmationsFormatted }} Confirmations</div>
+        <!-- <div class="row">No. of Confirmations</div> -->
+        <div class="col-xs-12 text-center external-link" v-if="transactionLink">
+          <a :href="transactionLink" target="_blank">View on Blockchain</a>
+        </div>
       </div>
-      <div class="col-xs-6 col-xs-offset-6 text-center external-link" v-if="transactionLink">
-        <a :href="transactionLink">View on Blockchain</a>
-      </div>
+
     </div>
   </div>
 </template>
@@ -34,6 +35,12 @@ export default {
     'numberOfConfirmations',
     'transactionLink'
   ],
+  computed: {
+    numberOfConfirmationsFormatted () {
+      const number = this.numberOfConfirmations || 0;
+      return number > 6 ? "6+" : number.toString();
+    }
+  }
 }
 </script>
 

@@ -2,11 +2,7 @@
 export default async () => {
   // TODO complete
   return {
-    btc: 410840,
-    eth: 28201
+    btc: 434426,
+    eth: 29652
   };
 };
-
-
-
-

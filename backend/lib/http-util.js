@@ -13,16 +13,17 @@ import { createLogger } from 'bunyan';
 
 const log = createLogger({ name: 'http-util' });
 
-const DEFAULT_CORS_HEADERS = {
+const DEFAULT_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Credentials': true,
+  'Cache-Control': 'private, must-revalidate, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0',
 };
 
-export function toResponse(status, body) {
-  var body = body || {};
+export function toResponse(status, payload) {
+  const body = payload || {};
   return {
     statusCode: status,
-    headers: DEFAULT_CORS_HEADERS,
+    headers: DEFAULT_HEADERS,
     body: JSON.stringify(body),
   };
 };
@@ -30,7 +31,7 @@ export function toResponse(status, body) {
 export function toRedirectResponse(url) {
   const headers = Object.assign({
     Location: url,
-  }, DEFAULT_CORS_HEADERS);
+  }, DEFAULT_HEADERS);
   return {
     statusCode: httpStatus.MOVED_TEMPORARILY,
     headers,

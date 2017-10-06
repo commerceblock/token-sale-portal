@@ -3,7 +3,7 @@
     <div class="pay">Please pay</div>
     <div class="btc-amount">
       <i class="fa fa-btc"></i> {{ cryptoAmount }} {{ coinSymbol }}</div>
-    <div class="usd-amount">10.00 USD</div>
+    <!-- <div class="usd-amount">10.00 USD</div> -->
     <div class="scan">Scan QR with your Bitcoin wallet</div>
     <qrcode :value="cryptoAddress" :size="150" :type="'image'" :padding="10" v-if="cryptoAddress" />
     <div class="pay">OR Pay using a Bitcoin address</div>

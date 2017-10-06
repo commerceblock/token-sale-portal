@@ -18,6 +18,18 @@ const AddressSchema = new Schema({
   [columns.status]: {
     type: String,
   },
+  [columns.event_id]: {
+    type: String,
+  },
+  [columns.type]: {
+    type: String,
+  },
+  [columns.timestamp]: {
+    type: String,
+  },
+  [columns.data]: {
+    type: Object,
+  },
 });
 
 const Address = dynamoose.model('addresses', AddressSchema);
