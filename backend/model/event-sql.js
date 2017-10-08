@@ -3,23 +3,23 @@
 import Sequelize from 'sequelize';
 
 // local imports
-import sequelize from '../lib/sequelize'
-import { columns } from './consts'
+import sequelize from '../lib/sequelize';
+import { columns } from './consts';
 
 const Event = sequelize.define('token_sale_events', {
   [columns.user_id]: {
     type: Sequelize.STRING,
-    primaryKey: true
+    primaryKey: true,
   },
   [columns.event_id]: {
     type: Sequelize.STRING,
-    primaryKey: true
+    primaryKey: true,
   },
   [columns.type]: Sequelize.STRING,
   [columns.timestamp]: Sequelize.STRING,
   [columns.data]: Sequelize.STRING,
 }, {
-    timestamps: false
-  });
+  timestamps: false,
+});
 
 export default Event;

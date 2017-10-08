@@ -10,3 +10,4 @@ coverage/
 build/
 kms-secrets*.yml
 env.*.yml
+.vscode
