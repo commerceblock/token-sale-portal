@@ -38,20 +38,15 @@ export default async (userId, orderInput) => {
             payment_address: paymentAddress
           },
         };
-        return saveEvent(payload);
+        return saveEvent(payload)
+          .then(() => ({
+            usdAmount: payload.data.usd_amount,
+            coin: payload.data.coin,
+            paymentAddress,
+            status: order_status.initial,
+            numnberOfConfirmations: 0
+          }));
       }
-    })
-    .then(payload => {
-      if (payload) {
-        return {
-          usdAmount: payload.data.usd_amount,
-          coin: payload.data.coin,
-          paymentAddress: payload.data.payment_address,
-          status: order_status.initial,
-          numnberOfConfirmations: 0
-        }
-      } else {
-        return null;
-      }
+      return null;
     });
 };
