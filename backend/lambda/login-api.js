@@ -31,10 +31,6 @@ export function post(event, context, callback) {
   loadAddress(address)
     .then(item => {
       if (item && item.data && item.data.status === 'accepted') {
-
-        // workaround
-        item.user_id = item.event_id;
-
         const accessToken = {
           access_token_id: createId(),
           user_id: item.user_id,
