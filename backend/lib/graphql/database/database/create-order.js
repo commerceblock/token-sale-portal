@@ -23,7 +23,9 @@ export default async (userId, orderInput) => {
     .then(pair => {
       const account = pair.account_created;
       if (account && account.data && account.data.coin) {
-        const spotPrice = pair.tickers[pair.account_created.data.coin]
+        const coin = account.data.coin;
+        const spotPrice = pair.tickers[coin];
+        const paymentAddress = account.data.payment_address;
         const payload = {
           user_id: userId,
           event_id: createOrderedId(),
@@ -32,6 +34,8 @@ export default async (userId, orderInput) => {
           data: {
             usd_amount: orderInput.usdAmount,
             spot_price: spotPrice,
+            coin: coin,
+            payment_address: paymentAddress
           },
         };
         return saveEvent(payload);
