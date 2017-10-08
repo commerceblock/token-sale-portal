@@ -28,13 +28,13 @@
     <div class="row">
       <div class="col-xs-6">
         <label class="radio-inline radio-center">
-          <input type="radio" name="currencyType" value="btc" v-model="coinInput" :disabled="isCoinNotEmpty">
+          <input type="radio" name="currencyType" value="BTC" v-model="coinInput" :disabled="isCoinNotEmpty">
           <img height="30" src="/static/assets/bitcoin-logo.png" />
         </label>
       </div>
       <div class="col-xs-6">
         <label class="radio-inline radio-center">
-          <input type="radio" name="currencyType" value="eth" v-model="coinInput" :disabled="isCoinNotEmpty">
+          <input type="radio" name="currencyType" value="ETH" v-model="coinInput" :disabled="isCoinNotEmpty">
           <img height="30" src="/static/assets/ether-logo.png" />
         </label>
       </div>

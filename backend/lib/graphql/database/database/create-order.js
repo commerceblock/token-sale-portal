@@ -6,28 +6,24 @@ import { find } from 'lodash'
 import { loadEvents, saveEvent } from '../../../../lib/events-store';
 import { createOrderedId } from '../../../../lib/uuid';
 import { event_type, order_status } from '../../../../model/consts';
-import { generatePaymentAddress } from '../../../../lib/wallet';
 import getTickers from './get-tickers'
 
 export default async (userId, orderInput) => {
-  const addressIndex = Math.floor(Math.random() * 1000000);
   return loadEvents(userId)
     .then(events => {
-      // workaround
-      // const account_created = find(events, { type: event_type.account_created });
-      // const addrIndex = account_created.data.account_index;
-      return generatePaymentAddress(orderInput.coin, addressIndex)
+      return find(events, { type: event_type.account_created });
     })
-    .then(paymentAddress => {
+    .then(account_created => {
       return getTickers()
         .then(tickers => ({
-          paymentAddress,
+          account_created,
           tickers
         }));
     })
     .then(pair => {
-      if (pair.paymentAddress) {
-        const spotPrice = pair.tickers[orderInput.coin];
+      const account = pair.account_created;
+      if (account && account.data && account.data.coin) {
+        const spotPrice = pair.tickers[pair.account_created.data.coin]
         const payload = {
           user_id: userId,
           event_id: createOrderedId(),
@@ -35,10 +31,7 @@ export default async (userId, orderInput) => {
           timestamp: new Date().toISOString(),
           data: {
             usd_amount: orderInput.usdAmount,
-            coin: orderInput.coin,
-            payment_address: pair.paymentAddress,
             spot_price: spotPrice,
-            address_index: addressIndex
           },
         };
         return saveEvent(payload);

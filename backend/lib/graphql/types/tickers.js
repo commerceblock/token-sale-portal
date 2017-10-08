@@ -10,13 +10,13 @@ const Tickers = new GraphQLObjectType({
   name: 'Tickers',
   description: 'A stage name',
   fields: () => ({
-    btc: {
+    BTC: {
       type: new GraphQLNonNull(GraphQLInt),
-      description: '1 btc price in USD cents',
+      description: '1 BTC price in USD cents',
     },
-    eth: {
+    ETH: {
       type: new GraphQLNonNull(GraphQLInt),
-      description: '1 eth price in USD cents',
+      description: '1 ETH price in USD cents',
     },
   }),
 });

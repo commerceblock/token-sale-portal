@@ -20,7 +20,7 @@
               </div>
               <div class="row">
                 <div v-bind:class="{ 'invite-code-input-red': !isValid, 'invite-code-input-green': isValid }">
-                  <input class="form-control span6" placeholder="Enter your address (btc or eth)" v-model="address" />
+                  <input class="form-control span6" placeholder="Enter your address (BTC or ETH)" v-model="address" />
                 </div>
               </div>
             </slot>

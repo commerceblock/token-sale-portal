@@ -233,8 +233,8 @@ export default {
       query: function() {
         return gql`query {
             tickers {
-              btc
-              eth
+              BTC
+              ETH
             }
           }`;
       },
