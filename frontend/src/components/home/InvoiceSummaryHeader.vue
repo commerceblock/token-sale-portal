@@ -16,11 +16,13 @@
         <div class="row">Tokens Purchased</div>
       </div>
       <div class="col-xs-6 text-center">
-        <div class="row">{{ numberOfConfirmationsFormatted }} Confirmations</div>
+        <div class="row" v-if="!transactionLink">Waiting for transaction...</div>
+        <div class="row" v-if="transactionLink">{{ numberOfConfirmationsFormatted }} Confirmations</div>
         <!-- <div class="row">No. of Confirmations</div> -->
         <div class="col-xs-12 text-center external-link" v-if="transactionLink">
           <a :href="transactionLink" target="_blank">View on Blockchain</a>
         </div>
+        <div class="row" v-if="transactionError">{{ transactionError }}</div>
       </div>
 
     </div>
@@ -43,6 +45,7 @@ export default {
       transactionLink: null,
       numberOfConfirmations: 0,
       txChecker: null,
+      transactionError: null,
     };
   },
   computed: {
