@@ -22,7 +22,7 @@ export default async (userId) => {
         const order_confirmed = find(events, { type: event_type.order_confirmed });
         const number_of_confirmations = size(filter(events, { type: event_type.order_transaction_confirmed }));
         const status = resolveStatus(order_transaction_broadcasted, order_confirmed, number_of_confirmations);
-        const transactionLink = buildTransactionLink(order_transaction_broadcasted);
+        const transactionLink = extractTransactionLink(order_transaction_broadcasted);
         return {
           usdAmount: order_created.data.usd_amount,
           coin: order_created.data.coin,
@@ -37,10 +37,9 @@ export default async (userId) => {
     });
 };
 
-export function buildTransactionLink(event) {
-  if (event && event.data && event.data.txId) {
-    const txId = event.data.txId;
-    return `https://testnet.smartbit.com.au/tx/${txId}`;
+export function extractTransactionLink(event) {
+  if (event && event.data && event.data.transaction_link) {
+    return event.data.transaction_link;
   }
   return null;
 }
