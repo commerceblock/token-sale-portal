@@ -2,13 +2,13 @@
   <div class="content">
     <div class="pay">Please pay</div>
     <div class="btc-amount">
-      <i class="fa fa-btc"></i> {{ cryptoAmount }} {{ coinSymbol }}</div>
-    <!-- <div class="usd-amount">10.00 USD</div> -->
-    <div class="scan">Scan QR with your Bitcoin wallet</div>
-    <qrcode :value="cryptoAddress" :size="150" :type="'image'" :padding="10" v-if="cryptoAddress" />
-    <div class="pay">OR Pay using a Bitcoin address</div>
+      <i class="fa fa-btc" v-if="isBTC"/> {{ cryptoAmount }} {{ coin }}</div>
+    <div class="usd-amount">{{ usdAmount }} USD</div>
+    <div class="scan">Scan QR with your {{ coinType }} wallet</div>
+    <qrcode :value="paymentAddress" :size="150" :type="'image'" :padding="10" v-if="paymentAddress" />
+    <div class="pay">OR Pay using a {{ coinType }} address</div>
     <div class="btc-address">
-      <a href="javascript:;" v-clipboard:copy="cryptoAddress" v-clipboard:success="onCopy" v-clipboard:error="onError">{{cryptoAddress}}</a>
+      <a href="javascript:;" v-clipboard:copy="paymentAddress" v-clipboard:success="onCopy" v-clipboard:error="onError">{{paymentAddress}}</a>
     </div>
   </div>
 </template>
@@ -16,13 +16,14 @@
 
 <script>
 import Qrcode from 'v-qrcode'
+import { isBTC } from '../../lib/util'
 
 export default {
   name: 'InvoiceSummary',
   props: [
     'cryptoAmount',
-    'coinSymbol',
-    'cryptoAddress',
+    'coin',
+    'paymentAddress',
     'usdAmount',
   ],
   components: {
@@ -35,6 +36,14 @@ export default {
     onError: function(e) {
       // TODO complete
     },
+  },
+  computed: {
+    isBTC () {
+      return isBTC(this.coin);
+    },
+    coinType () {
+      return isBTC(this.coin) ? 'Bitcoin' : 'Ethereum';
+    }
   }
 }
 </script>

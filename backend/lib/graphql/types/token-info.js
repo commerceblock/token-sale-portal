@@ -13,12 +13,8 @@ const TokenInfo = new GraphQLObjectType({
   fields: () => ({
     unitPrice: {
       type: new GraphQLNonNull(GraphQLInt),
-      description: 'token price in USD cents',
+      description: 'CBT Tokens for 1 USD',
     },
-    bounsPrecentage: {
-      type: new GraphQLNonNull(GraphQLFloat),
-      description: 'token pre-sale bouns precentage',
-    }
   }),
 });
 

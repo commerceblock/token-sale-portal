@@ -27,18 +27,6 @@ const OrderType = new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLString),
       description: 'order payment address',
     },
-    status: {
-      type: new GraphQLNonNull(GraphQLString),
-      description: 'order status (initial, unconfirmed, confirmed, fulfilled)',
-    },
-    numnberOfConfirmations: {
-      type: GraphQLInt,
-      description: 'number of confirmations',
-    },
-    transactionLink: {
-      type: GraphQLString,
-      description: 'transaction reference link on public blockchain',
-    }
   }),
 });
 

@@ -11,13 +11,13 @@
       <tab-content title="Payment Details" icon="fa fa-file-text-o" :before-change="submitOrder">
         <div class="invoice-box">
           <invoice-header :title="'Payment Details'" />
-          <payment-details :usdAmount="usdAmount" :coin="coin" :tokenUnitPrice="tokenUnitPrice" :bounsPrecentage="bounsPrecentage" ref="paymentDetails" />
+          <payment-details :usdAmount="usdAmount" :coin="coin" :tokenUnitPrice="tokenUnitPrice" ref="paymentDetails" />
         </div>
       </tab-content>
       <tab-content title="Invoice Summary" icon="fa fa-qrcode">
         <div class="invoice-box">
-          <invoice-summary-header :cbtTokenAmount="cbtTokenAmount" :numberOfConfirmations="numberOfConfirmations" :transactionLink="transactionLink" />
-          <invoice-summary :cryptoAmount="cryptoAmount" :coinSymbol="coinSymbol" :cryptoAddress="cryptoAddress" :usdAmount="usdAmount" />
+          <invoice-summary-header :cbtTokenAmount="cbtTokenAmount" :coin="coin" :paymentAddress="paymentAddress" ref="invoiceSummaryHeader" />
+          <invoice-summary :cryptoAmount="cryptoAmount" :coin="coin" :paymentAddress="paymentAddress" :usdAmount="usdAmount" />
         </div>
       </tab-content>
     </form-wizard>
@@ -42,7 +42,10 @@ import {
   FormWizard,
   TabContent
 } from 'vue-form-wizard'
-import { computeTokenAmount } from '../../lib/util'
+import {
+  computeTokenAmount,
+  computeCryptoAmount
+ } from '../../lib/util'
 
 export default {
   name: 'Home',
@@ -80,11 +83,6 @@ export default {
     tokenUnitPrice() {
       return this.tokenInformation && this.tokenInformation.unitPrice;
     },
-    bounsPrecentage() {
-      return this.tokenInformation
-        && this.tokenInformation.bounsPrecentage
-        && this.tokenInformation.bounsPrecentage.toFixed(2).replace(/\.?0*$/, '');
-    },
     cbtTokenAmount() {
       if (this.order
         && this.order.usdAmount
@@ -93,26 +91,19 @@ export default {
         return computeTokenAmount(this.order.usdAmount, this.tokenInformation.unitPrice);
       }
     },
-    numberOfConfirmations() {
-      return (this.order && this.order.numnberOfConfirmations) || 0;
-    },
-    transactionLink() {
-      return this.order && this.order.transactionLink;
-    },
     cryptoAmount() {
       if (this.order
         && this.order.usdAmount
         && this.order.spotPrice) {
-        return computeTokenAmount(this.order.usdAmount, this.order.spotPrice);
+        return computeCryptoAmount(this.order.usdAmount, this.order.spotPrice);
       }
     },
-    coinSymbol() {
-      if (this.order
-        && this.order.coin) {
-        return this.order.coin.toUpperCase();
+    coin() {
+      if (this.order && this.order.coin) {
+        return this.order.coin;
       }
     },
-    cryptoAddress() {
+    paymentAddress() {
       if (this.order
         && this.order.paymentAddress) {
         return this.order.paymentAddress;
@@ -165,13 +156,10 @@ export default {
           mutation: gql`mutation {
                   createOrder(order: {
                     usdAmount: "${paymentDetails.usdAmountInput}"
-                    coin: "${paymentDetails.coinInput}"
                   }) {
                     usdAmount
                     coin
                     paymentAddress
-                    status
-                    numnberOfConfirmations
                   }
                 }`})
         .then(result => {
@@ -193,9 +181,6 @@ export default {
             }
           }`;
       },
-      skip() {
-        return false;
-      },
     },
     order: {
       query: function() {
@@ -205,29 +190,18 @@ export default {
               coin
               spotPrice
               paymentAddress
-              status
-              numnberOfConfirmations
-              transactionLink
             }
           }`;
-      },
-      skip() {
-        return false;
-      },
-      pollInterval: 5000,
+      }
     },
     tokenInformation: {
       query: function() {
         return gql`query {
             tokenInformation {
               unitPrice
-              bounsPrecentage
             }
           }`;
-      },
-      skip() {
-        return false;
-      },
+      }
     },
     tickers: {
       query: function() {
@@ -237,11 +211,11 @@ export default {
               ETH
             }
           }`;
-      },
-      skip() {
-        return false;
-      },
+      }
     }
+  },
+  mounted () {
+    this.$refs.invoiceSummaryHeader.refreshTxStatus();
   },
 }
 </script>

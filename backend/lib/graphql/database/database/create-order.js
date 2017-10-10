@@ -43,8 +43,6 @@ export default async (userId, orderInput) => {
             usdAmount: payload.data.usd_amount,
             coin: payload.data.coin,
             paymentAddress,
-            status: order_status.initial,
-            numnberOfConfirmations: 0
           }));
       }
       return null;

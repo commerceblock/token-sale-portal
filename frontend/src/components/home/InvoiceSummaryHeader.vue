@@ -28,19 +28,62 @@
 </template>
 
 <script>
+import { fetchTxid, fetchConfirmations, requiredMinConfirmations } from '../../lib/util';
+
 export default {
   name: 'InvoiceSummaryHeader',
   props: [
     'cbtTokenAmount',
-    'numberOfConfirmations',
-    'transactionLink'
+    'paymentAddress',
+    'coin',
   ],
+  data() {
+    return {
+      txid: null,
+      transactionLink: null,
+      numberOfConfirmations: 0,
+      txChecker: null,
+    };
+  },
   computed: {
     numberOfConfirmationsFormatted () {
       const number = this.numberOfConfirmations || 0;
-      return number > 6 ? "6+" : number.toString();
+      const minNumber = requiredMinConfirmations(this.coin);
+      return number > minNumber ? `${minNumber}+` : number.toString();
     }
-  }
+  },
+  methods: {
+    refreshTxStatus() {
+      fetchTxid(this);
+    }
+  },
+  beforeMount () {
+    this.refreshTxStatus();
+  },
+  mounted () {
+    const that = this;
+    this.txChecker = setInterval(function() {
+      if (!that.txid) {
+        // fetch txid
+        fetchTxid(that);
+      }
+      if (that.numberOfConfirmations && that.numberOfConfirmations > requiredMinConfirmations(that.coin)) {
+        if (that.txChecker) {
+          clearInterval(that.txChecker);
+          that.txChecker = null;
+        }
+      } else {
+        if (that.txid) {
+          fetchConfirmations(that);
+        }
+      }
+    }, 10000);
+  },
+  destroyed () {
+    if (this.txChecker) {
+      clearInterval(this.txChecker)
+    }
+  },
 }
 </script>
 

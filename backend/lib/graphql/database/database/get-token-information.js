@@ -1,10 +1,9 @@
 
-const token_price_in_usd_cents = 1000
-const bouns_precentage = 25.0;
+// 1 USD == 16 CBT
+const token_unit_per_usd = 16
 
 export default async (userId) => {
   return {
-    unitPrice: token_price_in_usd_cents,
-    bounsPrecentage: bouns_precentage
+    unitPrice: token_unit_per_usd,
   };
 };

@@ -15,7 +15,7 @@
               </div>
               <div class="row">
                 <div class="login-description text-center">
-                  Please enter in your source address
+                  Please enter in your whitelisted address
                 </div>
               </div>
               <div class="row">
