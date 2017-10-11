@@ -126,6 +126,7 @@ export default {
         return true;
       }
       const distributionDetails = this.$refs.distributionDetails;
+      const that = this;
       return this.apolloClient
         .mutate({
           mutation: gql`mutation {
@@ -138,6 +139,7 @@ export default {
                   }
                 }`})
         .then(result => {
+          that.$apollo.queries.returnAddress.refetch();
           return Promise.resolve(true);
         }).catch(err => {
           // TODO: show error
@@ -151,6 +153,7 @@ export default {
         return true;
       }
       const paymentDetails = this.$refs.paymentDetails;
+      const that = this;
       return this.apolloClient
         .mutate({
           mutation: gql`mutation {
@@ -163,6 +166,7 @@ export default {
                   }
                 }`})
         .then(result => {
+          that.$apollo.queries.order.refetch();
           return Promise.resolve(true);
         }).catch(err => {
           // TODO: show error
