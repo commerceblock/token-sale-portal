@@ -2,7 +2,9 @@
 export default async () => {
   // TODO complete
   return {
-    BTC: 434426,
-    ETH: 29652
+    BTC: 478584,
+    tBTC: 478584,
+    ETH: 30323,
+    tETH: 30323,
   };
 };
