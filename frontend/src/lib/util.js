@@ -90,15 +90,13 @@ export function fetchETHTxid(context) {
       })
       const firstValid = first(validTransactions);
       if (firstValid) {
-        context.txid = firstValid.hash;
-        context.transactionLink = `${ethUrl(context.coin)}/tx/${context.txid}`;
+        context.transactionLink = `${ethUrl(context.coin)}/tx/${firstValid.hash}`;
         context.numberOfConfirmations = firstValid.confirmations || 0;
         context.transactionError = null
       } else {
         // invalid
         const firstInvalid = first(transactions);
-        context.txid = firstInvalid.hash;
-        context.transactionLink = `${ethUrl(context.coin)}/tx/${context.txid}`;
+        context.transactionLink = `${ethUrl(context.coin)}/tx/${firstInvalid.hash}`;
         context.transactionError = 'Transaction failed, send a new one.'
       }
     }
