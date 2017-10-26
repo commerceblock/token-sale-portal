@@ -1,10 +1,9 @@
-
 // imports
-import { Schema } from 'dynamoose'
-import dynamoose from '../lib/dynamoose'
+import { Schema } from 'dynamoose';
+import dynamoose from '../lib/dynamoose';
 
 // local imports
-import { columns } from './consts'
+import { columns } from './consts';
 
 // schema defintion
 const AccessTokenSchema = new Schema({
