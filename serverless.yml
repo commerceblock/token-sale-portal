@@ -184,6 +184,102 @@ resources:
         Name: ${self:provider.environment.CB_ENV_NAME}-events
         ShardCount: ${self:custom.kinesis.shardCount}
         RetentionPeriodHours:  ${self:custom.kinesis.retentionPeriodHours}
+    FirehoseRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName: ${self:provider.environment.CB_ENV_NAME}-firehose-role
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Sid: ""
+              Effect: "Allow"
+              Principal:
+                Service: "firehose.amazonaws.com"
+              Action: "sts:AssumeRole"
+              Condition:
+                StringEquals:
+                  sts:ExternalId:
+                    Ref: 'AWS::AccountId'
+        Policies:
+          - PolicyName: ${self:provider.environment.CB_ENV_NAME}-firehose-policy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Sid: ""
+                  Effect: "Allow"
+                  Action:
+                    - s3:AbortMultipartUpload
+                    - s3:GetBucketLocation
+                    - s3:GetObject
+                    - s3:ListBucket
+                    - s3:ListBucketMultipartUploads
+                    - s3:PutObject
+                  Resource:
+                    - Fn::Join:
+                      - ''
+                      - - 'arn:aws:s3:::'
+                        - Ref: EventsBucket
+                    - Fn::Join:
+                      - ''
+                      - - 'arn:aws:s3:::'
+                        - Ref: EventsBucket
+                        - '/*'
+                - Sid: ""
+                  Effect: "Allow"
+                  Action:
+                    - lambda:InvokeFunction
+                    - lambda:GetFunctionConfiguration
+                  Resource:
+                    - Fn::Join:
+                      - ''
+                      - - 'arn:aws:lambda:'
+                        - Ref: AWS::Region
+                        - ':'
+                        - Ref: 'AWS::AccountId'
+                        - ':function:%FIREHOSE_DEFAULT_FUNCTION%:%FIREHOSE_DEFAULT_VERSION%'
+                - Sid: ""
+                  Effect: "Allow"
+                  Action:
+                    - "kinesis:DescribeStream"
+                    - "kinesis:GetShardIterator"
+                    - "kinesis:GetRecords"
+                  Resource:
+                    Fn::GetAtt:
+                      - KinesisStream
+                      - Arn
+    FirehoseStream:
+      Type: "AWS::KinesisFirehose::DeliveryStream"
+      Properties:
+        DeliveryStreamName: ${self:provider.environment.CB_ENV_NAME}-events
+        DeliveryStreamType: KinesisStreamAsSource
+        KinesisStreamSourceConfiguration:
+          KinesisStreamARN:
+            Fn::GetAtt:
+              - KinesisStream
+              - Arn
+          RoleARN:
+            Fn::GetAtt:
+              - FirehoseRole
+              - Arn
+        S3DestinationConfiguration:
+          BucketARN:
+            Fn::GetAtt:
+              - EventsBucket
+              - Arn
+          BufferingHints:
+            IntervalInSeconds: 60
+            SizeInMBs: 128
+          CompressionFormat: GZIP
+          Prefix: event/
+          RoleARN:
+            Fn::GetAtt:
+              - FirehoseRole
+              - Arn
+    EventsBucket:
+      Type: "AWS::S3::Bucket"
+      DeletionPolicy: Retain
+      Properties:
+        BucketName: ${self:provider.environment.CB_ENV_NAME}-events
     WebAppCloudFrontDistribution:
       Type: AWS::CloudFront::Distribution
       Properties:
