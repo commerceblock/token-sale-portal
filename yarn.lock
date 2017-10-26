@@ -340,7 +340,7 @@ autoprefixer@^7.1.2:
     postcss "^6.0.11"
     postcss-value-parser "^3.2.3"
 
-aws-sdk@^2.100.0, aws-sdk@^2.7.0, aws-sdk@^2.72.0, aws-sdk@^2.80.0, aws-sdk@^2.85.0, aws-sdk@^2.98.0:
+aws-sdk@^2.100.0, aws-sdk@^2.7.0, aws-sdk@^2.72.0, aws-sdk@^2.80.0, aws-sdk@^2.98.0:
   version "2.125.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.125.0.tgz#c0c3131b57eef4a051c7266cc3b47a704e7e36ab"
   dependencies:
@@ -6742,12 +6742,9 @@ serverless-offline@^3.15.3:
     lodash "^4.17.4"
     velocityjs "^0.9.3"
 
-serverless-sqs-local@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/serverless-sqs-local/-/serverless-sqs-local-1.1.2.tgz#2ac825d8b8e34bb57244d1fbc8cb0fab73ffd442"
-  dependencies:
-    aws-sdk "^2.85.0"
-    lodash "^4.17.4"
+"serverless-single-page-app-plugin@git://github.com/commerceblock/serverless-single-page-app-plugin.git#5140a247b4eb7a292720243190d341e372eb9c7c":
+  version "1.0.0"
+  resolved "git://github.com/commerceblock/serverless-single-page-app-plugin.git#5140a247b4eb7a292720243190d341e372eb9c7c"
 
 set-blocking@^2.0.0, set-blocking@~2.0.0:
   version "2.0.0"

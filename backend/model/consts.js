@@ -1,7 +1,7 @@
 // env variables
 export const env_name = process.env.CB_ENV_NAME;
-export const account_number = '12345'
-export const account_region = 'us-east-1'
+
+export const stream_name = env_name + '-events';
 
 // generic consts
 export const utf_8_encoding = 'utf-8';

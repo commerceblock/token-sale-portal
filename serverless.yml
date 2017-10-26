@@ -1,56 +1,66 @@
-service: cb-token-sale
+service: token-sale-portal
 
 frameworkVersion: ">=1.1.0 <2.0.0"
 
 plugins:
+  - serverless-kms-secrets
+  - serverless-single-page-app-plugin
   - serverless-dynamodb-local
   - serverless-offline
 
+custom:
+  defaultStage: sand
+  accounts:
+    prod:
+      stage: prod009
+      domainName: tokensale.commerceblock.com
+    sand:
+      stage: sand011
+      domainName: tokensale.commerceblock.ninja
+    test:
+      stage: test009
+      domainName: tokensale.test.commerceblock.ninja
+  selectedStage: ${env:CB_ENV, self:custom.defaultStage}
+  stage: ${self:custom.accounts.${self:custom.selectedStage}.stage}
+  externalConfig: ${file(env.${self:custom.stage}.${opt:region, self:provider.region}.yml)}
+  kmsSecrets: ${file(kms-secrets.${self:custom.stage}.${opt:region, self:provider.region}.yml)}
+  cors: ${self:custom.externalConfig.cors}
+  dynamodbThroughput: ${self:custom.externalConfig.dynamodbThroughput}
+  kinesis: ${self:custom.externalConfig.kinesis}
+  s3Bucket: cb-${self:provider.environment.CB_ENV_NAME}-website
+  localWebsiteDestination: build/frontend/
+  remoteWebsiteDestination: s3://${self:custom.s3Bucket}/
+  domainName: ${self:custom.accounts.${self:custom.selectedStage}.domainName}
+  # dev env
+  dynamodb: ${self:custom.externalConfig.dynamodb}
+  serverless-offline: ${self:custom.externalConfig.serverless-offline}
+
 provider:
   name: aws
-  stage: prod008
-  region: us-east-1
+  stage: ${self:custom.stage}
+  region: eu-west-1
   runtime: nodejs6.10
   memorySize: 256
   timeout: 5
   versionFunctions: true
-  environment:  ${self:custom.externalEnv.environment}
+  environment:
+    CB_ENV_NAME: ${self:custom.stage}-${self:service}
+
   iamRoleStatements:
     - Effect: Allow
       Action:
-        - ec2:CreateNetworkInterface
-        - ec2:DescribeNetworkInterfaces
-        - ec2:DetachNetworkInterface
-        - ec2:DeleteNetworkInterface
-      Resource: "*"
+        - kinesis:PutRecords
+      Resource: "arn:aws:kinesis:${self:provider.region}:*:stream/${self:custom.stage}-${self:service}-*"
     - Effect: Allow
       Action:
         - dynamodb:Query
         - dynamodb:GetItem
         - dynamodb:PutItem
-      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}-${self:custom.stage}-*"
-
-custom:
-  stage: ${opt:stage, self:provider.stage}
-  externalEnv: ${file(env.${opt:stage, self:provider.stage}.${opt:region, self:provider.region}.yml)}
-  cors: ${self:custom.externalEnv.cors}
-  dynamodbThroughput: ${self:custom.externalEnv.dynamodbThroughput}
-  vpc: ${self:custom.externalEnv.vpc}
-  dynamodb:
-    start:
-      port: 8000
-      inMemory: true
-      migrate: true
-      seed: true
-    seed:
-      domain:
-        sources:
-          - table: ${self:provider.environment.CB_ENV_NAME}-events
-            sources: [./data/events.json]
-          - table: ${self:provider.environment.CB_ENV_NAME}-addresses
-            sources: [./data/addresses.json]
-  serverless-offline:
-    port: 9000
+      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.stage}-${self:service}-*"
+    - Effect: Allow
+      Action:
+        - KMS:Decrypt
+      Resource: ${self:custom.kmsSecrets.keyArn}
 
 functions:
 
@@ -72,8 +82,9 @@ functions:
         cors: true
 
   ### Backoffice functions
-  orders-backoffice-stream-processor:
-    handler: lambda/backoffice-stream-processor.process
+  backoffice-kinesis-processor:
+    name: ${self:provider.environment.CB_ENV_NAME}-backoffice-kinesis-processor
+    handler: lambda/backoffice-kinesis-processor.process
     timeout: 30
     events:
       - stream:
@@ -82,14 +93,13 @@ functions:
             Fn::GetAtt:
               - EventsDynamoDbTable
               - StreamArn
-    vpc: ${self:custom.vpc}
 
 resources:
   Resources:
     WebsiteS3Bucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:provider.environment.CB_ENV_NAME}-website
+        BucketName: ${self:custom.s3Bucket}
         AccessControl: PublicRead
         WebsiteConfiguration:
           IndexDocument: index.html
@@ -112,7 +122,6 @@ resources:
                 - - 'arn:aws:s3:::'
                   - Ref: WebsiteS3Bucket
                   - "/*"
-
     AddressesDynamoDbTable:
       Type: "AWS::DynamoDB::Table"
       DeletionPolicy: Retain
@@ -169,3 +178,49 @@ resources:
           WriteCapacityUnits: ${self:custom.dynamodbThroughput.events.write}
         StreamSpecification:
           StreamViewType: NEW_IMAGE
+    KinesisStream:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: ${self:provider.environment.CB_ENV_NAME}-events
+        ShardCount: ${self:custom.kinesis.shardCount}
+        RetentionPeriodHours:  ${self:custom.kinesis.retentionPeriodHours}
+    WebAppCloudFrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Aliases:
+            - ${self:custom.domainName}
+          Origins:
+            - DomainName: ${self:custom.s3Bucket}.s3-website-${self:provider.region}.amazonaws.com
+              ## An identifier for the origin which must be unique within the distribution
+              Id: WebApp
+              CustomOriginConfig:
+                HTTPPort: 80
+                HTTPSPort: 443
+                OriginProtocolPolicy: http-only
+          Enabled: 'true'
+          DefaultRootObject: index.html
+          CustomErrorResponses:
+            - ErrorCode: 404
+              ResponseCode: 200
+              ResponsePagePath: /index.html
+          DefaultCacheBehavior:
+            AllowedMethods:
+              - HEAD
+              - GET
+              - OPTIONS
+            TargetOriginId: WebApp
+            ForwardedValues:
+              QueryString: 'false'
+              Cookies:
+                Forward: none
+            ViewerProtocolPolicy: redirect-to-https
+          ViewerCertificate:
+            AcmCertificateArn: ${self:custom.kmsSecrets.certificateArn}
+            SslSupportMethod: sni-only
+
+Outputs:
+  WebAppCloudFrontDistributionOutput:
+    Value:
+      'Fn::GetAtt': [ WebAppCloudFrontDistribution, DomainName ]
+

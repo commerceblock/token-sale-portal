@@ -1,5 +1,3 @@
-
-
 // imports
 import httpStatus from 'http-status-codes';
 import { map, filter } from 'lodash';
@@ -43,13 +41,13 @@ export function parseEvent(event) {
   const events = map(records, record => {
     try {
       const newImage = record.dynamodb.NewImage,
-        user_id = newImage[columns.user_id].S,
+        address = newImage[columns.address].S,
         event_id = newImage[columns.event_id].S,
         type = newImage[columns.type].S,
         timestamp = newImage[columns.timestamp].S,
         data = newImage[columns.data] ? newImage[columns.data].S : null;
       return {
-        user_id,
+        address,
         event_id,
         type,
         timestamp,
@@ -59,9 +57,28 @@ export function parseEvent(event) {
       log.error({
         record,
         err,
-      }, 'Failed to prase record');
+      }, 'Failed to prase dynamodb event');
       return {};
     }
   });
   return filter(events, isEventPredicate);
 };
+
+export function parseRecords(event) {
+  const records = event.Records ? event.Records : [];
+  const events = map(records, record => {
+    try {
+      const encoded = record.kinesis.data;
+      const decodedBuffer = Buffer.from(encoded, base64_encoding);
+      const decodedData = decodedBuffer.toString(utf_8_encoding);
+      return JSON.parse(decodedData);
+    } catch (err) {
+      log.error({
+        record,
+        err,
+      }, 'Failed to prase kinesis event');
+      return {};
+    }
+  });
+  return filter(events, isEventPredicate);
+}

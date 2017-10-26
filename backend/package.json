@@ -1,6 +1,7 @@
 {
-  "name": "invoicing-platform",
+  "name": "token-sale-portal",
   "version": "0.1.0",
+  "license": "BSD-4-Clause",
   "dependencies": {
     "bunyan": "^1.8.10",
     "dynamoose": "^0.8.3",
@@ -9,8 +10,6 @@
     "uuid": "^2.0.3",
     "graphql": "^0.9.1",
     "babel-polyfill": "^6.16.0",
-    "bitcore-lib": "^0.14.0",
-    "mysql2": "^1.4.2",
-    "sequelize": "^4.13.5"
+    "bitcore-lib": "^0.14.0"
   }
 }
