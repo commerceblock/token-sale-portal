@@ -15,6 +15,10 @@ const TokenInfo = new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLInt),
       description: 'CBT Tokens for 1 USD',
     },
+    totalTokensSold: {
+      type: new GraphQLNonNull(GraphQLInt),
+      description: 'Total tokens sold',
+    },
   }),
 });
 
