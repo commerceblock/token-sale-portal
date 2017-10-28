@@ -41,7 +41,8 @@ export const event_type = {
   order_transaction_confirmed: 'order_transaction_confirmed',
   order_confirmed: 'order_confirmed',
   terms_acknowledged: 'terms_acknowledged',
-  return_address_created: 'return_address_created'
+  return_address_created: 'return_address_created',
+  account_kyc_created: 'account_kyc_created',
 };
 
 // order status

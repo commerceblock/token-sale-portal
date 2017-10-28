@@ -6,6 +6,7 @@ import ReturnAddressType from '../types/return-address'
 import StageType from '../types/stage'
 import TokenInfoType from '../types/token-info'
 import TickersType from '../types/tickers'
+import UserInfoType from '../types/user-info'
 import db from '../database';
 
 /**
@@ -34,7 +35,11 @@ const QueryType = new GraphQLObjectType({
     tickers: {
       type: TickersType,
       resolve: (parent, {}, context) => db.getTickers(context.userId),
-    }
+    },
+    userInfo: {
+      type: UserInfoType,
+      resolve: (parent, {}, context) => db.getUserInfo(context.userId),
+    },
   }),
 });
 

@@ -9,7 +9,7 @@ plugins:
   - serverless-offline
 
 custom:
-  defaultStage: sand
+  defaultStage: test
   accounts:
     prod:
       stage: prod009
@@ -32,8 +32,20 @@ custom:
   remoteWebsiteDestination: s3://${self:custom.s3Bucket}/
   domainName: ${self:custom.accounts.${self:custom.selectedStage}.domainName}
   # dev env
-  dynamodb: ${self:custom.externalConfig.dynamodb}
   serverless-offline: ${self:custom.externalConfig.serverless-offline}
+  dynamodb:
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+      seed: true
+    seed:
+      domain:
+        sources:
+          - table: ${self:provider.environment.CB_ENV_NAME}-events
+            sources: [./data/events.json]
+          - table: ${self:provider.environment.CB_ENV_NAME}-addresses
+            sources: [./data/addresses.json]
 
 provider:
   name: aws
