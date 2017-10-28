@@ -1,52 +1,69 @@
 <template>
-  <transition name="modal">
-    <div class="modal-mask">
-      <div class="modal-wrapper">
-        <div class="modal-container">
-          <div class="modal-header">
-            <slot name="header">
-              <span class="tab-title">Welcome to CommerceBlock Token Portal</span>
-            </slot>
-          </div>
-          <div class="modal-body">
-            <slot name="body">
-              <div v-if=errorResponse class="alert alert-danger" role="alert">
-                <p>{{errorResponse}}</p>
-              </div>
-              <div class="row">
-                <div class="login-description text-center">
-                  Please enter in your whitelisted address
-                </div>
-              </div>
-              <div class="row">
-                <div v-bind:class="{ 'invite-code-input-red': !isValid, 'invite-code-input-green': isValid }">
-                  <input class="form-control span6" placeholder="Enter your address (BTC or ETH)" v-model="address" />
-                </div>
-              </div>
-            </slot>
-          </div>
-          <div class="modal-footer">
-            <slot name="footer">
-              <button class="btn btn-success btn-lg btn-block" @click="login" :disabled="isFormNotValid">Submit Address</button>
-            </slot>
-          </div>
-
+<transition name="modal">
+  <div class="modal-mask">
+    <div class="modal-wrapper">
+      <div class="modal-container">
+        <div class="modal-header">
+          <slot name="header">
+            <span class="tab-title">Welcome to CommerceBlock Token Portal</span>
+          </slot>
         </div>
-      </div>
-      <div class="bottom-logo">
-        <img src="/static/assets/commcerblock-big-gray.png" />
+        <div class="modal-body">
+          <slot name="body">
+            <div v-if=errorResponse class="alert alert-danger" role="alert">
+              <p>{{errorResponse}}</p>
+            </div>
+            <div class="row">
+              <div class="login-description text-center">
+                Please enter in your whitelisted address
+              </div>
+            </div>
+            <div class="row">
+              <div v-bind:class="{ 'invite-code-input-red': !isValid, 'invite-code-input-green': isValid }">
+                <input class="form-control span6" placeholder="Enter your address (BTC or ETH)" v-model="address" />
+              </div>
+            </div>
+          </slot>
+        </div>
+
+        <div class="checkbox" v-bind:class="{ 'kyc-input-hidden': !isKYCRequired }">
+          <label><input type="checkbox" v-model="checked">I certify that I am not a citizen or resident of the United States of America, The Republic of Singapore or The People's Republic of China.</label>
+        </div>
+
+        <div class="checkbox" v-bind:class="{ 'kyc-input-hidden': !isKYCRequired }">
+          <label><input type="checkbox" v-model="kycChecked">I confirm that KYC documentation must be submitted for contributions of more than 11.5k USD and failure to submit may result in a refund.</label>
+        </div>
+
+        <div class="checkbox" v-bind:class="{ 'kyc-input-hidden': !isKYCRequired }">
+          <label><input type="checkbox" v-model="termsAccepted">I have read and accept [token sale terms agreement].</label>
+        </div>
+
+        <div class="modal-footer">
+          <slot name="footer">
+            <button class="btn btn-success btn-lg btn-block" @click="login" :disabled="isFormNotValid">Submit Address</button>
+          </slot>
+        </div>
+
       </div>
     </div>
-  </transition>
+    <div class="bottom-logo">
+      <img src="/static/assets/commcerblock-big-gray.png" />
+    </div>
+  </div>
+</transition>
 </template>
 
 <script>
 import 'whatwg-fetch';
 import gql from 'graphql-tag';
 import httpStatus from 'http-status-codes';
-import { isEmpty } from 'lodash';
-import  endpoints from '../../lib/endpoints'
-import { setAccessToken } from '../../lib/vault'
+import {
+  isEmpty
+} from 'lodash';
+import endpoints from '../../lib/endpoints'
+import {
+  setAccessToken
+} from '../../lib/vault'
 
 const access_token_ttl = 30 * 60 * 1000;
 
@@ -56,10 +73,13 @@ export default {
     return {
       address: null,
       errorResponse: null,
+      kycChecked: null,
+      checked: null,
+      termsAccepted: null
     }
   },
   methods: {
-    login () {
+    login() {
       // TODO:: toggle progress bar
       if (isEmpty(this.address)) {
         // empty phrase
@@ -78,10 +98,10 @@ export default {
           .catch(this.handleGenericError)
       }
     },
-    redirectToHome (result) {
+    redirectToHome(result) {
       this.$router.push('/');
     },
-    handleLoginResult (data) {
+    handleLoginResult(data) {
       if (data && data.access_token_id) {
         const accessToken = data && data.access_token_id;
         setAccessToken(accessToken, access_token_ttl);
@@ -90,15 +110,15 @@ export default {
         this.errorResponse = "Unexpected error occured, please try again.";
       }
     },
-    handleGenericError (error) {
+    handleGenericError(error) {
       console.log(error);
       this.errorResponse = "Unexpected error occured, please try again.";
     },
-    handleServerError (error) {
+    handleServerError(error) {
       console.log(error);
       this.errorResponse = "Failed to connect to server, please try again.";
     },
-    parseResult (response) {
+    parseResult(response) {
       if (response.status === httpStatus.CREATED) {
         return response.json();
       } else if (response.status == httpStatus.NOT_FOUND) {
@@ -109,7 +129,7 @@ export default {
         return null;
       }
     },
-    doLogin () {
+    doLogin() {
       const data = {
         address: this.address
       };
@@ -123,11 +143,11 @@ export default {
     },
   },
   computed: {
-    isValid () {
+    isValid() {
       return !isEmpty(this.address) && this.address.length >= 10;
     },
-    isFormNotValid () {
-      return !this.isValid
+    isFormNotValid() {
+      return !(this.isValid && this.checked && this.kycChecked && this.termsAccepted)
     },
     apolloClient: function() {
       return this.$apollo.provider.defaultClient;
@@ -138,7 +158,7 @@ export default {
 
 <style scoped>
 .modal-mask {
-  position: fixed;
+  /*position: fixed;
   z-index: 9998;
   top: 0;
   left: 0;
@@ -146,17 +166,20 @@ export default {
   height: 100%;
   background-color: #f9f9f9;
   display: table;
-  transition: opacity .3s ease;
+  transition: opacity .3s ease;*/
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
 }
 
 .modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
+  /*display: table-cell;
+  vertical-align: middle;*/
 }
 
 .modal-container {
-  width: 650px;
-  height: 500px;
+  max-width: 650px;
+  /*min-height: 600px;*/
   margin: 0px auto;
   padding: 20px 30px;
   background-color: #fff;
@@ -164,6 +187,7 @@ export default {
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
   transition: all .3s ease;
   font-family: Helvetica, Arial, sans-serif;
+  margin-top: 30px;
 }
 
 .modal-header h3 {
@@ -181,9 +205,11 @@ export default {
 
 .modal-footer {
   padding: 0 !important;
-  padding-top: 10px;
+  margin-top: 30px;
   border: none;
 }
+
+
 /*
  * The following styles are auto-applied to elements with
  * transition="modal" when their visibility is toggled
