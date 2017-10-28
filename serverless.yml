@@ -15,7 +15,7 @@ custom:
       stage: prod009
       domainName: tokensale.commerceblock.com
     sand:
-      stage: sand011
+      stage: sand020
       domainName: tokensale.commerceblock.ninja
     test:
       stage: test009
