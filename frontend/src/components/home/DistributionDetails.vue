@@ -8,7 +8,7 @@
         </div>
       </div>
     </div>
-    <div class="row">
+    <!-- <div class="row">
       <div class="form-group">
         <label class="pull-left title">Which wallet are you using?</label>
         <select class="form-control" v-model="ethereumWalletProviderInput" :disabled="isEthereumWalletProviderNotEmpty">
@@ -19,7 +19,7 @@
 
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -64,5 +64,6 @@ export default {
   text-align: center;
   padding: 50px;
   padding-bottom: 100px;
+  position: relative;
 }
 </style>

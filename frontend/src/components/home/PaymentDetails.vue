@@ -7,8 +7,14 @@
       </div>
     </div>
     <div class="row">
-      <div class="text-center">
+      <div style="text-align: left">
         <strong>1 USD = {{ tokenUnitsPerUSD }} CBT Tokens</strong>
+        <br>
+        <strong>1 CBT = {{ this.changeRates.BTC }}BTC</strong>
+        <br>
+        <strong>1 CBT = {{ this.changeRates.ETH }} ETH</strong>
+        <br>
+        <strong>1 CBT = {{ this.changeRates.ETH }} ETH</strong>
       </div>
     </div>
     <div class="row">
@@ -18,6 +24,7 @@
   </div>
 </template>
 
+<!-- use this for changeRates: {{this.changeRates.BTC}} -->
 
 <script>
 import { isEmpty } from 'lodash'
@@ -25,7 +32,7 @@ import { computeTokenAmount } from '../../lib/util'
 
 export default {
   name: 'PaymentDetails',
-  props: ['usdAmount', 'tokenUnitPrice'],
+  props: ['usdAmount', 'tokenUnitPrice', 'changeRates'],
   data() {
     return {
       usdAmountInput: null,
@@ -59,6 +66,7 @@ export default {
   text-align: center;
   padding: 50px;
   padding-bottom: 100px;
+  position: relative;
 }
 
 .cbt-title {
