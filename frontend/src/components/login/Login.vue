@@ -38,6 +38,10 @@
           <label><input type="checkbox" v-model="termsAccepted">I have read and accept [token sale terms agreement].</label>
         </div>
 
+        <div class="checkbox" v-bind:class="{ 'kyc-input-hidden': !isKYCRequired }">
+          <label><input type="checkbox" v-model="ownAddress">I confirm this is my sending address and refund address.</label>
+        </div>
+
         <div class="modal-footer">
           <slot name="footer">
             <button class="btn btn-success btn-lg btn-block" @click="login" :disabled="isFormNotValid">Submit Address</button>
@@ -75,7 +79,8 @@ export default {
       errorResponse: null,
       kycChecked: null,
       checked: null,
-      termsAccepted: null
+      termsAccepted: null,
+      ownAddress: null
     }
   },
   methods: {
@@ -147,7 +152,7 @@ export default {
       return !isEmpty(this.address) && this.address.length >= 10;
     },
     isFormNotValid() {
-      return !(this.isValid && this.checked && this.kycChecked && this.termsAccepted)
+      return !(this.isValid && this.checked && this.kycChecked && this.termsAccepted && this.ownAddress)
     },
     apolloClient: function() {
       return this.$apollo.provider.defaultClient;

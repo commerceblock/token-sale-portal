@@ -10,20 +10,12 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-xs-6 text-center">
+  <div class="row" style="display:flex">
+    <div class="col-xs-6 text-center" >
       <div class="row">{{ cbtTokenAmount }} CBT</div>
       <div class="row">Tokens Purchased</div>
     </div>
     <div class="col-xs-6 text-center">
-      <div class="row" v-if="transactionLink">
-        <div id="clockdiv">
-          <span class="minutes"></span>
-          <!-- <div class="smalltext">Minutes</div> -->
-          <span class="seconds"></span>
-          <!-- <div class="smalltext">Seconds</div> -->
-        </div>
-      </div>
       <div class="row" v-if="transactionLink">{{ numberOfConfirmationsFormatted }} Confirmations</div>
       <!-- <div class="row">No. of Confirmations</div> -->
       <div class="col-xs-12 text-center external-link" v-if="transactionLink">
@@ -56,8 +48,7 @@ export default {
       transactionLink: null,
       numberOfConfirmations: 0,
       txChecker: null,
-      transactionError: null,
-      countdownExpired: false
+      transactionError: null
     };
   },
   computed: {
@@ -68,79 +59,79 @@ export default {
     }
   },
   methods: {
-    refreshTxStatus() {
-      fetchTxid(this);
-    },
+    // refreshTxStatus() {
+    //   fetchTxid(this);
+    // },
 
-    getTimeRemaining(endtime) {
-      var t = Date.parse(endtime) - Date.parse(new Date());
-      var seconds = Math.floor((t / 1000) % 60);
-      var minutes = Math.floor((t / 1000 / 60) % 60);
-      var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
-      var days = Math.floor(t / (1000 * 60 * 60 * 24));
-      return {
-        'total': t,
-        'days': days,
-        'hours': hours,
-        'minutes': minutes,
-        'seconds': seconds
-      };
-    },
-
-    initializeClock(id, endtime) {
-      var clock = document.getElementById(id);
-      var minutesSpan = clock.querySelector('.minutes');
-      var secondsSpan = clock.querySelector('.seconds');
-
-      function updateClock() {
-        var t = getTimeRemaining(endtime);
-
-        minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
-        secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
-
-        if (t.total <= 0) {
-          clearInterval(timeinterval);
-        }
-      }
-
-      updateClock();
-      var timeinterval = setInterval(updateClock, 1000);
-    }
+    // getTimeRemaining(endtime) {
+    //   var t = Date.parse(endtime) - Date.parse(new Date());
+    //   var seconds = Math.floor((t / 1000) % 60);
+    //   var minutes = Math.floor((t / 1000 / 60) % 60);
+    //   var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+    //   var days = Math.floor(t / (1000 * 60 * 60 * 24));
+    //   return {
+    //     'total': t,
+    //     'days': days,
+    //     'hours': hours,
+    //     'minutes': minutes,
+    //     'seconds': seconds
+    //   };
+    // },
+    //
+    // initializeClock(id, endtime) {
+    //   var clock = document.getElementById(id);
+    //   var minutesSpan = clock.querySelector('.minutes');
+    //   var secondsSpan = clock.querySelector('.seconds');
+    //
+    //   function updateClock() {
+    //     var t = getTimeRemaining(endtime);
+    //
+    //     minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+    //     secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+    //
+    //     if (t.total <= 0) {
+    //       clearInterval(timeinterval);
+    //     }
+    //   }
+    //
+    //   updateClock();
+    //   var timeinterval = setInterval(updateClock, 1000);
+    // }
 
     // var deadline = new Date(Date.parse(new Date()) + 15 * 24 * 60 * 60 * 1000);
     // initializeClock('clockdiv', deadline);
 
   },
-  beforeMount() {
-    this.refreshTxStatus();
-  },
-  mounted() {
-    var deadline = new Date('2017-12-25');
-    this.initializeClock('clockdiv', deadline);
-
-    const that = this;
-    // this.txChecker = setInterval(function() {
-    //   if (!that.txid) {
-    //     // fetch txid
-    //     fetchTxid(that);
-    //   }
-    //   if (that.numberOfConfirmations && that.numberOfConfirmations > requiredMinConfirmations(that.coin)) {
-    //     if (that.txChecker) {
-    //       clearInterval(that.txChecker);
-    //       that.txChecker = null;
-    //     }
-    //   } else {
-    //     if (that.txid) {
-    //       fetchConfirmations(that);
-    //     }
-    //   }
-    // }, 10000);
-  },
-  destroyed() {
-    if (this.txChecker) {
-      clearInterval(this.txChecker)
-    }
-  },
+  // beforeMount() {
+  //   this.refreshTxStatus();
+  // },
+  // mounted() {
+  //   var deadline = new Date('2017-12-25');
+  //   this.initializeClock('clockdiv', deadline);
+  //
+  //   const that = this;
+  //   // this.txChecker = setInterval(function() {
+  //   //   if (!that.txid) {
+  //   //     // fetch txid
+  //   //     fetchTxid(that);
+  //   //   }
+  //   //   if (that.numberOfConfirmations && that.numberOfConfirmations > requiredMinConfirmations(that.coin)) {
+  //   //     if (that.txChecker) {
+  //   //       clearInterval(that.txChecker);
+  //   //       that.txChecker = null;
+  //   //     }
+  //   //   } else {
+  //   //     if (that.txid) {
+  //   //       fetchConfirmations(that);
+  //   //     }
+  //   //   }
+  //   // }, 10000);
+  // },
+  // destroyed() {
+  //   if (this.txChecker) {
+  //     clearInterval(this.txChecker)
+  //   }
+  // },
 }
 </script>
 

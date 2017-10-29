@@ -67,6 +67,7 @@ export default {
   padding: 50px;
   padding-bottom: 100px;
   position: relative;
+  min-height: 300px;
 }
 
 .cbt-title {
