@@ -1,12 +1,10 @@
 
-export default async (userId) => {
+export default async () => {
   // TODO complete
   return {
-    btc: 410840,
-    eth: 28201
+    BTC: 478584,
+    tBTC: 478584,
+    ETH: 30323,
+    tETH: 30323,
   };
 };
-
-
-
-

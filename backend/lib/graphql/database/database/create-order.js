@@ -6,28 +6,26 @@ import { find } from 'lodash'
 import { loadEvents, saveEvent } from '../../../../lib/events-store';
 import { createOrderedId } from '../../../../lib/uuid';
 import { event_type, order_status } from '../../../../model/consts';
-import { generatePaymentAddress } from '../../../../lib/wallet';
 import getTickers from './get-tickers'
 
 export default async (userId, orderInput) => {
   return loadEvents(userId)
     .then(events => {
-      const account_created = find(events, { type: event_type.account_created });
-      if (account_created) {
-        const accountIndex = account_created.data.account_index;
-        return generatePaymentAddress(orderInput.coin, accountIndex)
-      }
+      return find(events, { type: event_type.account_created });
     })
-    .then(paymentAddress => {
-      return getTickers(userId)
+    .then(account_created => {
+      return getTickers()
         .then(tickers => ({
-          paymentAddress,
+          account_created,
           tickers
         }));
     })
     .then(pair => {
-      if (pair.paymentAddress) {
-        const spotPrice = pair.tickers[orderInput.coin];
+      const account = pair.account_created;
+      if (account && account.data && account.data.coin) {
+        const coin = account.data.coin;
+        const spotPrice = pair.tickers[coin];
+        const paymentAddress = account.data.payment_address;
         const payload = {
           user_id: userId,
           event_id: createOrderedId(),
@@ -35,25 +33,18 @@ export default async (userId, orderInput) => {
           timestamp: new Date().toISOString(),
           data: {
             usd_amount: orderInput.usdAmount,
-            coin: orderInput.coin,
-            payment_address: pair.paymentAddress,
             spot_price: spotPrice,
+            coin: coin,
+            payment_address: paymentAddress
           },
         };
-        return saveEvent(payload);
+        return saveEvent(payload)
+          .then(() => ({
+            usdAmount: payload.data.usd_amount,
+            coin: payload.data.coin,
+            paymentAddress,
+          }));
       }
-    })
-    .then(payload => {
-      if (payload) {
-        return {
-          usdAmount: payload.data.usd_amount,
-          coin: payload.data.coin,
-          paymentAddress: payload.data.payment_address,
-          status: order_status.initial,
-          numnberOfConfirmations: 0
-        }
-      } else {
-        return null;
-      }
+      return null;
     });
 };

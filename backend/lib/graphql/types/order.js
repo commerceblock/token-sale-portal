@@ -17,28 +17,16 @@ const OrderType = new GraphQLObjectType({
     },
     coin: {
       type: new GraphQLNonNull(GraphQLString),
-      description: 'order coin (btc or eth)',
+      description: 'order coin (BTC or ETH)',
     },
     spotPrice: {
       type: new GraphQLNonNull(GraphQLInt),
-      description: 'order coin (btc or eth) spot price',
+      description: 'order coin (BTC or ETH) spot price',
     },
     paymentAddress: {
       type: new GraphQLNonNull(GraphQLString),
       description: 'order payment address',
     },
-    status: {
-      type: new GraphQLNonNull(GraphQLString),
-      description: 'order status (initial, unconfirmed, confirmed, fulfilled)',
-    },
-    numnberOfConfirmations: {
-      type: GraphQLInt,
-      description: 'number of confirmations',
-    },
-    transactionLink: {
-      type: GraphQLString,
-      description: 'transaction reference link on public blockchain',
-    }
   }),
 });
 

@@ -1,0 +1,368 @@
+service: token-sale-portal
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+plugins:
+  - serverless-kms-secrets
+  - serverless-single-page-app-plugin
+  - serverless-dynamodb-local
+  - serverless-offline
+
+custom:
+  defaultStage: test
+  accounts:
+    prod:
+      stage: prod009
+      domainName: tokensale.commerceblock.com
+    sand:
+      stage: sand020
+      domainName: tokensale.commerceblock.ninja
+    test:
+      stage: test009
+      domainName: tokensale.test.commerceblock.ninja
+  selectedStage: ${env:CB_ENV, self:custom.defaultStage}
+  stage: ${self:custom.accounts.${self:custom.selectedStage}.stage}
+  externalConfig: ${file(env.${self:custom.stage}.${opt:region, self:provider.region}.yml)}
+  kmsSecrets: ${file(kms-secrets.${self:custom.stage}.${opt:region, self:provider.region}.yml)}
+  cors: ${self:custom.externalConfig.cors}
+  dynamodbThroughput: ${self:custom.externalConfig.dynamodbThroughput}
+  kinesis: ${self:custom.externalConfig.kinesis}
+  s3Bucket: cb-${self:provider.environment.CB_ENV_NAME}-website
+  localWebsiteDestination: build/frontend/
+  remoteWebsiteDestination: s3://${self:custom.s3Bucket}/
+  domainName: ${self:custom.accounts.${self:custom.selectedStage}.domainName}
+  # dev env
+  serverless-offline: ${self:custom.externalConfig.serverless-offline}
+  dynamodb:
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+      seed: true
+    seed:
+      domain:
+        sources:
+          - table: ${self:provider.environment.CB_ENV_NAME}-events
+            sources: [./data/events.json]
+          - table: ${self:provider.environment.CB_ENV_NAME}-addresses
+            sources: [./data/addresses.json]
+          - table: ${self:provider.environment.CB_ENV_NAME}-tokens-counter
+            sources: [./data/tokens-counter.json]
+
+provider:
+  name: aws
+  stage: ${self:custom.stage}
+  region: eu-west-1
+  runtime: nodejs6.10
+  memorySize: 256
+  timeout: 5
+  versionFunctions: true
+  environment:
+    CB_ENV_NAME: ${self:custom.stage}-${self:service}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - kinesis:PutRecords
+      Resource: "arn:aws:kinesis:${self:provider.region}:*:stream/${self:custom.stage}-${self:service}-*"
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.stage}-${self:service}-*"
+    - Effect: Allow
+      Action:
+        - KMS:Decrypt
+      Resource: ${self:custom.kmsSecrets.keyArn}
+
+functions:
+
+  ### API functions
+  login-api:
+    handler: lambda/login-api.post
+    events:
+      - http:
+          path: /v1.0/login
+          method: post
+          cors: true
+
+  graphql-api:
+    handler: lambda/graphql-api.post
+    events:
+    - http:
+        path: /v1.0/graphql
+        method: post
+        cors: true
+
+  ### Backoffice functions
+  backoffice-kinesis-processor:
+    name: ${self:provider.environment.CB_ENV_NAME}-backoffice-kinesis-processor
+    handler: lambda/backoffice-kinesis-processor.process
+    timeout: 30
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - EventsDynamoDbTable
+              - StreamArn
+
+resources:
+  Resources:
+    WebsiteS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.s3Bucket}
+        AccessControl: PublicRead
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: index.html
+    WebsiteS3BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: WebsiteS3Bucket
+        PolicyDocument:
+          Statement:
+            - Sid: PublicReadGetObject
+              Effect: Allow
+              Principal: "*"
+              Action:
+              - s3:GetObject
+              Resource:
+              - Fn::Join:
+                - ''
+                - - 'arn:aws:s3:::'
+                  - Ref: WebsiteS3Bucket
+                  - "/*"
+    AddressesDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.CB_ENV_NAME}-addresses
+        AttributeDefinitions:
+          -
+            AttributeName: address
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: address
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: ${self:custom.dynamodbThroughput.addresses.read}
+          WriteCapacityUnits: ${self:custom.dynamodbThroughput.addresses.write}
+    AccessTokensDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.CB_ENV_NAME}-access-tokens
+        AttributeDefinitions:
+          -
+            AttributeName: access_token_id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: access_token_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: ${self:custom.dynamodbThroughput.accessTokens.read}
+          WriteCapacityUnits: ${self:custom.dynamodbThroughput.accessTokens.write}
+    EventsDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.CB_ENV_NAME}-events
+        AttributeDefinitions:
+          -
+            AttributeName: user_id
+            AttributeType: S
+          -
+            AttributeName: event_id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: user_id
+            KeyType: HASH
+          -
+            AttributeName: event_id
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: ${self:custom.dynamodbThroughput.events.read}
+          WriteCapacityUnits: ${self:custom.dynamodbThroughput.events.write}
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
+    AddressesIndexDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.CB_ENV_NAME}-addresses-index
+        AttributeDefinitions:
+          -
+            AttributeName: address
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: address
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: ${self:custom.dynamodbThroughput.addressesIndex.read}
+          WriteCapacityUnits: ${self:custom.dynamodbThroughput.addressesIndex.write}
+    TokensCounterDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.CB_ENV_NAME}-tokens-counter
+        AttributeDefinitions:
+          -
+            AttributeName: name
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: name
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: ${self:custom.dynamodbThroughput.tokensCounter.read}
+          WriteCapacityUnits: ${self:custom.dynamodbThroughput.tokensCounter.write}
+    KinesisStream:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: ${self:provider.environment.CB_ENV_NAME}-events
+        ShardCount: ${self:custom.kinesis.shardCount}
+        RetentionPeriodHours:  ${self:custom.kinesis.retentionPeriodHours}
+    FirehoseRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName: ${self:provider.environment.CB_ENV_NAME}-firehose-role
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Sid: ""
+              Effect: "Allow"
+              Principal:
+                Service: "firehose.amazonaws.com"
+              Action: "sts:AssumeRole"
+              Condition:
+                StringEquals:
+                  sts:ExternalId:
+                    Ref: 'AWS::AccountId'
+        Policies:
+          - PolicyName: ${self:provider.environment.CB_ENV_NAME}-firehose-policy
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Sid: ""
+                  Effect: "Allow"
+                  Action:
+                    - s3:AbortMultipartUpload
+                    - s3:GetBucketLocation
+                    - s3:GetObject
+                    - s3:ListBucket
+                    - s3:ListBucketMultipartUploads
+                    - s3:PutObject
+                  Resource:
+                    - Fn::Join:
+                      - ''
+                      - - 'arn:aws:s3:::'
+                        - Ref: EventsBucket
+                    - Fn::Join:
+                      - ''
+                      - - 'arn:aws:s3:::'
+                        - Ref: EventsBucket
+                        - '/*'
+                - Sid: ""
+                  Effect: "Allow"
+                  Action:
+                    - lambda:InvokeFunction
+                    - lambda:GetFunctionConfiguration
+                  Resource:
+                    - Fn::Join:
+                      - ''
+                      - - 'arn:aws:lambda:'
+                        - Ref: AWS::Region
+                        - ':'
+                        - Ref: 'AWS::AccountId'
+                        - ':function:%FIREHOSE_DEFAULT_FUNCTION%:%FIREHOSE_DEFAULT_VERSION%'
+                - Sid: ""
+                  Effect: "Allow"
+                  Action:
+                    - "kinesis:DescribeStream"
+                    - "kinesis:GetShardIterator"
+                    - "kinesis:GetRecords"
+                  Resource:
+                    Fn::GetAtt:
+                      - KinesisStream
+                      - Arn
+    FirehoseStream:
+      Type: "AWS::KinesisFirehose::DeliveryStream"
+      Properties:
+        DeliveryStreamName: ${self:provider.environment.CB_ENV_NAME}-events
+        DeliveryStreamType: KinesisStreamAsSource
+        KinesisStreamSourceConfiguration:
+          KinesisStreamARN:
+            Fn::GetAtt:
+              - KinesisStream
+              - Arn
+          RoleARN:
+            Fn::GetAtt:
+              - FirehoseRole
+              - Arn
+        S3DestinationConfiguration:
+          BucketARN:
+            Fn::GetAtt:
+              - EventsBucket
+              - Arn
+          BufferingHints:
+            IntervalInSeconds: 60
+            SizeInMBs: 128
+          CompressionFormat: GZIP
+          Prefix: event/
+          RoleARN:
+            Fn::GetAtt:
+              - FirehoseRole
+              - Arn
+    EventsBucket:
+      Type: "AWS::S3::Bucket"
+      DeletionPolicy: Retain
+      Properties:
+        BucketName: ${self:provider.environment.CB_ENV_NAME}-events
+    WebAppCloudFrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Aliases:
+            - ${self:custom.domainName}
+          Origins:
+            - DomainName: ${self:custom.s3Bucket}.s3-website-${self:provider.region}.amazonaws.com
+              ## An identifier for the origin which must be unique within the distribution
+              Id: WebApp
+              CustomOriginConfig:
+                HTTPPort: 80
+                HTTPSPort: 443
+                OriginProtocolPolicy: http-only
+          Enabled: 'true'
+          DefaultRootObject: index.html
+          CustomErrorResponses:
+            - ErrorCode: 404
+              ResponseCode: 200
+              ResponsePagePath: /index.html
+          DefaultCacheBehavior:
+            AllowedMethods:
+              - HEAD
+              - GET
+              - OPTIONS
+            TargetOriginId: WebApp
+            ForwardedValues:
+              QueryString: 'false'
+              Cookies:
+                Forward: none
+            ViewerProtocolPolicy: redirect-to-https
+          ViewerCertificate:
+            AcmCertificateArn: ${self:custom.kmsSecrets.certificateArn}
+            SslSupportMethod: sni-only
+
+Outputs:
+  WebAppCloudFrontDistributionOutput:
+    Value:
+      'Fn::GetAtt': [ WebAppCloudFrontDistribution, DomainName ]
+

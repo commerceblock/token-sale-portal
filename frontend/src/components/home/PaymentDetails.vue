@@ -7,41 +7,24 @@
       </div>
     </div>
     <div class="row">
-      <div class="text-center">
-        <strong>1 CommerceBlock Token = {{ tokenUnitPriceInUSD }} USD</strong>
-      </div>
-    </div>
-    <div class="row">
-      <div class="text-center">
-        <small>{{ bounsPrecentage }}% Preorder Bouns</small>
+      <div style="text-align: left">
+        <strong>1 USD = {{ tokenUnitsPerUSD }} CBT Tokens</strong>
+        <br>
+        <strong>1 CBT = {{ this.changeRates.BTC }}BTC</strong>
+        <br>
+        <strong>1 CBT = {{ this.changeRates.ETH }} ETH</strong>
+        <br>
+        <strong>1 CBT = {{ this.changeRates.ETH }} ETH</strong>
       </div>
     </div>
     <div class="row">
       <label class="pull-left title-usd-amount">Enter amount in USD</label>
       <input class="form-control input-usd-amount" type="text" v-model="usdAmountInput" placeholder="Amount" :disabled="isUSDAmountNotEmpty">
     </div>
-    <div class="row">
-      <div class="input-group form-group">
-        <label class="pull-left title-usd-amount">How you would like to pay?</label>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-6">
-        <label class="radio-inline radio-center">
-          <input type="radio" name="currencyType" value="btc" v-model="coinInput" :disabled="isCoinNotEmpty">
-          <img height="30" src="/static/assets/bitcoin-logo.png" />
-        </label>
-      </div>
-      <div class="col-xs-6">
-        <label class="radio-inline radio-center">
-          <input type="radio" name="currencyType" value="eth" v-model="coinInput" :disabled="isCoinNotEmpty">
-          <img height="30" src="/static/assets/ether-logo.png" />
-        </label>
-      </div>
-    </div>
   </div>
 </template>
 
+<!-- use this for changeRates: {{this.changeRates.BTC}} -->
 
 <script>
 import { isEmpty } from 'lodash'
@@ -49,33 +32,26 @@ import { computeTokenAmount } from '../../lib/util'
 
 export default {
   name: 'PaymentDetails',
-  props: ['usdAmount', 'coin', 'tokenUnitPrice', 'bounsPrecentage'],
+  props: ['usdAmount', 'tokenUnitPrice', 'changeRates'],
   data() {
     return {
       usdAmountInput: null,
-      coinInput: null,
     };
   },
   computed: {
     isUSDAmountNotEmpty() {
       return !isEmpty(this.usdAmount)
     },
-    isCoinNotEmpty() {
-      return !isEmpty(this.coin)
-    },
     cbtAmount () {
       return this.usdAmountInput && this.tokenUnitPrice && computeTokenAmount(this.usdAmountInput, this.tokenUnitPrice);
     },
-    tokenUnitPriceInUSD () {
-      return this.tokenUnitPrice && (this.tokenUnitPrice / 100).toFixed(3).replace(/\.?0*$/,'');
+    tokenUnitsPerUSD () {
+      return this.tokenUnitPrice && this.tokenUnitPrice;
     }
   },
   updated () {
     if (this.usdAmount) {
       this.usdAmountInput = this.usdAmount;
-    }
-    if (this.coin) {
-      this.coinInput = this.coin;
     }
   },
 }
@@ -90,6 +66,8 @@ export default {
   text-align: center;
   padding: 50px;
   padding-bottom: 100px;
+  position: relative;
+  min-height: 300px;
 }
 
 .cbt-title {

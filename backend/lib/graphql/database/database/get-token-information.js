@@ -1,10 +1,15 @@
+import { loadCounter } from '../../../tokens-counter-store';
 
-const token_price_in_usd_cents = 1000
-const bouns_precentage = 25.0;
+// 1 USD == 16 CBT
+const token_unit_per_usd = 16;
+const total_sold_tokens = 1000000;
+
 
 export default async (userId) => {
-  return {
-    unitPrice: token_price_in_usd_cents,
-    bounsPrecentage: bouns_precentage
-  };
+  return loadCounter().then(count => {
+    return {
+      unitPrice: token_unit_per_usd,
+      totalTokensSold: count,
+    };
+  });
 };

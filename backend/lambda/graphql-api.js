@@ -10,6 +10,7 @@ import graphQLHandler from '../lib/graphql';
 import { createOrderedId } from '../lib/uuid';
 import { toResponse } from '../lib/http-util';
 import { loadToken } from '../lib/access-tokens-store';
+import { isNotValid } from '../lib/item-util';
 
 // logging
 import { createLogger } from 'bunyan';
@@ -25,7 +26,7 @@ export function post (event, context, callback) {
   const token = authorizationToken.split(' ');
   if (token.length !== 2 ||
       token[0] !== 'Bearer' ||
-      token[1].length !== 22) {
+      isNotValid(token[1])) {
     const response = toResponse(httpStatus.FORBIDDEN);
     log.error({ request_id, authorizationToken, http_response: response }, 'malformed token - end');
     return callback(null, response);

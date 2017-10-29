@@ -1,7 +1,7 @@
 // env variables
 export const env_name = process.env.CB_ENV_NAME;
-export const account_number = '12345'
-export const account_region = 'eu-west-2'
+
+export const stream_name = env_name + '-events';
 
 // generic consts
 export const utf_8_encoding = 'utf-8';
@@ -21,7 +21,7 @@ export const columns = {
 
   // token sale platfrom
   user_id: 'user_id',
-  invite_code: 'invite_code',
+  address: 'address',
   access_token_id: 'access_token_id',
   order_id: 'order_id',
   created_by: 'created_by',
@@ -30,18 +30,25 @@ export const columns = {
   amount: 'amount',
   coin: 'coin',
   payment_address: 'payment_address',
+  status: 'status',
+  whitelist: 'whitelist',
+  kyc: 'kyc',
+  bonus: 'bonus',
+  spot_price: 'spot_price',
+  name: 'name',
+  total: 'total',
 };
 
 // event types
 export const event_type = {
   account_created: 'account_created',
-  invite_code_generated: 'invite_code_generated',
   order_created: 'order_created',
   order_transaction_broadcasted: 'order_transaction_broadcasted',
   order_transaction_confirmed: 'order_transaction_confirmed',
   order_confirmed: 'order_confirmed',
   terms_acknowledged: 'terms_acknowledged',
-  return_address_created: 'return_address_created'
+  return_address_created: 'return_address_created',
+  account_kyc_created: 'account_kyc_created',
 };
 
 // order status

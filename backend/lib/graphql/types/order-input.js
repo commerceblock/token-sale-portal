@@ -13,11 +13,7 @@ const OrderInputType = new GraphQLInputObjectType({
     usdAmount: {
       type: new GraphQLNonNull(GraphQLString),
       description: 'order amount',
-    },
-    coin: {
-      type: new GraphQLNonNull(GraphQLString),
-      description: 'order coin (btc or eth)',
-    },
+    }
   }),
 });
 

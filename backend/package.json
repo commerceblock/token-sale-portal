@@ -1,15 +1,15 @@
 {
-  "name": "invoicing-platform",
+  "name": "token-sale-portal",
   "version": "0.1.0",
+  "license": "BSD-4-Clause",
   "dependencies": {
-    "bs58": "^4.0.1",
     "bunyan": "^1.8.10",
     "dynamoose": "^0.8.3",
     "http-status-codes": "^1.2.0",
     "lodash": "^4.17.4",
     "uuid": "^2.0.3",
     "graphql": "^0.9.1",
-    "sqs-consumer": "^3.7.0",
-    "babel-polyfill": "^6.16.0"
+    "babel-polyfill": "^6.16.0",
+    "bitcore-lib": "^0.14.0"
   }
 }

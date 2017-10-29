@@ -1,84 +1,97 @@
 <template>
-  <transition name="modal">
-    <div class="modal-mask">
-      <div class="modal-wrapper">
-        <div class="modal-container">
-          <modal v-if="showModal" />
-          <div class="modal-header">
-            <slot name="header">
-              <span class="tab-title">Welcome to CommerceBlock Token Portal</span>
-            </slot>
-          </div>
-          <div class="modal-body">
-            <slot name="body">
-              <div v-if=errorResponse class="alert alert-danger" role="alert">
-                <p>{{errorResponse}}</p>
-              </div>
-              <div class="row">
-                <div class="login-description text-center">
-                  Please enter in your invite code
-                </div>
-              </div>
-              <div class="row">
-                <div v-bind:class="{ 'invite-code-input-red': !isValid, 'invite-code-input-green': isValid }">
-                  <input class="form-control span6" placeholder="Enter your invitation code." v-model="inviteCode" />
-                </div>
-              </div>
-              <div class="row">
-                <div class="checkbox">
-                  <label><input type="checkbox"  v-model="checked">I certify that I am not a citizen of resident of the United States of America or The Republic of Singapore</label>
-                </div>
-              </div>
-            </slot>
-          </div>
-          <div class="modal-footer">
-            <slot name="footer">
-              <button class="btn btn-success btn-lg btn-block" @click="login" :disabled="isFormNotValid">Submit Invite Code</button>
-            </slot>
-          </div>
-
+<transition name="modal">
+  <div class="modal-mask">
+    <div class="modal-wrapper">
+      <div class="modal-container">
+        <div class="modal-header">
+          <slot name="header">
+            <span class="tab-title">Welcome to CommerceBlock Token Portal</span>
+          </slot>
         </div>
-      </div>
-      <div class="bottom-logo">
-        <img src="/static/assets/commcerblock-big-gray.png" />
+        <div class="modal-body">
+          <slot name="body">
+            <div v-if=errorResponse class="alert alert-danger" role="alert">
+              <p>{{errorResponse}}</p>
+            </div>
+            <div class="row">
+              <div class="login-description text-center">
+                Please enter in your whitelisted address
+              </div>
+            </div>
+            <div class="row">
+              <div v-bind:class="{ 'invite-code-input-red': !isValid, 'invite-code-input-green': isValid }">
+                <input class="form-control span6" placeholder="Enter your address (BTC or ETH)" v-model="address" />
+              </div>
+            </div>
+          </slot>
+        </div>
+
+        <div class="checkbox" v-bind:class="{ 'kyc-input-hidden': !isKYCRequired }">
+          <label><input type="checkbox" v-model="checked">I certify that I am not a citizen or resident of the United States of America, The Republic of Singapore or The People's Republic of China.</label>
+        </div>
+
+        <div class="checkbox" v-bind:class="{ 'kyc-input-hidden': !isKYCRequired }">
+          <label><input type="checkbox" v-model="kycChecked">I confirm that KYC documentation must be submitted for contributions of more than 11.5k USD and failure to submit may result in a refund.</label>
+        </div>
+
+        <div class="checkbox" v-bind:class="{ 'kyc-input-hidden': !isKYCRequired }">
+          <label><input type="checkbox" v-model="termsAccepted">I have read and accept [token sale terms agreement].</label>
+        </div>
+
+        <div class="checkbox" v-bind:class="{ 'kyc-input-hidden': !isKYCRequired }">
+          <label><input type="checkbox" v-model="ownAddress">I confirm this is my sending address and refund address.</label>
+        </div>
+
+        <div class="modal-footer">
+          <slot name="footer">
+            <button class="btn btn-success btn-lg btn-block" @click="login" :disabled="isFormNotValid">Submit Address</button>
+          </slot>
+        </div>
+
       </div>
     </div>
-  </transition>
+    <div class="bottom-logo">
+      <img src="/static/assets/commcerblock-big-gray.png" />
+    </div>
+  </div>
+</transition>
 </template>
 
 <script>
 import 'whatwg-fetch';
 import gql from 'graphql-tag';
 import httpStatus from 'http-status-codes';
-import { isEmpty } from 'lodash';
-import Modal from './TermsConfirmationModal.vue'
-import  endpoints from '../../lib/endpoints'
-import { setAccessToken } from '../../lib/vault'
+import {
+  isEmpty
+} from 'lodash';
+import endpoints from '../../lib/endpoints'
+import {
+  setAccessToken
+} from '../../lib/vault'
 
 const access_token_ttl = 30 * 60 * 1000;
 
 export default {
   name: 'Login',
-  components: {
-    Modal
-  },
   data: function() {
     return {
-      inviteCode: null,
-      checked: null,
+      address: null,
       errorResponse: null,
-      showModal: null
+      kycChecked: null,
+      checked: null,
+      termsAccepted: null,
+      ownAddress: null
     }
   },
   methods: {
-    login () {
+    login() {
       // TODO:: toggle progress bar
-      if (isEmpty(this.inviteCode)) {
+      if (isEmpty(this.address)) {
         // empty phrase
-        this.errorResponse = 'code is empty.';
+        this.errorResponse = 'Address is empty.';
       } else if (!this.isValid) {
         // check phrase
-        this.errorResponse = 'code is not valid, must be at least 10 chars.';
+        this.errorResponse = 'Address is not valid, must be at least 10 chars.';
       } else {
         this.errorResponse = null;
         const that = this;
@@ -86,43 +99,14 @@ export default {
           .then(this.parseResult)
           .catch(this.handleServerError)
           .then(this.handleLoginResult)
-          .then(this.fetchLastStage)
-          .then(this.redirectToLastStage)
+          .then(this.redirectToHome)
           .catch(this.handleGenericError)
       }
     },
-    redirectToLastStage (result) {
-      if (result && result.data && result.data.lastStage) {
-        const name = result.data.lastStage.name;
-        if (name === 'initial') {
-          this.showModal = true;
-        } else if (name === 'terms_acknowledged') {
-          this.$router.push('/');
-        } else if (name === 'return_address_created') {
-          // TODO: update path
-          this.$router.push('/');
-        } else if (name === 'order_created') {
-          // TODO: update path
-          this.$router.push('/');
-        } else {
-          // not suppose to happen.
-          this.showModal = true;
-        }
-      } else {
-        this.errorResponse = "Unexpected error occured, please try again.";
-      }
+    redirectToHome(result) {
+      this.$router.push('/');
     },
-    fetchLastStage (data) {
-      if (data) {
-        return this.apolloClient.query({
-          query: gql`query {
-            lastStage {
-              name
-            }
-          }`});
-      }
-    },
-    handleLoginResult (data) {
+    handleLoginResult(data) {
       if (data && data.access_token_id) {
         const accessToken = data && data.access_token_id;
         setAccessToken(accessToken, access_token_ttl);
@@ -131,28 +115,28 @@ export default {
         this.errorResponse = "Unexpected error occured, please try again.";
       }
     },
-    handleGenericError (error) {
+    handleGenericError(error) {
       console.log(error);
       this.errorResponse = "Unexpected error occured, please try again.";
     },
-    handleServerError (error) {
+    handleServerError(error) {
       console.log(error);
       this.errorResponse = "Failed to connect to server, please try again.";
     },
-    parseResult (response) {
+    parseResult(response) {
       if (response.status === httpStatus.CREATED) {
         return response.json();
       } else if (response.status == httpStatus.NOT_FOUND) {
-        this.errorResponse = "Unknown code, please check your input.";
+        this.errorResponse = "Unknown address.";
         return null;
       } else {
         this.errorResponse = "Unexpected error occured, please try again.";
         return null;
       }
     },
-    doLogin (hdPrvKey) {
+    doLogin() {
       const data = {
-        invite_code: this.inviteCode
+        address: this.address
       };
       return fetch(endpoints.login(), {
         method: "POST",
@@ -164,11 +148,11 @@ export default {
     },
   },
   computed: {
-    isValid () {
-      return !isEmpty(this.inviteCode) && this.inviteCode.length >= 10;
+    isValid() {
+      return !isEmpty(this.address) && this.address.length >= 10;
     },
-    isFormNotValid () {
-      return !this.isValid || !this.checked
+    isFormNotValid() {
+      return !(this.isValid && this.checked && this.kycChecked && this.termsAccepted && this.ownAddress)
     },
     apolloClient: function() {
       return this.$apollo.provider.defaultClient;
@@ -179,7 +163,7 @@ export default {
 
 <style scoped>
 .modal-mask {
-  position: fixed;
+  /*position: fixed;
   z-index: 9998;
   top: 0;
   left: 0;
@@ -187,17 +171,20 @@ export default {
   height: 100%;
   background-color: #f9f9f9;
   display: table;
-  transition: opacity .3s ease;
+  transition: opacity .3s ease;*/
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
 }
 
 .modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
+  /*display: table-cell;
+  vertical-align: middle;*/
 }
 
 .modal-container {
-  width: 650px;
-  height: 500px;
+  max-width: 650px;
+  /*min-height: 600px;*/
   margin: 0px auto;
   padding: 20px 30px;
   background-color: #fff;
@@ -205,6 +192,7 @@ export default {
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
   transition: all .3s ease;
   font-family: Helvetica, Arial, sans-serif;
+  margin-top: 30px;
 }
 
 .modal-header h3 {
@@ -222,9 +210,11 @@ export default {
 
 .modal-footer {
   padding: 0 !important;
-  padding-top: 10px;
+  margin-top: 30px;
   border: none;
 }
+
+
 /*
  * The following styles are auto-applied to elements with
  * transition="modal" when their visibility is toggled

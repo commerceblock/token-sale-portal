@@ -1,0 +1,16 @@
+[
+  {
+    "address": "1KHDpmHMcN4aEubyBLC9dhEkAKygB2D8BA",
+    "user_id": "05f2f54b-ffc4-4822-b092-66058cbdf582",
+    "event_id": "7772f54b-ffc4-4822-b092-66058cbdf999",
+    "type": "address_whitelisted",
+    "data": "{\"status\":\"accepted\"}"
+  },
+  {
+    "address": "0x450Bea19c4F913b8Ce157D610ec672a08e8e835b",
+    "user_id": "05f2f54b-ffc4-4822-b092-66058cbdf583",
+    "event_id": "7772f54b-ffc4-4822-b092-66058cbdf999",
+    "type": "address_whitelisted",
+    "data": "{\"status\":\"accepted\"}"
+  }
+]
