@@ -46,6 +46,8 @@ custom:
             sources: [./data/events.json]
           - table: ${self:provider.environment.CB_ENV_NAME}-addresses
             sources: [./data/addresses.json]
+          - table: ${self:provider.environment.CB_ENV_NAME}-tokens-counter
+            sources: [./data/tokens-counter.json]
 
 provider:
   name: aws
@@ -190,6 +192,38 @@ resources:
           WriteCapacityUnits: ${self:custom.dynamodbThroughput.events.write}
         StreamSpecification:
           StreamViewType: NEW_IMAGE
+    AddressesIndexDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.CB_ENV_NAME}-addresses-index
+        AttributeDefinitions:
+          -
+            AttributeName: address
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: address
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: ${self:custom.dynamodbThroughput.addressesIndex.read}
+          WriteCapacityUnits: ${self:custom.dynamodbThroughput.addressesIndex.write}
+    TokensCounterDynamoDbTable:
+      Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:provider.environment.CB_ENV_NAME}-tokens-counter
+        AttributeDefinitions:
+          -
+            AttributeName: name
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: name
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: ${self:custom.dynamodbThroughput.tokensCounter.read}
+          WriteCapacityUnits: ${self:custom.dynamodbThroughput.tokensCounter.write}
     KinesisStream:
       Type: AWS::Kinesis::Stream
       Properties:
