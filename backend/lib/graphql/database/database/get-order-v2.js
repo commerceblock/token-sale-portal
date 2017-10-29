@@ -23,7 +23,7 @@ export default async (userId) => {
           coin: order_created.data.coin,
           spotPrice: order_created.data.spot_price,
           paymentAddress: order_created.data.payment_address,
-          amountOfTokens: order_created.data.amount_of_tokens,
+          invoiceId: order_created.data.invoice_id,
         };
       }
       return null;

@@ -2,6 +2,7 @@ import {
   GraphQLObjectType,
 } from 'graphql';
 import OrderType from '../types/order';
+import OrderV2Type from '../types/order-v2';
 import ReturnAddressType from '../types/return-address'
 import StageType from '../types/stage'
 import TokenInfoType from '../types/token-info'
@@ -40,6 +41,10 @@ const QueryType = new GraphQLObjectType({
       type: UserInfoType,
       resolve: (parent, {}, context) => db.getUserInfo(context.userId),
     },
+    orderV2:{
+      type: OrderV2Type,
+      resolve: (parent, {}, context) => db.getOrderV2(context.userId),
+    }
   }),
 });
 

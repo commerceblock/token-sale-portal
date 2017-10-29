@@ -7,11 +7,13 @@ import getLastStage from './get-last-stage';
 import getTokenInformation from './get-token-information';
 import getTickers from './get-tickers';
 import getUserInfo from './get-user-info';
+import createOrderV2 from '../database/create-order-v2';
 
 const database = {
   createReturnAddress,
   createOrder,
   getReturnAddress,
+  createOrderV2,
   getOrder,
   getLastStage,
   getTokenInformation,
