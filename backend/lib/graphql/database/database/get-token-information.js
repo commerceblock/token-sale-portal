@@ -6,7 +6,7 @@ const total_sold_tokens = 1000000;
 
 
 export default async (userId) => {
-  loadCounter().then(count => {
+  return loadCounter().then(count => {
     return {
       unitPrice: token_unit_per_usd,
       totalTokensSold: count,

@@ -14,7 +14,7 @@ export function loadCounter() {
         log.error({ error }, 'failed to load counter');
         reject({ error });
       } else {
-        resolve(item);
+        resolve(item.total);
       }
     });
   });
