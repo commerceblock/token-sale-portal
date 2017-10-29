@@ -13,7 +13,7 @@ function loadInvoice(invoiceId) {
       coin: payload.data.coin,
       spotPrice: payload.data.spot_price,
       paymentAddress: payload.data.payment_address,
-    }
+    },
   })
 }
 
