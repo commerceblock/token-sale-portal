@@ -31,6 +31,12 @@ export const columns = {
   coin: 'coin',
   payment_address: 'payment_address',
   status: 'status',
+  whitelist: 'whitelist',
+  kyc: 'kyc',
+  bonus: 'bonus',
+  spot_price: 'spot_price',
+  name: 'name',
+  total: 'total',
 };
 
 // event types
