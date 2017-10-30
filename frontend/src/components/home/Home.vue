@@ -17,7 +17,7 @@
       </tab-content> -->
       <tab-content title="Invoice Summary" icon="fa fa-qrcode">
         <div class="invoice-box">
-          <invoice-summary-header :cbtTokenAmount="cbtTokenAmount" :coin="coin" :paymentAddress="paymentAddress" ref="invoiceSummaryHeader" />
+          <invoice-summary-header :order="result" :cbtTokenAmount="cbtTokenAmount" :coin="coin" :paymentAddress="paymentAddress" ref="invoiceSummaryHeader" />
           <invoice-summary :cryptoAmount="cryptoAmount" :coin="coin" :paymentAddress="paymentAddress" :usdAmount="usdAmount" />
         </div>
       </tab-content>

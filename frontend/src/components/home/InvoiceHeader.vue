@@ -16,7 +16,7 @@
 <script>
 export default {
   name: 'InvoiceHeader',
-  props: ['title'],
+  props: ['title', 'order'],
   computed: {
   },
 }
