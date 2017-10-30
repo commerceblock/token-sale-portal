@@ -1,11 +1,10 @@
-
 // local imports
 import { isAccessTokenValid } from '../lib/vault';
 
 export function requireAuth(to, from, next) {
   if (!isLoggedIn()) {
     next({
-      path: '/login'
+      path: '/login',
     });
   } else {
     next();

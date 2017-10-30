@@ -8,17 +8,20 @@ import getTokenInformation from './get-token-information';
 import getTickers from './get-tickers';
 import getUserInfo from './get-user-info';
 import createOrderV2 from '../database/create-order-v2';
+import getOrderV2 from '../database/get-order-v2';
 
 const database = {
   createReturnAddress,
   createOrder,
   getReturnAddress,
   createOrderV2,
+  getOrderV2,
   getOrder,
   getLastStage,
   getTokenInformation,
   getTickers,
   getUserInfo,
+  getOrderV2,
 };
 
 export default wrapLogger(database);

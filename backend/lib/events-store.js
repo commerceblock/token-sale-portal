@@ -61,3 +61,21 @@ export function loadEvents(user_id) {
       });
   });
 }
+
+export function loadInvoice(invoice_id) {
+  return new Promise((resolve, reject) => {
+    Event.query(columns.invoice_id)
+      .eq(invoice_id)
+      .exec((error, events) => {
+        if (error) {
+          reject({
+            invoice_id,
+            error,
+          });
+        } else {
+          const sortedEvents = sortBy(events, [columns.timestamp]);
+          resolve(sortedEvents);
+        }
+      });
+  });
+}

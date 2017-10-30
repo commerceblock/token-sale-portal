@@ -2,7 +2,7 @@
 import { find } from 'lodash'
 
 // local imports
-import { event_type } from '../../../../model/consts'
+import { event_type } from '../../../../model/consts';
 import { loadEvents } from '../../../../lib/events-store';
 
 

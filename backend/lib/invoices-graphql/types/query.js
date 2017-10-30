@@ -4,18 +4,8 @@ import {
   GraphQLNonNull,
 } from 'graphql';
 import InvoiceType from '../types/invoice';
-
-function loadInvoice(invoiceId) {
-  return Promise.reoslve({
-    data: {
-      amountOfTokens: payload.data.amount_of_tokens,
-      usdAmount: payload.data.usd_amount,
-      coin: payload.data.coin,
-      spotPrice: payload.data.spot_price,
-      paymentAddress: payload.data.payment_address,
-    }
-  })
-}
+import { loadInvoice } from '../../events-store';
+import { isEmpty, first } from 'lodash';
 
 /**
  * This is the type that will be the root of our query,
@@ -32,14 +22,22 @@ const QueryType = new GraphQLObjectType({
         },
       },
       resolve(parent, { invoiceId }) {
-        return loadInvoice(invoiceId).then((payload) => ({
-          invoiceId: payload.data.invoice_id,
-          amountOfTokens: payload.data.amount_of_tokens,
-          usdAmount: payload.data.usd_amount,
-          coin: payload.data.coin,
-          spotPrice: payload.data.spot_price,
-          paymentAddress: payload.data.payment_address,
-        }));
+        return loadInvoice(invoiceId)
+          .then((events) => {
+            if (events !== null && !isEmpty(events)) {
+              const payload = first(events);
+              return {
+                invoiceId: payload.invoice_id,
+                amountOfTokens: payload.data.amount_of_tokens,
+                usdAmount: payload.data.usd_amount,
+                ethereumReturnAddress: payload.data.ethereum_return_address,
+                coin: payload.data.coin,
+                spotPrice: payload.data.spot_price,
+                paymentAddress: payload.data.payment_address,
+              };
+            }
+            return null;
+        });
       },
     }
   }),

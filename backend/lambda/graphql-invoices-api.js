@@ -3,8 +3,8 @@ import httpStatus from 'http-status-codes';
 
 // local imports
 import graphQLHandler from '../lib/invoices-graphql';
-import { createOrderedId } from '../lib/utils/uuid';
-import { toResponse } from '../lib/utils/http-util';
+import { createOrderedId } from '../lib/uuid';
+import { toResponse } from '../lib/http-util';
 
 // logging
 import { createLogger } from 'bunyan';

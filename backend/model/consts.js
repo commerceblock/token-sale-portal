@@ -1,5 +1,7 @@
 // env variables
 export const env_name = process.env.CB_ENV_NAME;
+export const master_pub_key = process.env.MASTER_PUB_KEY;
+export const ether_multisig = process.env.ETHER_MULTISIG;
 
 export const stream_name = env_name + '-events';
 
@@ -37,6 +39,8 @@ export const columns = {
   spot_price: 'spot_price',
   name: 'name',
   total: 'total',
+  invoice_id: 'invoice_id',
+  payment_id: 'payment_id',
 };
 
 // event types
@@ -56,7 +60,7 @@ export const order_status = {
   initial: 'initial',
   unconfirmed: 'unconfirmed',
   confirmed: 'confirmed',
-  fulfilled: 'fulfilled'
+  fulfilled: 'fulfilled',
 };
 
 export const stage_type = {

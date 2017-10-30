@@ -18,6 +18,12 @@ import { createLogger } from 'bunyan';
 const log = createLogger({ name: 'graphql-api' });
 
 export function post (event, context, callback) {
+  // set callbackWaitsForEmptyEventLoop to false to exit without waiting for event loop
+  // this is needed because of the background activity in sql driver
+  // https://gist.github.com/hassy/eaea5a958067211f2fed02ead13c2678
+  context.callbackWaitsForEmptyEventLoop = false;
+
+
   const request_id = createOrderedId();
   log.info({ request_id, event }, 'start');
   // authz token
