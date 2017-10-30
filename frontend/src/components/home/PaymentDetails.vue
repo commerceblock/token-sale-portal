@@ -19,7 +19,7 @@
     </div>
     <div class="row">
       <label class="pull-left title-usd-amount">Enter amount in USD</label>
-      <input class="form-control input-usd-amount" type="text" v-model="usdAmountInput" placeholder="Amount" :disabled="isUSDAmountNotEmpty">
+      <input class="form-control input-usd-amount" type="text" v-model="usdAmountInput" placeholder="Amount" :disabled="isUSDAmountNotEmpty" ref="usdAmount">
     </div>
 
 

@@ -36,7 +36,7 @@ export default async (userId, orderInput) => {
         const coin = account.data.coin;
         const spotPrice = pair.tickers[coin];
         const paymentAddress = generatePaymentAddress();
-        const amountOfTokens = computeAmountOfTokens(orderInput.usdAmount)
+        const amountOfTokens = computeAmountOfTokens(orderInput.usdAmount);
         const payload = {
           user_id: userId,
           event_id: createOrderedId(),
@@ -55,11 +55,11 @@ export default async (userId, orderInput) => {
         return saveEvent(payload)
           .then(() => ({
             invoiceId: payload.invoice_id,
-            amountOfTokens: payload.amount_of_tokens,
+            amountOfTokens: payload.data.amount_of_tokens,
             usdAmount: payload.data.usd_amount,
             coin: coin,
-            spotPrice: spot_price,
-            paymentAddress: payload.data.payment_address,
+            spotPrice: spotPrice,
+            paymentAddress: paymentAddress
           }));
       }
       return null;

@@ -131,8 +131,8 @@ export default {
         .mutate({
           mutation: gql`mutation {
                   createOrderV2(order: {
-                    ethereumReturnAddress: "${distributionDetails.$ref.ethereumReturnAddress}"
-                    usdAmount: ${this.usdAmount}
+                    ethereumReturnAddress: "${distributionDetails.$refs.ethereumReturnAddress.value}"
+                    usdAmount: "${this.$refs.paymentDetails.$refs.usdAmount.value}"
                   }) {
                     invoiceId
                     amountOfTokens
