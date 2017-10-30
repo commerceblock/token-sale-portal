@@ -11,6 +11,20 @@ import { isEmpty } from 'lodash'
 
 export default {
   props: ['invoiceId'],
+  apollo: {
+    returnAddress: {
+      query: function() {
+        return gql`query {
+            invoice(invoiceId: "${this.invoiceId}") {
+              invoiceId
+              amountOfTokens
+		          usdAmount
+            }
+          }`;
+      },
+    },
+    client: 'invoices'
+  }
 }
 </script>
 
