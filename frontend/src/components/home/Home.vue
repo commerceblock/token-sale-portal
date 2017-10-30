@@ -2,7 +2,7 @@
   <div class="wrapper">
     <next-steps-modal v-if="showNextSteps" @close="showNextSteps = false" />
     <form-wizard title="" subtitle="" class="invoice" color="#538C46" @on-complete="onComplete">
-      <tab-content title="Distribution Details" icon="fa fa-cloud-download" :before-change="submitReturnAddress">
+      <tab-content title="Distribution Details" icon="fa fa-cloud-download" :before-change="submitOrderV2">
         <div class="invoice-box">
           <invoice-header :title="'Contribution Details'" />
           <payment-details :usdAmount="usdAmount" :coin="coin" :tokenUnitPrice="tokenUnitPrice" :changeRates="changeRates" ref="paymentDetails" />
@@ -62,7 +62,8 @@ export default {
   },
   data() {
     return {
-      showNextSteps: false
+      showNextSteps: false,
+      result: null
     }
   },
   computed: {
@@ -130,13 +131,20 @@ export default {
           mutation: gql`mutation {
                   createOrderV2(order: {
                     ethereumReturnAddress: "${distributionDetails.ethereumReturnAddressInput}"
-                    usdAmount: ${___TODO___}
+                    usdAmount: ${this.usdAmount()}
                   }) {
-
+                    invoiceId
+                    amountOfTokens
+                    usdAmount
+                    coin
+                    spotPrice
+                    paymentAddress
                   }
                 }`})
         .then(result => {
           // that.$apollo.queries.returnAddress.refetch();
+          this.result = result
+          console.log(result);
           return Promise.resolve(true);
         }).catch(err => {
           // TODO: show error
