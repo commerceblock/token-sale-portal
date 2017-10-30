@@ -41,10 +41,10 @@ const QueryType = new GraphQLObjectType({
       type: UserInfoType,
       resolve: (parent, {}, context) => db.getUserInfo(context.userId),
     },
-    orderV2:{
+    orderV2: {
       type: OrderV2Type,
       resolve: (parent, {}, context) => db.getOrderV2(context.userId),
-    }
+    },
   }),
 });
 

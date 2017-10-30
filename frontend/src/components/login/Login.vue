@@ -26,19 +26,19 @@
           </slot>
         </div>
 
-        <div class="checkbox" v-bind:class="{ 'kyc-input-hidden': !isKYCRequired }">
+        <div class="checkbox">
           <label><input type="checkbox" v-model="checked">I certify that I am not a citizen or resident of the United States of America, The Republic of Singapore or The People's Republic of China.</label>
         </div>
 
-        <div class="checkbox" v-bind:class="{ 'kyc-input-hidden': !isKYCRequired }">
+        <div class="checkbox">
           <label><input type="checkbox" v-model="kycChecked">I confirm that KYC documentation must be submitted for contributions of more than 11.5k USD and failure to submit may result in a refund.</label>
         </div>
 
-        <div class="checkbox" v-bind:class="{ 'kyc-input-hidden': !isKYCRequired }">
+        <div class="checkbox">
           <label><input type="checkbox" v-model="termsAccepted">I have read and accept [token sale terms agreement].</label>
         </div>
 
-        <div class="checkbox" v-bind:class="{ 'kyc-input-hidden': !isKYCRequired }">
+        <div class="checkbox">
           <label><input type="checkbox" v-model="ownAddress">I confirm this is my sending address and refund address.</label>
         </div>
 

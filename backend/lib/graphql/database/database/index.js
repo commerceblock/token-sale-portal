@@ -21,6 +21,7 @@ const database = {
   getTokenInformation,
   getTickers,
   getUserInfo,
+  getOrderV2,
 };
 
 export default wrapLogger(database);

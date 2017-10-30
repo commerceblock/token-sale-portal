@@ -9,11 +9,15 @@ export function initBaseUrl(baseUrl) {
 }
 
 export function login() {
-  return `${store.baseUrl}/v1.0/login`
+  return `${store.baseUrl}/v1.0/login`;
 }
 
 export function gql() {
-  return `${store.baseUrl}/v1.0/graphql`
+  return `${store.baseUrl}/v1.0/graphql`;
+}
+
+export function invoicesGQL() {
+  return `${store.baseUrl}/v1.0/invoices/graphql`;
 }
 
 export function btcAPI(coin) {

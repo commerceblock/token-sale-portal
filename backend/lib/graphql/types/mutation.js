@@ -10,9 +10,9 @@ import OrderType from '../types/order';
 import OrderInputType from '../types/order-input';
 import ReturnAddressType from '../types/return-address';
 import ReturnAddressInputType from '../types/return-address-input';
-import db from '../database';
+import OrderV2InputType from '../types/order-input-v2';
 import OrderV2Type from '../types/order-v2';
-import OrderInputV2Type from '../types/order-input-v2';
+import db from '../database';
 
 
 const MutationType = new GraphQLObjectType({
@@ -36,9 +36,9 @@ const MutationType = new GraphQLObjectType({
     },
     createOrderV2: {
       type: OrderV2Type,
-      description: 'Create a new order',
+      description: 'Create a new order v2',
       args: {
-        order: { type: OrderInputV2Type },
+        order: { type: OrderV2InputType },
       },
       resolve: (value, { order }, context) => db.createOrderV2(context.userId, order),
     },

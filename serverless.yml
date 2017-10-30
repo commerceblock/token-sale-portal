@@ -31,6 +31,7 @@ custom:
   localWebsiteDestination: build/frontend/
   remoteWebsiteDestination: s3://${self:custom.s3Bucket}/
   domainName: ${self:custom.accounts.${self:custom.selectedStage}.domainName}
+  vpc: ${self:custom.externalConfig.vpc}
   # dev env
   serverless-offline: ${self:custom.externalConfig.serverless-offline}
   dynamodb:
@@ -59,8 +60,21 @@ provider:
   versionFunctions: true
   environment:
     CB_ENV_NAME: ${self:custom.stage}-${self:service}
+    MASTER_PUB_KEY: ${self:custom.externalConfig.masterPubKey}
+    ETHER_MULTISIG: ${self:custom.externalConfig.etherMultisig}
+    CB_DB_NAME: ${self:custom.externalConfig.dbName}
+    CB_DB_USERNAME: ${self:custom.externalConfig.dbUsername}
+    CB_DB_PASSWORD: ${self:custom.externalConfig.dbPassword}
+    CB_DB_HOST: ${self:custom.externalConfig.dbHost}
 
   iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - ec2:CreateNetworkInterface
+        - ec2:DescribeNetworkInterfaces
+        - ec2:DetachNetworkInterface
+        - ec2:DeleteNetworkInterface
+      Resource: "*"
     - Effect: Allow
       Action:
         - kinesis:PutRecords
@@ -87,11 +101,21 @@ functions:
           method: post
           cors: true
 
-  graphql-api:
+  graphql-api-v3:
     handler: lambda/graphql-api.post
+    timeout: 30
     events:
     - http:
         path: /v1.0/graphql
+        method: post
+        cors: true
+    vpc: ${self:custom.vpc}
+
+  graphql-public-api:
+    handler: lambda/graphql-invoices-api.post
+    events:
+    - http:
+        path: /v1.0/invoices/graphql
         method: post
         cors: true
 
@@ -180,6 +204,9 @@ resources:
           -
             AttributeName: event_id
             AttributeType: S
+          -
+            AttributeName: invoice_id
+            AttributeType: S
         KeySchema:
           -
             AttributeName: user_id
@@ -192,6 +219,17 @@ resources:
           WriteCapacityUnits: ${self:custom.dynamodbThroughput.events.write}
         StreamSpecification:
           StreamViewType: NEW_IMAGE
+        GlobalSecondaryIndexes:
+          - IndexName: Invoices
+            KeySchema:
+              -
+                AttributeName: invoice_id
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: ${self:custom.dynamodbThroughput.events.read}
+              WriteCapacityUnits: ${self:custom.dynamodbThroughput.events.write}
     AddressesIndexDynamoDbTable:
       Type: "AWS::DynamoDB::Table"
       DeletionPolicy: Retain

@@ -5,6 +5,7 @@ import dynamoose from 'dynamoose';
 // local imports
 import { env_name } from '../model/consts';
 
+
 if (process.env.IS_OFFLINE) {
   // dev env
   // setup local dynamodb

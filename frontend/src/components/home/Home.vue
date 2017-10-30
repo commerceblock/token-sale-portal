@@ -6,7 +6,7 @@
         <div class="invoice-box">
           <invoice-header :title="'Contribution Details'" />
           <payment-details :usdAmount="usdAmount" :coin="coin" :tokenUnitPrice="tokenUnitPrice" :changeRates="changeRates" ref="paymentDetails" />
-          <distribution-details :ethereumReturnAddress="ethereumReturnAddress" :ethereumWalletProvider="ethereumWalletProvider" ref="distributionDetails" />
+          <distribution-details :ethereumReturnAddress="ethereumReturnAddress" ref="distributionDetails" />
         </div>
       </tab-content>
       <!-- <tab-content title="Payment Details" icon="fa fa-file-text-o" :before-change="submitOrder">
@@ -97,7 +97,7 @@ export default {
       if (this.orderV2
         && this.orderV2.usdAmount
         && this.orderV2.spotPrice) {
-        return computeCryptoAmount(this.order.usdAmount, this.orderV2.spotPrice);
+        return computeCryptoAmount(this.orderV2.usdAmount, this.orderV2.spotPrice);
       }
     },
     coin() {
@@ -123,6 +123,10 @@ export default {
       this.showNextSteps = true;
     },
     submitOrderV2() {
+      if (this.orderV2 !== null) {
+        return true;
+      }
+
       const that = this;
       const distributionDetails = this.$refs.distributionDetails;
       return this.apolloClient
@@ -151,72 +155,8 @@ export default {
           return Promise.reject(err);
         });
     },
-    submitReturnAddress() {
-      if (this.ethereumReturnAddress) {
-        // already submitted
-        return true;
-      }
-      const distributionDetails = this.$refs.distributionDetails;
-      const that = this;
-      return this.apolloClient
-        .mutate({
-          mutation: gql`mutation {
-                  createReturnAddress(returnAddress: {
-                    ethereumReturnAddress: "${distributionDetails.ethereumReturnAddressInput}"
-                    ethereumWalletProvider: "${distributionDetails.ethereumWalletProviderInput}"
-                  }) {
-                    ethereumReturnAddress
-                    ethereumWalletProvider
-                  }
-                }`})
-        .then(result => {
-          that.$apollo.queries.returnAddress.refetch();
-          return Promise.resolve(true);
-        }).catch(err => {
-          // TODO: show error
-          console.log(err)
-          return Promise.reject(err);
-        });
-    },
-    submitOrder() {
-      if (this.usdAmount) {
-        // already submitted
-        return true;
-      }
-      const paymentDetails = this.$refs.paymentDetails;
-      const that = this;
-      return this.apolloClient
-        .mutate({
-          mutation: gql`mutation {
-                  createOrder(order: {
-                    usdAmount: "${paymentDetails.usdAmountInput}"
-                  }) {
-                    usdAmount
-                    coin
-                    paymentAddress
-                  }
-                }`})
-        .then(result => {
-          that.$apollo.queries.order.refetch();
-          return Promise.resolve(true);
-        }).catch(err => {
-          // TODO: show error
-          console.log(err)
-          return Promise.reject(err);
-        });
-    }
   },
   apollo: {
-    // returnAddress: {
-    //   query: function() {
-    //     return gql`query {
-    //         returnAddress {
-    //           ethereumReturnAddress
-    //           ethereumWalletProvider
-    //         }
-    //       }`;
-    //   },
-    // },
     tokenInformation: {
       query: function() {
         return gql`query {
@@ -244,6 +184,7 @@ export default {
               coin
               spotPrice
               paymentAddress
+              ethereumReturnAddress
             }
           }`;
       }
