@@ -3,7 +3,7 @@
     <div class="row">
       <div class="form-group">
         <label class="pull-left title">Enter Ethereum CBT token receiving address. <br> You need to control private and public key of this address.</label>
-        <input class="form-control" type="text" v-model="ethereumReturnAddressInput" placeholder="Etherum address"  :disabled="isEthereumReturnAddressNotEmpty"/>
+        <input class="form-control" type="text" v-model="ethereumReturnAddressInput" placeholder="Etherum address"  :disabled="isEthereumReturnAddressNotEmpty" ref="ethereumReturnAddress"/>
         <div class="col-xs-12">
         </div>
       </div>

@@ -126,12 +126,13 @@ export default {
       this.showNextSteps = true;
     },
     submitOrderV2() {
+      const distributionDetails = this.$refs.distributionDetails;
       return this.apolloClient
         .mutate({
           mutation: gql`mutation {
                   createOrderV2(order: {
-                    ethereumReturnAddress: "${distributionDetails.ethereumReturnAddressInput}"
-                    usdAmount: ${this.usdAmount()}
+                    ethereumReturnAddress: "${distributionDetails.$ref.ethereumReturnAddress}"
+                    usdAmount: ${this.usdAmount}
                   }) {
                     invoiceId
                     amountOfTokens
