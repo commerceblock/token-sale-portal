@@ -21,7 +21,7 @@ export function btcAPI(coin) {
 }
 
 export function btcUrl(coin) {
-  return coin === 'BTC' ? 'https://www.smartbit.com.au' : 'https://testnet.smartbit.com.au';
+  return coin === 'BTC' ? 'https://www.blockchain.info' : 'https://testnet.smartbit.com.au';
 }
 
 export function ethAPI(coin) {

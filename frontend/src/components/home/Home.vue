@@ -4,16 +4,17 @@
     <form-wizard title="" subtitle="" class="invoice" color="#538C46" @on-complete="onComplete">
       <tab-content title="Distribution Details" icon="fa fa-cloud-download" :before-change="submitReturnAddress">
         <div class="invoice-box">
-          <invoice-header :title="'Distribution Details'" />
+          <invoice-header :title="'Contribution Details'" />
+          <payment-details :usdAmount="usdAmount" :coin="coin" :tokenUnitPrice="tokenUnitPrice" :changeRates="changeRates" ref="paymentDetails" />
           <distribution-details :ethereumReturnAddress="ethereumReturnAddress" :ethereumWalletProvider="ethereumWalletProvider" ref="distributionDetails" />
         </div>
       </tab-content>
-      <tab-content title="Payment Details" icon="fa fa-file-text-o" :before-change="submitOrder">
+      <!-- <tab-content title="Payment Details" icon="fa fa-file-text-o" :before-change="submitOrder">
         <div class="invoice-box">
           <invoice-header :title="'Payment Details'" />
           <payment-details :usdAmount="usdAmount" :coin="coin" :tokenUnitPrice="tokenUnitPrice" :changeRates="changeRates" ref="paymentDetails" />
         </div>
-      </tab-content>
+      </tab-content> -->
       <tab-content title="Invoice Summary" icon="fa fa-qrcode">
         <div class="invoice-box">
           <invoice-summary-header :cbtTokenAmount="cbtTokenAmount" :coin="coin" :paymentAddress="paymentAddress" ref="invoiceSummaryHeader" />
@@ -244,6 +245,7 @@ export default {
 .invoice-box {
   border-radius: 3px;
   background-color: #FFFFFF;
+  min-height: 535px;
   box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.25);
 }
 

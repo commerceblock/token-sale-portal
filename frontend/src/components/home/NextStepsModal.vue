@@ -6,13 +6,24 @@
 
           <div class="modal-header center">
             <slot name="header">
-              <span class="tab-title">Next Steps</span>
+              <span class="tab-title">Congratulations!</span>
               <button type="button" class="close" data-dismiss="modal" @click="close">&times;</button>
             </slot>
           </div>
 
           <div class="modal-body">
             <slot name="body">
+              <p>Thank you for participating in our token sale. The tokens will be distributed within [48 hours] of the token sale closing.</p>
+              <p>We look forward to bringing further updates so please stay tuned via the Telegram channel and becoming part of our Twitter community.</p>
+
+              Tell your friends!<br>
+              <iframe
+  src="https://platform.twitter.com/widgets/tweet_button.html?size=l&url=https%3A%2F%2Fwww.commerceblock.com&via=CommerceBlock&related=twitterapi%2Ctwitter&text=I%20just%20contributed%20to%20CommerceBlock%20token%20sale%21&hashtags=CommerceBlock%2CTokenSale%2CCBT"
+  width="140"
+  height="28"
+  title="Twitter Tweet Button"
+  style="border: 0; overflow: hidden;">
+</iframe>
             </slot>
           </div>
 

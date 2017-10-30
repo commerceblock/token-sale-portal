@@ -2,7 +2,7 @@
   <div class="content">
     <div class="row">
       <div class="form-group">
-        <label class="pull-left title">Enter Ethereum CBT token receiving address</label>
+        <label class="pull-left title">Enter Ethereum CBT token receiving address. <br> You need to control private and public key of this address.</label>
         <input class="form-control" type="text" v-model="ethereumReturnAddressInput" placeholder="Etherum address"  :disabled="isEthereumReturnAddressNotEmpty"/>
         <div class="col-xs-12">
         </div>
@@ -62,8 +62,7 @@ export default {
   font-size: 16px;
   line-height: 22px;
   text-align: center;
-  padding: 50px;
-  padding-bottom: 100px;
+  padding: 0 50px;
   position: relative;
   min-height: 300px;
 }

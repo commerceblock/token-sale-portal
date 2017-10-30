@@ -190,10 +190,9 @@ export default {
   font-size: 16px;
   line-height: 22px;
   text-align: center;
-  padding: 20px 10px;
+  padding: 0 50px;
   padding-bottom: 60px;
   position: relative;
-  min-height: 300px;
 }
 
 .btc-address {
