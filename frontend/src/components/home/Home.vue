@@ -124,6 +124,26 @@ export default {
     onComplete() {
       this.showNextSteps = true;
     },
+    submitOrderV2() {
+      return this.apolloClient
+        .mutate({
+          mutation: gql`mutation {
+                  createOrderV2(order: {
+                    ethereumReturnAddress: "${distributionDetails.ethereumReturnAddressInput}"
+                    usdAmount: ${___TODO___}
+                  }) {
+
+                  }
+                }`})
+        .then(result => {
+          // that.$apollo.queries.returnAddress.refetch();
+          return Promise.resolve(true);
+        }).catch(err => {
+          // TODO: show error
+          console.log(err)
+          return Promise.reject(err);
+        });
+    },
     submitReturnAddress() {
       if (this.ethereumReturnAddress) {
         // already submitted
