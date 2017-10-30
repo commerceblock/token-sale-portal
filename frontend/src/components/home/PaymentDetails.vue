@@ -10,17 +10,20 @@
       <div style="text-align: left">
         <strong>1 USD = {{ tokenUnitsPerUSD }} CBT Tokens</strong>
         <br>
-        <strong>1 CBT = {{ this.changeRates.BTC }}BTC</strong>
+        <strong>1 CBT = {{ this.changeRates.BTC }} BTC</strong>
         <br>
         <strong>1 CBT = {{ this.changeRates.ETH }} ETH</strong>
         <br>
-        <strong>1 CBT = {{ this.changeRates.ETH }} ETH</strong>
+        <!-- <strong>1 CBT = {{ this.changeRates.ETH }} ETH</strong> -->
       </div>
     </div>
     <div class="row">
       <label class="pull-left title-usd-amount">Enter amount in USD</label>
-      <input class="form-control input-usd-amount" type="text" v-model="usdAmountInput" placeholder="Amount" :disabled="isUSDAmountNotEmpty">
+      <input class="form-control input-usd-amount" type="text" v-model="usdAmountInput" placeholder="Amount" :disabled="isUSDAmountNotEmpty" ref="usdAmount">
     </div>
+
+
+
   </div>
 </template>
 
@@ -64,10 +67,9 @@ export default {
   font-size: 16px;
   line-height: 22px;
   text-align: center;
-  padding: 50px;
+  padding: 0 50px;
   padding-bottom: 100px;
   position: relative;
-  min-height: 300px;
 }
 
 .cbt-title {

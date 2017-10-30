@@ -2,21 +2,22 @@
   <div class="wrapper">
     <next-steps-modal v-if="showNextSteps" @close="showNextSteps = false" />
     <form-wizard title="" subtitle="" class="invoice" color="#538C46" @on-complete="onComplete">
-      <tab-content title="Distribution Details" icon="fa fa-cloud-download" :before-change="submitReturnAddress">
+      <tab-content title="Distribution Details" icon="fa fa-cloud-download" :before-change="submitOrderV2">
         <div class="invoice-box">
-          <invoice-header :title="'Distribution Details'" />
+          <invoice-header :title="'Contribution Details'" />
+          <payment-details :usdAmount="usdAmount" :coin="coin" :tokenUnitPrice="tokenUnitPrice" :changeRates="changeRates" ref="paymentDetails" />
           <distribution-details :ethereumReturnAddress="ethereumReturnAddress" :ethereumWalletProvider="ethereumWalletProvider" ref="distributionDetails" />
         </div>
       </tab-content>
-      <tab-content title="Payment Details" icon="fa fa-file-text-o" :before-change="submitOrder">
+      <!-- <tab-content title="Payment Details" icon="fa fa-file-text-o" :before-change="submitOrder">
         <div class="invoice-box">
           <invoice-header :title="'Payment Details'" />
           <payment-details :usdAmount="usdAmount" :coin="coin" :tokenUnitPrice="tokenUnitPrice" :changeRates="changeRates" ref="paymentDetails" />
         </div>
-      </tab-content>
+      </tab-content> -->
       <tab-content title="Invoice Summary" icon="fa fa-qrcode">
         <div class="invoice-box">
-          <invoice-summary-header :cbtTokenAmount="cbtTokenAmount" :coin="coin" :paymentAddress="paymentAddress" ref="invoiceSummaryHeader" />
+          <invoice-summary-header :order="result" :cbtTokenAmount="cbtTokenAmount" :coin="coin" :paymentAddress="paymentAddress" ref="invoiceSummaryHeader" />
           <invoice-summary :cryptoAmount="cryptoAmount" :coin="coin" :paymentAddress="paymentAddress" :usdAmount="usdAmount" />
         </div>
       </tab-content>
@@ -61,7 +62,8 @@ export default {
   },
   data() {
     return {
-      showNextSteps: false
+      showNextSteps: false,
+      result: null
     }
   },
   computed: {
@@ -122,6 +124,34 @@ export default {
   methods: {
     onComplete() {
       this.showNextSteps = true;
+    },
+    submitOrderV2() {
+      const distributionDetails = this.$refs.distributionDetails;
+      return this.apolloClient
+        .mutate({
+          mutation: gql`mutation {
+                  createOrderV2(order: {
+                    ethereumReturnAddress: "${distributionDetails.$refs.ethereumReturnAddress.value}"
+                    usdAmount: "${this.$refs.paymentDetails.$refs.usdAmount.value}"
+                  }) {
+                    invoiceId
+                    amountOfTokens
+                    usdAmount
+                    coin
+                    spotPrice
+                    paymentAddress
+                  }
+                }`})
+        .then(result => {
+          // that.$apollo.queries.returnAddress.refetch();
+          this.result = result
+          console.log(result);
+          return Promise.resolve(true);
+        }).catch(err => {
+          // TODO: show error
+          console.log(err)
+          return Promise.reject(err);
+        });
     },
     submitReturnAddress() {
       if (this.ethereumReturnAddress) {
@@ -244,6 +274,7 @@ export default {
 .invoice-box {
   border-radius: 3px;
   background-color: #FFFFFF;
+  min-height: 535px;
   box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.25);
 }
 

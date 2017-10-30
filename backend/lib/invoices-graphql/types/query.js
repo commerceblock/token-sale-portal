@@ -13,7 +13,7 @@ function loadInvoice(invoiceId) {
       coin: payload.data.coin,
       spotPrice: payload.data.spot_price,
       paymentAddress: payload.data.payment_address,
-    },
+    }
   })
 }
 
@@ -32,14 +32,14 @@ const QueryType = new GraphQLObjectType({
         },
       },
       resolve(parent, { invoiceId }) {
-        return loadInvoice(invoiceId).then((payload) => {
+        return loadInvoice(invoiceId).then((payload) => ({
           invoiceId: payload.data.invoice_id,
           amountOfTokens: payload.data.amount_of_tokens,
           usdAmount: payload.data.usd_amount,
           coin: payload.data.coin,
           spotPrice: payload.data.spot_price,
           paymentAddress: payload.data.payment_address,
-        });
+        }));
       },
     }
   }),

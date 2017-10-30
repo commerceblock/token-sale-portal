@@ -14,6 +14,8 @@
     <div class="col-xs-6 text-center" >
       <div class="row">{{ cbtTokenAmount }} CBT</div>
       <div class="row">Tokens Purchased</div>
+      <div class="row">Invoice ID</div>
+      <invoice-id />
     </div>
     <div class="col-xs-6 text-center">
       <div class="row" v-if="transactionLink">{{ numberOfConfirmationsFormatted }} Confirmations</div>
@@ -34,6 +36,7 @@ import {
   fetchConfirmations,
   requiredMinConfirmations
 } from '../../lib/util';
+import InvoiceSummary from '../invoice/InvoiceSummary.vue'
 
 export default {
   name: 'InvoiceSummaryHeader',
