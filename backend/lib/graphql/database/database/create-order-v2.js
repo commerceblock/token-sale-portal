@@ -57,9 +57,11 @@ export default async (userId, orderInput) => {
             invoiceId: payload.invoice_id,
             amountOfTokens: payload.data.amount_of_tokens,
             usdAmount: payload.data.usd_amount,
+            ethereumReturnAddress: payload.data.ethereum_return_address,
             coin: coin,
             spotPrice: spotPrice,
             paymentAddress: paymentAddress
+
           }));
       }
       return null;

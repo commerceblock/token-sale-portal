@@ -71,16 +71,13 @@ export default {
       return this.$apollo.provider.defaultClient;
     },
     ethereumReturnAddress() {
-      return this.returnAddress && this.returnAddress.ethereumReturnAddress;
-    },
-    ethereumWalletProvider() {
-      return this.returnAddress && this.returnAddress.ethereumWalletProvider;
+      return this.orderV2 && this.orderV2.ethereumReturnAddress;
     },
     usdAmount() {
-      return this.order && this.order.usdAmount;
+      return this.orderV2 && this.orderV2.usdAmount;
     },
     coin() {
-      return this.order && this.order.coin;
+      return this.orderV2 && this.orderV2.coin;
     },
     tokenUnitPrice() {
       return this.tokenInformation && this.tokenInformation.unitPrice;
@@ -89,35 +86,35 @@ export default {
       return this.tickers
     },
     cbtTokenAmount() {
-      if (this.order
-        && this.order.usdAmount
+      if (this.orderV2
+        && this.orderV2.usdAmount
         && this.tokenInformation
         && this.tokenInformation.unitPrice) {
-        return computeTokenAmount(this.order.usdAmount, this.tokenInformation.unitPrice);
+        return computeTokenAmount(this.orderV2.usdAmount, this.tokenInformation.unitPrice);
       }
     },
     cryptoAmount() {
-      if (this.order
-        && this.order.usdAmount
-        && this.order.spotPrice) {
-        return computeCryptoAmount(this.order.usdAmount, this.order.spotPrice);
+      if (this.orderV2
+        && this.orderV2.usdAmount
+        && this.orderV2.spotPrice) {
+        return computeCryptoAmount(this.order.usdAmount, this.orderV2.spotPrice);
       }
     },
     coin() {
-      if (this.order && this.order.coin) {
-        return this.order.coin;
+      if (this.orderV2 && this.orderV2.coin) {
+        return this.orderV2.coin;
       }
     },
     paymentAddress() {
-      if (this.order
-        && this.order.paymentAddress) {
-        return this.order.paymentAddress;
+      if (this.orderV2
+        && this.orderV2.paymentAddress) {
+        return this.orderV2.paymentAddress;
       }
     },
     usdAmount() {
-      if (this.order
-        && this.order.usdAmount) {
-        return this.order.usdAmount;
+      if (this.orderV2
+        && this.orderV2.usdAmount) {
+        return this.orderV2.usdAmount;
       }
     }
   },
@@ -126,6 +123,7 @@ export default {
       this.showNextSteps = true;
     },
     submitOrderV2() {
+      const that = this;
       const distributionDetails = this.$refs.distributionDetails;
       return this.apolloClient
         .mutate({
@@ -143,8 +141,8 @@ export default {
                   }
                 }`})
         .then(result => {
-          // that.$apollo.queries.returnAddress.refetch();
-          this.result = result
+          that.$apollo.queries.orderV2.refetch();
+          that.result = result
           console.log(result);
           return Promise.resolve(true);
         }).catch(err => {
@@ -209,28 +207,16 @@ export default {
     }
   },
   apollo: {
-    returnAddress: {
-      query: function() {
-        return gql`query {
-            returnAddress {
-              ethereumReturnAddress
-              ethereumWalletProvider
-            }
-          }`;
-      },
-    },
-    order: {
-      query: function() {
-        return gql`query {
-            order {
-              usdAmount
-              coin
-              spotPrice
-              paymentAddress
-            }
-          }`;
-      }
-    },
+    // returnAddress: {
+    //   query: function() {
+    //     return gql`query {
+    //         returnAddress {
+    //           ethereumReturnAddress
+    //           ethereumWalletProvider
+    //         }
+    //       }`;
+    //   },
+    // },
     tokenInformation: {
       query: function() {
         return gql`query {
@@ -249,7 +235,19 @@ export default {
             }
           }`;
       }
-    }
+    },
+    orderV2: {
+      query: function() {
+        return gql`query {
+            orderV2 {
+              usdAmount
+              coin
+              spotPrice
+              paymentAddress
+            }
+          }`;
+      }
+    },
   },
   mounted () {
     this.$refs.invoiceSummaryHeader.refreshTxStatus();
