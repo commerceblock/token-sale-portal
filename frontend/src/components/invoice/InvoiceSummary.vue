@@ -1,6 +1,26 @@
 <template>
   <div class="content">
-      {{ invoiceId }}
+    <div class="row">
+      Invoice ID: {{ invoiceId }}
+    </div>
+    <div class="row">
+      Amount of tokens: {{ this.invoice.amountOfTokens }}
+    </div>
+    <div class="row">
+      USD Amount: {{ this.invoice.usdAmount }}
+    </div>
+    <div class="row">
+      Coin: {{ this.invoice.coin }}
+    </div>
+    <div class="row">
+      Spot price: {{ this.invoice.spotPrice }}
+    </div>
+    <div class="row">
+      Payment Address: {{ this.invoice.paymentAddress }}
+    </div>
+    <div class="row">
+      Ethereum Return Address: {{ this.invoice.ethereumReturnAddress }}
+    </div>
   </div>
 </template>
 
@@ -9,21 +29,31 @@
 import gql from 'graphql-tag'
 import { isEmpty } from 'lodash'
 
+
 export default {
   props: ['invoiceId'],
   apollo: {
     invoice: {
-      query: function() {
-        return gql`query {
-            invoice(invoiceId: "${this.invoiceId}") {
+      query: function () {
+        return gql`query invoice($invoiceId: ID!) {
+          invoice(invoiceId: $invoiceId) {
               invoiceId
               amountOfTokens
-		          usdAmount
-            }
-          }`;
+              usdAmount
+              coin
+              spotPrice
+              paymentAddress
+              ethereumReturnAddress
+          }}`;
       },
+      variables() {
+        return {
+          invoiceId: this.invoiceId,
+        };
+      },
+      client: 'invoices'
     },
-    client: 'invoices'
+
   }
 }
 </script>
@@ -41,3 +71,5 @@ export default {
   min-height: 300px;
 }
 </style>
+
+

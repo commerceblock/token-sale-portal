@@ -14,7 +14,7 @@
     <div class="col-xs-6 text-center" >
       <div class="row">{{ cbtTokenAmount }} CBT</div>
       <div class="row">Tokens Purchased</div>
-      <div class="row">Invoice ID</div>
+      <div class="row"><a :href="`/invoices/${this.invoiceId}`" target="_blank">Invoice ID: {{ invoiceId }}</a></div>
       <invoice-id />
     </div>
     <div class="col-xs-6 text-center">
@@ -44,6 +44,7 @@ export default {
     'cbtTokenAmount',
     'paymentAddress',
     'coin',
+    'invoiceId',
   ],
   data() {
     return {
@@ -51,7 +52,7 @@ export default {
       transactionLink: null,
       numberOfConfirmations: 0,
       txChecker: null,
-      transactionError: null
+      transactionError: null,
     };
   },
   computed: {

@@ -1,4 +1,3 @@
-
 // local store
 const store = {
   baseUrl: null,

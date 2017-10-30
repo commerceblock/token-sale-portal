@@ -1,4 +1,3 @@
-
 // imports
 import Vue from 'vue';
 import Router from 'vue-router';
@@ -6,7 +5,7 @@ import Router from 'vue-router';
 // local imports
 import Login from '../components/login/Login.vue';
 import Home from '../components/home/Home.vue';
-import InvoiceSummary from '../components/invoice/InvoiceSummary.vue'
+import InvoiceSummary from '../components/invoice/InvoiceSummary.vue';
 import { requireAuth } from './auth';
 
 

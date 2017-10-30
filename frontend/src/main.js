@@ -11,9 +11,9 @@ import {
 // local imports
 import App from './App.vue';
 import router from './router';
-import endpoints from './lib/endpoints'
+import { gql, invoicesGQL, initBaseUrl } from './lib/endpoints';
 import { getAccessToken } from './lib/vault';
-import { middleware } from './router/auth'
+import { middleware } from './router/auth';
 
 // check env
 if (!process.env.BASE_URL) {
@@ -21,28 +21,43 @@ if (!process.env.BASE_URL) {
 }
 
 // init endpoints
-endpoints.initBaseUrl(process.env.BASE_URL);
+initBaseUrl(process.env.BASE_URL);
 Vue.config.productionTip = false;
 
 Vue.use(VueClipboard);
 Vue.use(VueApollo);
 
-const apolloProvider = new VueApollo({
-  defaultClient: new ApolloClient({
-    networkInterface: createNetworkInterface({
-      uri: endpoints.gql(),
-    }).use([{
-      applyMiddleware(req, next) {
-        if (!req.options.headers) {
-          req.options.headers = {};  // Create the header object if needed.
-        }
-        // get the authentication token from store if it exists
-        const accessToken = getAccessToken();
-        req.options.headers.authorization = accessToken ? `Bearer ${accessToken}` : null;
-        next();
+// portal gql
+const portalNetworkInterface = createNetworkInterface({ uri: gql() })
+  .use([{
+    applyMiddleware(req, next) {
+      if (!req.options.headers) {
+        // Create the header object if needed.
+        req.options.headers = {};
       }
-    }]),
+      // get the authentication token from store if it exists
+      const accessToken = getAccessToken();
+      req.options.headers.authorization = accessToken ? `Bearer ${accessToken}` : null;
+      next();
+    } }]);
+
+const portalApolloClient = new ApolloClient({
+  networkInterface: portalNetworkInterface
+});
+
+// invoices gql
+const invoicesApolloClient = new ApolloClient({
+  networkInterface: createNetworkInterface({
+    uri: invoicesGQL(),
   }),
+});
+
+const apolloProvider = new VueApollo({
+  clients: {
+    portal: portalApolloClient,
+    invoices: invoicesApolloClient,
+  },
+  defaultClient: portalApolloClient,
 });
 
 /* eslint-disable no-new */
