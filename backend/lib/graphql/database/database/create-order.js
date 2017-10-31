@@ -1,12 +1,11 @@
-
 // imports
-import { find } from 'lodash'
+import { find } from 'lodash';
 
 // local imports
 import { loadEvents, saveEvent } from '../../../../lib/events-store';
 import { createOrderedId } from '../../../../lib/uuid';
 import { event_type, order_status } from '../../../../model/consts';
-import getTickers from './get-tickers'
+import getTickers from './get-tickers';
 
 export default async (userId, orderInput) => {
   return loadEvents(userId)
@@ -17,7 +16,7 @@ export default async (userId, orderInput) => {
       return getTickers()
         .then(tickers => ({
           account_created,
-          tickers
+          tickers,
         }));
     })
     .then(pair => {
@@ -35,7 +34,7 @@ export default async (userId, orderInput) => {
             usd_amount: orderInput.usdAmount,
             spot_price: spotPrice,
             coin: coin,
-            payment_address: paymentAddress
+            payment_address: paymentAddress,
           },
         };
         return saveEvent(payload)

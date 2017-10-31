@@ -123,14 +123,31 @@ functions:
   backoffice-kinesis-processor:
     name: ${self:provider.environment.CB_ENV_NAME}-backoffice-kinesis-processor
     handler: lambda/backoffice-kinesis-processor.process
-    timeout: 30
+    timeout: 10
     events:
       - stream:
           type: dynamodb
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
           arn:
             Fn::GetAtt:
               - EventsDynamoDbTable
               - StreamArn
+
+
+  backoffice-kinesis-processor:
+    name: ${self:provider.environment.CB_ENV_NAME}-backoffice-address-indexer
+    handler: lambda/backoffice-address-indexer.process
+    timeout: 10
+    events:
+      - stream:
+          type: kinesis
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          arn:
+            Fn::GetAtt:
+              - KinesisStream
+              - Arn
 
 resources:
   Resources:
