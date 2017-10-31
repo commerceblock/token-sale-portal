@@ -135,7 +135,7 @@ functions:
               - StreamArn
 
 
-  backoffice-kinesis-processor:
+  backoffice-address-indexer-v2:
     name: ${self:provider.environment.CB_ENV_NAME}-backoffice-address-indexer
     handler: lambda/backoffice-address-indexer.process
     timeout: 10
