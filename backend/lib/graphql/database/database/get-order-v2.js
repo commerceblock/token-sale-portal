@@ -1,14 +1,13 @@
-
 // imports
 import {
   last
-} from 'lodash'
+} from 'lodash';
 
 // local imports
 import {
   event_type,
-  order_status
-} from '../../../../model/consts'
+  order_status,
+} from '../../../../model/consts';
 import { loadEvents } from '../../../../lib/events-store';
 
 export default async (userId) => {

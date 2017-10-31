@@ -8,18 +8,6 @@
         </div>
       </div>
     </div>
-    <!-- <div class="row">
-      <div class="form-group">
-        <label class="pull-left title">Which wallet are you using?</label>
-        <select class="form-control" v-model="ethereumWalletProviderInput" :disabled="isEthereumWalletProviderNotEmpty">
-          <option value="" selected disabled>Please select wallet provider</option>
-          <option value="my_ether_wallet">My Ether Wallet</option>
-        </select>
-        <div class="col-xs-12">
-
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 

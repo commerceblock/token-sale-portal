@@ -9,24 +9,15 @@
           <distribution-details :ethereumReturnAddress="ethereumReturnAddress" ref="distributionDetails" />
         </div>
       </tab-content>
-      <!-- <tab-content title="Payment Details" icon="fa fa-file-text-o" :before-change="submitOrder">
-        <div class="invoice-box">
-          <invoice-header :title="'Payment Details'" />
-          <payment-details :usdAmount="usdAmount" :coin="coin" :tokenUnitPrice="tokenUnitPrice" :changeRates="changeRates" ref="paymentDetails" />
-        </div>
-      </tab-content> -->
       <tab-content title="Invoice Summary" icon="fa fa-qrcode">
         <div class="invoice-box">
-          <invoice-summary-header :order="result" :cbtTokenAmount="cbtTokenAmount" :coin="coin" :paymentAddress="paymentAddress" ref="invoiceSummaryHeader" />
+          <invoice-summary-header :order="result" :cbtTokenAmount="cbtTokenAmount" :coin="coin" :paymentAddress="paymentAddress" :invoiceId="invoiceId" ref="invoiceSummaryHeader" />
           <invoice-summary :cryptoAmount="cryptoAmount" :coin="coin" :paymentAddress="paymentAddress" :usdAmount="usdAmount" />
         </div>
       </tab-content>
     </form-wizard>
     <div>
       <div class="footer"><a href="https://www.commerceblock.com/">https://www.commerceblock.com/</a></div>
-      <!-- <div class="footer-link">
-        <a href="https://www.commerceblock.com/">https://www.commerceblock.com/</a>
-      </div> -->
     </div>
   </div>
 </template>
@@ -63,7 +54,7 @@ export default {
   data() {
     return {
       showNextSteps: false,
-      result: null
+      result: null,
     }
   },
   computed: {
@@ -116,6 +107,9 @@ export default {
         && this.orderV2.usdAmount) {
         return this.orderV2.usdAmount;
       }
+    },
+    invoiceId() {
+      return this.orderV2 && this.orderV2.invoiceId;
     }
   },
   methods: {
@@ -180,6 +174,7 @@ export default {
       query: function() {
         return gql`query {
             orderV2 {
+              invoiceId
               usdAmount
               coin
               spotPrice

@@ -35,6 +35,10 @@ const InvoiceType = new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLString),
       description: 'order payment address',
     },
+    ethereumReturnAddress: {
+      type: new GraphQLNonNull(GraphQLString),
+      description: 'ethereum return address',
+    },
   }),
 });
 

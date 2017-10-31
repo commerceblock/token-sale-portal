@@ -12,7 +12,7 @@ export function computeTokenAmount(usdAmountStr, tokenUnitsPerUSD) {
     const usdAmount = parseFloat(usdAmountStr);
     return usdAmount * tokenUnitsPerUSD;
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
 }
 
@@ -22,7 +22,7 @@ export function computeCryptoAmount(usdAmountStr, spotPriceInCents) {
     const result = usdAmountInCents / spotPriceInCents;
     return result.toFixed(3).replace(/\.?0*$/,'');
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
 }
 
