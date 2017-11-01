@@ -22,7 +22,14 @@
       <input class="form-control input-usd-amount" type="text" v-model="usdAmountInput" placeholder="Amount" :disabled="isUSDAmountNotEmpty" ref="usdAmount">
     </div>
 
-
+    <div class="row">
+      <div class="form-group">
+        <label class="pull-left title">Enter Ethereum CBT token receiving address. <br> You need to control private and public key of this address.</label>
+        <input class="form-control" type="text" v-model="ethereumReturnAddressInput" placeholder="Etherum address"  :disabled="isEthereumReturnAddressNotEmpty" ref="ethereumReturnAddress"/>
+        <div class="col-xs-12">
+        </div>
+      </div>
+    </div>
 
   </div>
 </template>
@@ -35,10 +42,12 @@ import { computeTokenAmount } from '../../lib/util'
 
 export default {
   name: 'PaymentDetails',
-  props: ['usdAmount', 'tokenUnitPrice', 'changeRates'],
+  props: ['usdAmount', 'tokenUnitPrice', 'changeRates', 'ethereumReturnAddress', 'ethereumWalletProvider'],
   data() {
     return {
       usdAmountInput: null,
+      ethereumReturnAddressInput: null,
+      ethereumWalletProviderInput: null
     };
   },
   computed: {
@@ -50,11 +59,23 @@ export default {
     },
     tokenUnitsPerUSD () {
       return this.tokenUnitPrice && this.tokenUnitPrice;
-    }
+    },
+    isEthereumReturnAddressNotEmpty () {
+      return !isEmpty(this.ethereumReturnAddress);
+    },
+    isEthereumWalletProviderNotEmpty () {
+      return !isEmpty(this.ethereumWalletProvider);
+    },
   },
   updated () {
     if (this.usdAmount) {
       this.usdAmountInput = this.usdAmount;
+    }
+    if (this.ethereumReturnAddress) {
+      this.ethereumReturnAddressInput = this.ethereumReturnAddress;
+    }
+    if (this.ethereumWalletProvider) {
+      this.ethereumWalletProviderInput = this.ethereumWalletProvider;
     }
   },
 }

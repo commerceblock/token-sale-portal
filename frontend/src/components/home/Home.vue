@@ -5,8 +5,7 @@
       <tab-content title="Distribution Details" icon="fa fa-cloud-download" :before-change="submitOrderV2">
         <div class="invoice-box">
           <invoice-header :title="'Contribution Details'" />
-          <payment-details :usdAmount="usdAmount" :coin="coin" :tokenUnitPrice="tokenUnitPrice" :changeRates="changeRates" ref="paymentDetails" />
-          <distribution-details :ethereumReturnAddress="ethereumReturnAddress" ref="distributionDetails" />
+          <payment-details :ethereumReturnAddress="ethereumReturnAddress" :usdAmount="usdAmount" :coin="coin" :tokenUnitPrice="tokenUnitPrice" :changeRates="changeRates" ref="paymentDetails" />
         </div>
       </tab-content>
       <tab-content title="Invoice Summary" icon="fa fa-qrcode">
@@ -23,9 +22,10 @@
 </template>
 
 <script>
+// <distribution-details :ethereumReturnAddress="ethereumReturnAddress" ref="distributionDetails" />
 import gql from 'graphql-tag'
 import InvoiceHeader from './InvoiceHeader.vue'
-import DistributionDetails from './DistributionDetails.vue'
+// import DistributionDetails from './DistributionDetails.vue'
 import PaymentDetails from './PaymentDetails.vue'
 import InvoiceSummary from './InvoiceSummary.vue'
 import InvoiceSummaryHeader from './InvoiceSummaryHeader.vue'
@@ -43,7 +43,7 @@ export default {
   name: 'Home',
   components: {
     InvoiceHeader,
-    DistributionDetails,
+    // DistributionDetails,
     PaymentDetails,
     InvoiceSummary,
     InvoiceSummaryHeader,
@@ -55,6 +55,11 @@ export default {
     return {
       showNextSteps: false,
       result: null,
+      tickers: {
+        BTC: 'loading...',
+        ETH: 'loading...',
+        USD: 'loading...'
+      }
     }
   },
   computed: {
@@ -122,12 +127,12 @@ export default {
       }
 
       const that = this;
-      const distributionDetails = this.$refs.distributionDetails;
+      const paymentDetails = this.$refs.paymentDetails;
       return this.apolloClient
         .mutate({
           mutation: gql`mutation {
                   createOrderV2(order: {
-                    ethereumReturnAddress: "${distributionDetails.$refs.ethereumReturnAddress.value}"
+                    ethereumReturnAddress: "${paymentDetails.$refs.ethereumReturnAddress.value}"
                     usdAmount: "${this.$refs.paymentDetails.$refs.usdAmount.value}"
                   }) {
                     invoiceId
