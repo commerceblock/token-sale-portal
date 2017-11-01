@@ -106,8 +106,7 @@ export default {
           'seconds': seconds
         };
       }
-
-      console.log('CLOCK INITIALIZED');
+      console.log('clock');
       var clock = document.getElementById(id);
       var minutesSpan = clock.querySelector('.minutes');
       var secondsSpan = clock.querySelector('.seconds');
@@ -208,6 +207,9 @@ export default {
   display: block;
 }
 
+.wizard-btn-wd {
+  min-width: 0 !important;
+}
 .clipboard {
   display: none;
   position: absolute;

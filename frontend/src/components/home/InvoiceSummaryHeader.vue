@@ -10,20 +10,10 @@
     </div>
   </div>
 
-  <div class="row" style="display:flex">
-    <div class="col-xs-6 text-center" >
-      <div class="row">{{ cbtTokenAmount }} CBT</div>
-      <div class="row">Tokens Purchased</div>
-      <div class="row"><a :href="`/invoices/${this.invoiceId}`" target="_blank">Invoice ID: {{ invoiceId }}</a></div>
-    </div>
-    <div class="col-xs-6 text-center">
-      <div class="row" v-if="transactionLink">{{ numberOfConfirmationsFormatted }} Confirmations</div>
-      <!-- <div class="row">No. of Confirmations</div> -->
-      <div class="col-xs-12 text-center external-link" v-if="transactionLink">
-        <a :href="transactionLink" target="_blank">View on Blockchain</a>
-      </div>
-      <div class="row" v-if="transactionError">{{ transactionError }}</div>
-    </div>
+  <div>
+
+      <span>Invoice ID: <br> <a :href="`/invoices/${this.invoiceId}`" id="invoice-id" target="_blank">{{ invoiceId }}</a></span>
+      <div>{{ cbtTokenAmount }} CBT Tokens Purchased</div>
 
   </div>
 </div>
@@ -61,80 +51,6 @@ export default {
       return number > minNumber ? `${minNumber}+` : number.toString();
     }
   },
-  methods: {
-    // refreshTxStatus() {
-    //   fetchTxid(this);
-    // },
-
-    // getTimeRemaining(endtime) {
-    //   var t = Date.parse(endtime) - Date.parse(new Date());
-    //   var seconds = Math.floor((t / 1000) % 60);
-    //   var minutes = Math.floor((t / 1000 / 60) % 60);
-    //   var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
-    //   var days = Math.floor(t / (1000 * 60 * 60 * 24));
-    //   return {
-    //     'total': t,
-    //     'days': days,
-    //     'hours': hours,
-    //     'minutes': minutes,
-    //     'seconds': seconds
-    //   };
-    // },
-    //
-    // initializeClock(id, endtime) {
-    //   var clock = document.getElementById(id);
-    //   var minutesSpan = clock.querySelector('.minutes');
-    //   var secondsSpan = clock.querySelector('.seconds');
-    //
-    //   function updateClock() {
-    //     var t = getTimeRemaining(endtime);
-    //
-    //     minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
-    //     secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
-    //
-    //     if (t.total <= 0) {
-    //       clearInterval(timeinterval);
-    //     }
-    //   }
-    //
-    //   updateClock();
-    //   var timeinterval = setInterval(updateClock, 1000);
-    // }
-
-    // var deadline = new Date(Date.parse(new Date()) + 15 * 24 * 60 * 60 * 1000);
-    // initializeClock('clockdiv', deadline);
-
-  },
-  // beforeMount() {
-  //   this.refreshTxStatus();
-  // },
-  // mounted() {
-  //   var deadline = new Date('2017-12-25');
-  //   this.initializeClock('clockdiv', deadline);
-  //
-  //   const that = this;
-  //   // this.txChecker = setInterval(function() {
-  //   //   if (!that.txid) {
-  //   //     // fetch txid
-  //   //     fetchTxid(that);
-  //   //   }
-  //   //   if (that.numberOfConfirmations && that.numberOfConfirmations > requiredMinConfirmations(that.coin)) {
-  //   //     if (that.txChecker) {
-  //   //       clearInterval(that.txChecker);
-  //   //       that.txChecker = null;
-  //   //     }
-  //   //   } else {
-  //   //     if (that.txid) {
-  //   //       fetchConfirmations(that);
-  //   //     }
-  //   //   }
-  //   // }, 10000);
-  // },
-  // destroyed() {
-  //   if (this.txChecker) {
-  //     clearInterval(this.txChecker)
-  //   }
-  // },
 }
 </script>
 
@@ -204,5 +120,9 @@ a:visited {
 .smalltext {
   padding-top: 5px;
   font-size: 16px;
+}
+
+#invoice-id {
+  text-decoration: underline;
 }
 </style>

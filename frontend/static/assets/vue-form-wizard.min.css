@@ -87,7 +87,7 @@ fieldset[disabled] .vue-form-wizard .wizard-btn {
 }
 .vue-form-wizard .navbar .navbar-nav>li>a.wizard-btn.wizard-btn-wd,
 .vue-form-wizard .wizard-btn-wd {
-    min-width: 140px
+    min-width: 0
 }
 .vue-form-wizard .wizard-nav-pills {
     margin-top: 0;

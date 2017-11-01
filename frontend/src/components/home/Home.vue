@@ -190,9 +190,6 @@ export default {
       }
     },
   },
-  mounted () {
-    this.$refs.invoiceSummaryHeader.refreshTxStatus();
-  },
 }
 
 </script>
@@ -230,6 +227,10 @@ export default {
   font-size: 14px;
   line-height: 19px;
   text-align: center;
+}
+
+.wizard-btn-wd {
+  min-width: 0 !important;
 }
 
 a:link,
